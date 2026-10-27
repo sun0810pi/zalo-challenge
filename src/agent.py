@@ -2,10 +2,14 @@
 from __future__ import annotations
 
 import json
+import multiprocessing as mp
 import os
 import random
 from pathlib import Path
 from typing import Any
+
+# Bắt buộc cho vLLM V1 trên Linux/Colab để tránh lỗi "Cannot re-initialize CUDA in forked subprocess"
+os.environ.setdefault("VLLM_WORKER_MULTIPROC_METHOD", "spawn")
 
 from .guardrail import normalize_arguments, parse_tool_calls
 from .prompt_builder import build_initial_messages
@@ -15,6 +19,12 @@ def fix_all_seeds(seed: int = 42):
     """Fix all random seeds for 100% deterministic inference per competition rules."""
     os.environ["PYTHONHASHSEED"] = str(seed)
     os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
+    os.environ.setdefault("VLLM_WORKER_MULTIPROC_METHOD", "spawn")
+    try:
+        if mp.get_start_method(allow_none=True) != "spawn":
+            mp.set_start_method("spawn", force=True)
+    except RuntimeError:
+        pass
     random.seed(seed)
     try:
         import numpy as np
@@ -26,10 +36,11 @@ def fix_all_seeds(seed: int = 42):
         import torch
 
         torch.manual_seed(seed)
-        if torch.cuda.is_available():
+        # Không gọi torch.cuda.is_available() trước khi vLLM spawn subprocess nếu chưa khởi tạo CUDA
+        if torch.cuda.is_initialized():
             torch.cuda.manual_seed_all(seed)
-        torch.backends.cudnn.deterministic = True
-        torch.backends.cudnn.benchmark = False
+            torch.backends.cudnn.deterministic = True
+            torch.backends.cudnn.benchmark = False
     except ImportError:
         pass
 
@@ -47,6 +58,16 @@ class LLMBackend:
         enable_thinking: bool = False,
     ):
         self.model_name_or_path = model_name_or_path
+        if lora_path:
+            lp = Path(lora_path)
+            if not (lp / "adapter_config.json").is_file():
+                print(
+                    f"[CẢNH BÁO] Không tìm thấy file 'adapter_config.json' trong '{lora_path}'. "
+                    f"Sẽ chạy model gốc '{model_name_or_path}' (Zero-shot) thay vì crash!"
+                )
+                lora_path = None
+            else:
+                lora_path = str(lp.resolve())
         self.lora_path = lora_path
         self.max_model_len = max_model_len
         self.max_new_tokens = max_new_tokens
@@ -61,7 +82,11 @@ class LLMBackend:
     def _load(self):
         from transformers import AutoTokenizer
 
-        tokenizer_src = self.lora_path if (self.lora_path and (Path(self.lora_path) / "tokenizer_config.json").is_file()) else self.model_name_or_path
+        tokenizer_src = (
+            self.lora_path
+            if (self.lora_path and (Path(self.lora_path) / "tokenizer_config.json").is_file())
+            else self.model_name_or_path
+        )
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_src, trust_remote_code=True)
 
         if self.backend in ("auto", "vllm"):
@@ -100,7 +125,7 @@ class LLMBackend:
         dtype = torch.bfloat16 if (torch.cuda.is_available() and torch.cuda.is_bf16_supported()) else torch.float16
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_name_or_path,
-            torch_dtype=dtype if torch.cuda.is_available() else torch.float32,
+            dtype=dtype if torch.cuda.is_available() else torch.float32,
             device_map="auto" if torch.cuda.is_available() else None,
             trust_remote_code=True,
         )
