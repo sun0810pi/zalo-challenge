@@ -6,6 +6,19 @@ import inspect
 from pathlib import Path
 
 
+def _patch_colab_torchao():
+    """Bypass Colab's pre-installed incompatible torchao 0.10.0 check in peft >= 0.21."""
+    try:
+        import peft.import_utils
+
+        peft.import_utils.is_torchao_available = lambda: False
+        import peft.tuners.lora.torchao
+
+        peft.tuners.lora.torchao.is_torchao_available = lambda: False
+    except Exception:
+        pass
+
+
 def main():
     ap = argparse.ArgumentParser(description="Fine-tune Qwen3-4B trên dữ liệu ReAct Tool-Calling ZAC 2026")
     ap.add_argument("--model", default="Qwen/Qwen3-4B", help="Model gốc (< 5B tham số)")
@@ -24,6 +37,8 @@ def main():
         help="Bật QLoRA 4-bit nếu chạy trên GPU 16GB (T4); trên L4/A100/A30 24GB+ có thể chạy thẳng BF16 LoRA",
     )
     args = ap.parse_args()
+
+    _patch_colab_torchao()
 
     import torch
     from datasets import load_dataset

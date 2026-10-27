@@ -102,6 +102,7 @@ class LLMBackend:
                     trust_remote_code=True,
                     enable_lora=bool(self.lora_path),
                     max_lora_rank=64,
+                    enforce_eager=True,
                     seed=42,
                 )
                 self._vllm_sampling_params = SamplingParams(
@@ -130,6 +131,14 @@ class LLMBackend:
             trust_remote_code=True,
         )
         if self.lora_path:
+            try:
+                import peft.import_utils
+                import peft.tuners.lora.torchao
+
+                peft.import_utils.is_torchao_available = lambda: False
+                peft.tuners.lora.torchao.is_torchao_available = lambda: False
+            except Exception:
+                pass
             from peft import PeftModel
 
             self.model = PeftModel.from_pretrained(self.model, self.lora_path)
