@@ -7,6 +7,7 @@ import re
 from typing import Any
 
 _TOOL_CALL_RE = re.compile(r"<tool_call>\s*(\{.*?\})\s*</tool_call>", re.DOTALL)
+_UNCLOSED_TOOL_CALL_RE = re.compile(r"<tool_call>\s*(\{.*\})\s*$", re.DOTALL)
 _THINK_RE = re.compile(r"<think>.*?</think>", re.DOTALL)
 _DATE_PREFIX_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})")
 _TIME_IN_STR_RE = re.compile(r"(\d{2}:\d{2}(?::\d{2})?)")
@@ -18,6 +19,8 @@ def parse_tool_calls(text: str) -> list[dict[str, Any]]:
         return []
     # Strip <think> blocks first in case the model drafted a tool call inside <think>
     cleaned = _THINK_RE.sub("", text)
+    if "</think>" in cleaned:
+        cleaned = cleaned.split("</think>")[-1]
     calls: list[dict[str, Any]] = []
 
     matches = _TOOL_CALL_RE.findall(cleaned)
@@ -29,11 +32,31 @@ def parse_tool_calls(text: str) -> list[dict[str, Any]]:
     if calls:
         return calls
 
-    # Fallback: check fenced ```json blocks or bare {"name": ..., "arguments": ...}
+    # Fallback 1: unclosed <tool_call> tag
+    for raw in _UNCLOSED_TOOL_CALL_RE.findall(cleaned):
+        parsed = _try_parse_json_call(raw)
+        if parsed is not None:
+            calls.append(parsed)
+
+    if calls:
+        return calls
+
+    # Fallback 2: check fenced ```json blocks
     for block in re.findall(r"```(?:json)?\s*(\{.*?\})\s*```", cleaned, re.DOTALL):
         parsed = _try_parse_json_call(block)
         if parsed is not None:
             calls.append(parsed)
+
+    if calls:
+        return calls
+
+    # Fallback 3: bare JSON {"name": ..., "arguments": ...} (e.g. if <tool_call> special tokens were stripped)
+    for line in cleaned.splitlines():
+        line_s = line.strip()
+        if line_s.startswith("{") and line_s.endswith("}") and '"name"' in line_s:
+            parsed = _try_parse_json_call(line_s)
+            if parsed is not None:
+                calls.append(parsed)
 
     return calls
 

@@ -90,6 +90,9 @@ def main():
                 tokenize=False,
                 add_generation_prompt=False,
             )
+        # Đồng bộ mọi lượt assistant trong multi-turn SFT: loại bỏ "<think>\n\n</think>\n\n" mà Qwen3
+        # chỉ chèn duy nhất ở lượt assistant cuối cùng để không gây lệch prefix lúc inference.
+        text = text.replace("<|im_start|>assistant\n<think>\n\n</think>\n\n", "<|im_start|>assistant\n")
         return {"text": text}
 
     dataset = dataset.map(format_row, remove_columns=dataset["train"].column_names)
