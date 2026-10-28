@@ -5,41 +5,32 @@ import json
 from pathlib import Path
 from typing import Any
 
-COMMON_VI_ASSISTANT_HOTWORDS = (
-    "Đặt báo thức, nhắc việc, dời lịch hẹn, chạy bộ, đá bóng, dã ngoại, họp phụ huynh, khám răng, "
-    "nếu mai mưa, dự báo thời tiết, chuyển khoản, một triệu rưỡi, ba trăm rưỡi, ví điện tử, "
-    "hóa đơn tiền điện, tiền nước, bật đèn, tắt đèn, hạ đèn tầng 1, tầng 2, phòng khách, phòng ngủ, "
-    "bật hết quạt, điều hòa, đặt xe bốn chỗ, gọi xe máy, đặt vé máy bay"
-)
-
 
 def build_asr_hotwords_prompt(sample: dict[str, Any]) -> str:
-    """Build a short Vietnamese initial_prompt with proper nouns from context and history to reduce WER."""
+    """Build a short Vietnamese initial_prompt with proper nouns from context and history to reduce WER without biasing action intent."""
     ctx = sample.get("context") or {}
     profile = ctx.get("user_profile") or {}
     terms: list[str] = []
     for k in ("name", "city", "home_address", "work_address"):
         val = profile.get(k)
-        if val and val not in terms:
+        if val and str(val) not in terms:
             terms.append(str(val))
 
     # Extract entity names/titles mentioned in history assistant text or tool_results
     for turn in sample.get("history") or []:
-        if turn.get("role") == "assistant" and turn.get("text"):
-            terms.append(turn["text"])
         for tr in turn.get("tool_results") or []:
             if isinstance(tr, dict):
-                for list_key in ("contacts", "events", "devices", "alarms", "restaurants", "Playlists", "tracks"):
+                for list_key in ("contacts", "events", "devices", "alarms", "restaurants", "playlists", "tracks"):
                     for item in tr.get(list_key) or []:
                         if isinstance(item, dict):
                             for name_k in ("name", "title", "label", "room"):
                                 if item.get(name_k) and str(item[name_k]) not in terms:
                                     terms.append(str(item[name_k]))
 
-    joined = ", ".join(terms[:20])
+    joined = ", ".join(terms[:25])
     if joined:
-        return f"{COMMON_VI_ASSISTANT_HOTWORDS}. Tên riêng & địa điểm: {joined}."
-    return f"{COMMON_VI_ASSISTANT_HOTWORDS}."
+        return f"Trợ lý ảo tiếng Việt LifeMate. Tên riêng và địa điểm: {joined}."
+    return "Trợ lý ảo tiếng Việt LifeMate."
 
 
 class Transcriber:

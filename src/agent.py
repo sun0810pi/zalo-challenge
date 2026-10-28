@@ -36,7 +36,6 @@ def fix_all_seeds(seed: int = 42):
         import torch
 
         torch.manual_seed(seed)
-        # Không gọi torch.cuda.is_available() trước khi vLLM spawn subprocess nếu chưa khởi tạo CUDA
         if torch.cuda.is_initialized():
             torch.cuda.manual_seed_all(seed)
             torch.backends.cudnn.deterministic = True
@@ -55,13 +54,12 @@ class LLMBackend:
         backend: str = "auto",
         max_model_len: int = 16384,
         max_new_tokens: int = 512,
-        enable_thinking: bool = False,
+        enable_thinking: bool = True,
     ):
         self.model_name_or_path = model_name_or_path
         if lora_path:
             lp = Path(lora_path)
             if not (lp / "adapter_config.json").is_file():
-                # Tự động tìm checkpoint con mới nhất nếu người dùng trỏ vào thư mục cha nhưng chưa có adapter ở gốc
                 sub_ckpts = sorted(
                     lp.glob("checkpoint-*/adapter_config.json"),
                     key=lambda p: int(p.parent.name.split("-")[-1]) if p.parent.name.split("-")[-1].isdigit() else 0,
@@ -120,7 +118,8 @@ class LLMBackend:
                     top_p=1.0,
                     max_tokens=self.max_new_tokens,
                     skip_special_tokens=False,
-                    stop=["<|im_end|>", "<|endoftext|>"],
+                    stop=["</tool_call>", "<|im_end|>", "<|endoftext|>"],
+                    include_stop_str_in_output=True,
                     seed=42,
                 )
                 if self.lora_path:
@@ -174,15 +173,6 @@ class LLMBackend:
                 add_generation_prompt=True,
             )
 
-        # QUAN TRỌNG: Trong Qwen3 chat_template:
-        # - Khi train multi-turn (add_generation_prompt=False), các lượt assistant gọi <tool_call> chỉ có prefix
-        #   "<|im_start|>assistant\n", còn "<think>\n\n</think>\n\n" CHỈ xuất hiện ở lượt văn bản kết thúc cuối cùng!
-        # - Khi suy luận (add_generation_prompt=True, enable_thinking=False), Qwen3 tự nối thêm "<think>\n\n</think>\n\n"
-        #   vào cuối prompt khiến model LoRA tưởng đã gọi xong hết tool và trả lời đóng luôn (-> 0 calls).
-        # Do đó phải cắt bỏ "<think>\n\n</think>\n\n" ở cuối prompt khi có LoRA (hoặc luôn cắt khi tắt thinking).
-        if not self.enable_thinking and prompt.endswith("<think>\n\n</think>\n\n"):
-            prompt = prompt[: -len("<think>\n\n</think>\n\n")]
-
         # Enforce 16,384 reading budget
         input_ids = self.tokenizer.encode(prompt, add_special_tokens=False)
         max_input_tokens = self.max_model_len - self.max_new_tokens - 32
@@ -200,7 +190,10 @@ class LLMBackend:
             text = outputs[0].outputs[0].text
             for eos_tok in ("<|im_end|>", "<|endoftext|>"):
                 text = text.replace(eos_tok, "")
-            return text.strip()
+            text = text.strip()
+            if "<tool_call>" in text and not text.endswith("</tool_call>"):
+                text += "\n</tool_call>"
+            return text
 
         import torch
 
@@ -221,11 +214,14 @@ class LLMBackend:
         text = self.tokenizer.decode(gen_ids, skip_special_tokens=False)
         for eos_tok in ("<|im_end|>", "<|endoftext|>"):
             text = text.replace(eos_tok, "")
-        return text.strip()
+        text = text.strip()
+        if "<tool_call>" in text and not text.endswith("</tool_call>"):
+            text += "\n</tool_call>"
+        return text
 
 
 class LifeMateAgent:
-    """ReAct agent with `env.validate` sandbox guardrail and single-simulator enforcement."""
+    """ReAct agent with single-tool execution per step and env.validate guardrail."""
 
     def __init__(
         self,
@@ -261,59 +257,60 @@ class LifeMateAgent:
             reply = self.llm.generate(messages)
             raw_calls = parse_tool_calls(reply)
 
-            # No tool call emitted -> agent is done
+            # No tool call emitted -> agent completed all tasks
             if not raw_calls:
                 break
 
+            # STRICT REACT: Only execute the FIRST tool call emitted in this step
+            call = raw_calls[0]
+            t_name = call["name"]
+            t_args = normalize_arguments(
+                t_name,
+                call.get("arguments") or {},
+                self.catalog_tools_map,
+                tz_offset=tz_offset,
+            )
+
+            # Record assistant turn in messages
             messages.append({"role": "assistant", "content": reply})
-            tool_response_blocks: list[str] = []
-            asked_missing_info = False
 
-            for call in raw_calls:
-                t_name = call["name"]
-                t_args = normalize_arguments(
-                    t_name,
-                    call.get("arguments") or {},
-                    self.catalog_tools_map,
-                    tz_offset=tz_offset,
+            # Prevent infinite loops on identical calls
+            call_sig = f"{t_name}:{json.dumps(t_args, sort_keys=True, ensure_ascii=False)}"
+            if call_sig in seen_calls:
+                messages.append(
+                    {
+                        "role": "user",
+                        "content": f"<tool_response>\n{json.dumps({'ok': False, 'error': 'Bạn vừa gọi đúng lệnh này rồi, không gọi lặp lại.'}, ensure_ascii=False)}\n</tool_response>",
+                    }
                 )
+                continue
 
-                # Prevent duplicate identical tool calls in the same turn
-                call_sig = f"{t_name}:{json.dumps(t_args, sort_keys=True, ensure_ascii=False)}"
-                if call_sig in seen_calls:
-                    tool_response_blocks.append(
-                        f"<tool_response>\n{json.dumps({'ok': False, 'error': 'Bạn vừa gọi đúng lệnh này rồi, không gọi lặp lại.'}, ensure_ascii=False)}\n</tool_response>"
-                    )
-                    continue
-
-                # Zero-cost schema check via env.validate() (NOT recorded in env.get_tool_calls())
-                val_res = env.validate(t_name, t_args)
-                if not val_res.get("ok"):
-                    validation_retries += 1
-                    err_msg = val_res.get("error", "Sai định dạng schema")
-                    tool_response_blocks.append(
-                        f"<tool_response>\n{json.dumps({'ok': False, 'validation_error': err_msg, 'hint': 'Hãy sửa lại đúng tên tham số/kiểu dữ liệu hoặc gọi sys.ask_missing_info nếu người dùng chưa cung cấp đủ thông tin.'}, ensure_ascii=False)}\n</tool_response>"
-                    )
-                    if validation_retries >= 3:
-                        break
-                    continue
-
-                # Validated! Execute on the single official simulator
-                seen_calls.add(call_sig)
-                exec_res = env.call(t_name, t_args)
-                tool_response_blocks.append(
-                    f"<tool_response>\n{json.dumps(exec_res, ensure_ascii=False)}\n</tool_response>"
+            # Zero-cost schema check via env.validate()
+            val_res = env.validate(t_name, t_args)
+            if not val_res.get("ok"):
+                validation_retries += 1
+                err_msg = val_res.get("error", "Sai định dạng schema")
+                messages.append(
+                    {
+                        "role": "user",
+                        "content": f"<tool_response>\n{json.dumps({'ok': False, 'validation_error': err_msg, 'hint': 'Hãy sửa lại đúng tên tham số/kiểu dữ liệu hoặc gọi sys.ask_missing_info nếu người dùng chưa cung cấp đủ thông tin.'}, ensure_ascii=False)}\n</tool_response>",
+                    }
                 )
-                if t_name == "sys.ask_missing_info":
-                    asked_missing_info = True
+                if validation_retries >= 3:
                     break
+                continue
 
-            if asked_missing_info or validation_retries >= 3:
-                break
+            # Validated! Execute on the single official simulator
+            seen_calls.add(call_sig)
+            exec_res = env.call(t_name, t_args)
+            messages.append(
+                {
+                    "role": "user",
+                    "content": f"<tool_response>\n{json.dumps(exec_res, ensure_ascii=False)}\n</tool_response>",
+                }
+            )
 
-            if tool_response_blocks:
-                messages.append({"role": "user", "content": "\n".join(tool_response_blocks)})
-            else:
+            if t_name == "sys.ask_missing_info" or validation_retries >= 3:
                 break
 
         return env.get_tool_calls(), env.get_state_hash()
