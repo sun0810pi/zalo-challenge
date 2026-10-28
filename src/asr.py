@@ -5,6 +5,13 @@ import json
 from pathlib import Path
 from typing import Any
 
+COMMON_VI_ASSISTANT_HOTWORDS = (
+    "Đặt báo thức, nhắc việc, dời lịch hẹn, chạy bộ, đá bóng, dã ngoại, họp phụ huynh, khám răng, "
+    "nếu mai mưa, dự báo thời tiết, chuyển khoản, một triệu rưỡi, ba trăm rưỡi, ví điện tử, "
+    "hóa đơn tiền điện, tiền nước, bật đèn, tắt đèn, hạ đèn tầng 1, tầng 2, phòng khách, phòng ngủ, "
+    "bật hết quạt, điều hòa, đặt xe bốn chỗ, gọi xe máy, đặt vé máy bay"
+)
+
 
 def build_asr_hotwords_prompt(sample: dict[str, Any]) -> str:
     """Build a short Vietnamese initial_prompt with proper nouns from context and history to reduce WER."""
@@ -29,8 +36,10 @@ def build_asr_hotwords_prompt(sample: dict[str, Any]) -> str:
                                 if item.get(name_k) and str(item[name_k]) not in terms:
                                     terms.append(str(item[name_k]))
 
-    joined = ", ".join(terms[:25])
-    return f"Trợ lý ảo tiếng Việt: {joined}." if joined else "Trợ lý ảo điều khiển ứng dụng tiếng Việt."
+    joined = ", ".join(terms[:20])
+    if joined:
+        return f"{COMMON_VI_ASSISTANT_HOTWORDS}. Tên riêng & địa điểm: {joined}."
+    return f"{COMMON_VI_ASSISTANT_HOTWORDS}."
 
 
 class Transcriber:

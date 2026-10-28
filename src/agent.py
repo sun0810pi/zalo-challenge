@@ -61,11 +61,21 @@ class LLMBackend:
         if lora_path:
             lp = Path(lora_path)
             if not (lp / "adapter_config.json").is_file():
-                print(
-                    f"[CẢNH BÁO] Không tìm thấy file 'adapter_config.json' trong '{lora_path}'. "
-                    f"Sẽ chạy model gốc '{model_name_or_path}' (Zero-shot) thay vì crash!"
+                # Tự động tìm checkpoint con mới nhất nếu người dùng trỏ vào thư mục cha nhưng chưa có adapter ở gốc
+                sub_ckpts = sorted(
+                    lp.glob("checkpoint-*/adapter_config.json"),
+                    key=lambda p: int(p.parent.name.split("-")[-1]) if p.parent.name.split("-")[-1].isdigit() else 0,
                 )
-                lora_path = None
+                if sub_ckpts:
+                    resolved_sub = sub_ckpts[-1].parent.resolve()
+                    print(f"[LLMBackend] Tự động dùng LoRA checkpoint mới nhất: {resolved_sub}")
+                    lora_path = str(resolved_sub)
+                else:
+                    print(
+                        f"[CẢNH BÁO] Không tìm thấy file 'adapter_config.json' trong '{lora_path}'. "
+                        f"Sẽ chạy model gốc '{model_name_or_path}' (Zero-shot) thay vì crash!"
+                    )
+                    lora_path = None
             else:
                 lora_path = str(lp.resolve())
         self.lora_path = lora_path
@@ -109,6 +119,8 @@ class LLMBackend:
                     temperature=0.0,
                     top_p=1.0,
                     max_tokens=self.max_new_tokens,
+                    skip_special_tokens=False,
+                    stop=["<|im_end|>", "<|endoftext|>"],
                     seed=42,
                 )
                 if self.lora_path:
@@ -162,6 +174,15 @@ class LLMBackend:
                 add_generation_prompt=True,
             )
 
+        # QUAN TRỌNG: Trong Qwen3 chat_template:
+        # - Khi train multi-turn (add_generation_prompt=False), các lượt assistant gọi <tool_call> chỉ có prefix
+        #   "<|im_start|>assistant\n", còn "<think>\n\n</think>\n\n" CHỈ xuất hiện ở lượt văn bản kết thúc cuối cùng!
+        # - Khi suy luận (add_generation_prompt=True, enable_thinking=False), Qwen3 tự nối thêm "<think>\n\n</think>\n\n"
+        #   vào cuối prompt khiến model LoRA tưởng đã gọi xong hết tool và trả lời đóng luôn (-> 0 calls).
+        # Do đó phải cắt bỏ "<think>\n\n</think>\n\n" ở cuối prompt khi có LoRA (hoặc luôn cắt khi tắt thinking).
+        if not self.enable_thinking and prompt.endswith("<think>\n\n</think>\n\n"):
+            prompt = prompt[: -len("<think>\n\n</think>\n\n")]
+
         # Enforce 16,384 reading budget
         input_ids = self.tokenizer.encode(prompt, add_special_tokens=False)
         max_input_tokens = self.max_model_len - self.max_new_tokens - 32
@@ -176,7 +197,10 @@ class LLMBackend:
                 lora_request=self._vllm_lora_request,
                 use_tqdm=False,
             )
-            return outputs[0].outputs[0].text.strip()
+            text = outputs[0].outputs[0].text
+            for eos_tok in ("<|im_end|>", "<|endoftext|>"):
+                text = text.replace(eos_tok, "")
+            return text.strip()
 
         import torch
 
@@ -194,7 +218,10 @@ class LLMBackend:
                 pad_token_id=self.tokenizer.eos_token_id,
             )
         gen_ids = out_ids[0][inputs["input_ids"].shape[1] :]
-        return self.tokenizer.decode(gen_ids, skip_special_tokens=True).strip()
+        text = self.tokenizer.decode(gen_ids, skip_special_tokens=False)
+        for eos_tok in ("<|im_end|>", "<|endoftext|>"):
+            text = text.replace(eos_tok, "")
+        return text.strip()
 
 
 class LifeMateAgent:
