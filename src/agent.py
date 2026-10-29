@@ -54,6 +54,7 @@ class LLMBackend:
         backend: str = "auto",
         max_model_len: int = 16384,
         max_new_tokens: int = 512,
+        gpu_memory_utilization: float = 0.68,
         enable_thinking: bool = True,
     ):
         self.model_name_or_path = model_name_or_path
@@ -79,6 +80,7 @@ class LLMBackend:
         self.lora_path = lora_path
         self.max_model_len = max_model_len
         self.max_new_tokens = max_new_tokens
+        self.gpu_memory_utilization = gpu_memory_utilization
         self.enable_thinking = enable_thinking
         self.backend = backend
         self.tokenizer = None
@@ -105,7 +107,7 @@ class LLMBackend:
                 self.model = LLM(
                     model=self.model_name_or_path,
                     max_model_len=self.max_model_len,
-                    gpu_memory_utilization=0.72,
+                    gpu_memory_utilization=self.gpu_memory_utilization,
                     dtype="bfloat16",
                     trust_remote_code=True,
                     enable_lora=bool(self.lora_path),

@@ -34,17 +34,36 @@ def build_asr_hotwords_prompt(sample: dict[str, Any]) -> str:
 
 
 class Transcriber:
-    """Deterministic Vietnamese ASR wrapper with persistent JSON cache."""
+    """Deterministic Vietnamese ASR wrapper with persistent JSON cache and LoRA support."""
 
     def __init__(
         self,
         model_name: str = "deepdml/faster-whisper-large-v3-turbo-ct2",
+        lora_path: str | Path | None = None,
         device: str = "cuda",
         compute_type: str = "float16",
         cache_path: str | Path | None = None,
         use_gt_audio_text: bool = False,
     ):
+        if lora_path:
+            lp = Path(lora_path)
+            if not (lp / "adapter_config.json").is_file():
+                sub_ckpts = sorted(
+                    lp.glob("checkpoint-*/adapter_config.json"),
+                    key=lambda p: int(p.parent.name.split("-")[-1]) if p.parent.name.split("-")[-1].isdigit() else 0,
+                )
+                if sub_ckpts:
+                    resolved_sub = sub_ckpts[-1].parent.resolve()
+                    print(f"[Transcriber] Tự động chọn checkpoint LoRA mới nhất: {resolved_sub}")
+                    lora_path = str(resolved_sub)
+                else:
+                    print(f"[CẢNH BÁO] Không tìm thấy 'adapter_config.json' trong '{lora_path}'. Sẽ dùng model gốc '{model_name}'.")
+                    lora_path = None
+            else:
+                lora_path = str(lp.resolve())
+
         self.model_name = model_name
+        self.lora_path = lora_path
         self.device = device
         self.compute_type = compute_type
         self.use_gt_audio_text = use_gt_audio_text
@@ -56,11 +75,63 @@ class Transcriber:
             except Exception:
                 self.cache = {}
         self._model = None
+        self._processor = None
         self._backend = None
 
     def _load_model(self):
         if self._model is not None:
             return
+
+        # Case 1: LoRA adapter provided -> load base Whisper, merge LoRA via PEFT and run HF pipeline
+        if self.lora_path:
+            import torch
+            from peft import PeftModel
+            from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
+
+            base_model_name = self.model_name
+            if "ct2" in self.model_name or "faster-whisper" in self.model_name:
+                base_model_name = "openai/whisper-large-v3-turbo"
+
+            cfg_path = Path(self.lora_path) / "adapter_config.json"
+            if cfg_path.is_file():
+                try:
+                    cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
+                    if cfg.get("base_model_name_or_path"):
+                        base_model_name = cfg["base_model_name_or_path"]
+                except Exception:
+                    pass
+
+            print(f"[ASR] Khởi tạo Whisper Base '{base_model_name}' kết hợp LoRA '{self.lora_path}'...")
+            processor_src = self.lora_path if (Path(self.lora_path) / "processor_config.json").is_file() else base_model_name
+            try:
+                self._processor = AutoProcessor.from_pretrained(processor_src)
+            except Exception:
+                self._processor = AutoProcessor.from_pretrained(base_model_name)
+
+            torch_dtype = torch.float16 if (self.device == "cuda" and torch.cuda.is_available()) else torch.float32
+            base_model = AutoModelForSpeechSeq2Seq.from_pretrained(
+                base_model_name,
+                torch_dtype=torch_dtype,
+                low_cpu_mem_usage=True,
+            )
+            model = PeftModel.from_pretrained(base_model, self.lora_path)
+            model = model.merge_and_unload()
+            model.eval()
+
+            device_id = 0 if (self.device == "cuda" and torch.cuda.is_available()) else -1
+            self._model = pipeline(
+                "automatic-speech-recognition",
+                model=model,
+                tokenizer=self._processor.tokenizer,
+                feature_extractor=self._processor.feature_extractor,
+                device=device_id,
+                torch_dtype=torch_dtype,
+            )
+            self._backend = "transformers"
+            print(f"[ASR] Đã nạp thành công mô hình Whisper fine-tuned (Transformers HF) trên device={device_id}!")
+            return
+
+        # Case 2: No LoRA adapter -> prefer faster-whisper CT2 for max speed
         try:
             from faster_whisper import WhisperModel
 
@@ -113,9 +184,23 @@ class Transcriber:
             )
             text = " ".join(seg.text.strip() for seg in segments).strip()
         else:
+            gen_kwargs = {
+                "language": "vi",
+                "task": "transcribe",
+                "num_beams": 1,
+                "do_sample": False,
+            }
+            if initial_prompt and hasattr(self, "_processor") and self._processor is not None:
+                try:
+                    prompt_ids = self._processor.get_prompt_ids(initial_prompt, return_tensors="pt")
+                    if hasattr(prompt_ids, "tolist"):
+                        prompt_ids = prompt_ids[0].tolist() if prompt_ids.ndim > 1 else prompt_ids.tolist()
+                    gen_kwargs["prompt_ids"] = prompt_ids
+                except Exception:
+                    pass
             out = self._model(
                 str(wav_path),
-                generate_kwargs={"language": "vi", "num_beams": 1, "do_sample": False},
+                generate_kwargs=gen_kwargs,
             )
             text = out["text"].strip()
 
