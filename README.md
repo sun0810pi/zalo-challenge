@@ -150,3 +150,32 @@ def main():
 if __name__ == "__main__":
     main()
 ```
+
+
+## 5. Cấu trúc Source Code & Cách chạy Pipeline
+
+### 5.1. Phân cấp Thư mục
+- `run_infer.py`: Chạy pipeline suy luận chính (ASR -> Preprocessor -> Router -> Qwen -> Guardrail -> ToolEnv).
+- `train_sft.py`: Huấn luyện LoRA v3 cho mô hình Qwen với dữ liệu suy luận có cấu trúc.
+- `evaluate.py`: Chấm điểm State Hash Accuracy và Tool Call F1 trên tập ground truth.
+- `src/`: Thư viện lõi chứa toàn bộ logic agent, router, guardrail schema-driven, và các preprocessor.
+- `scripts/`:
+  - `data/generate_reasoning_sft.py`: Tạo bộ dữ liệu huấn luyện SFT (1,624 train + 145 val trajectories).
+  - `benchmarks/compare_preprocessors.py`: So sánh và benchmark chất lượng giữa các phương án tiền xử lý ngôn ngữ.
+  - `baselines/`: Các mô hình đối chứng (Gemini API, heuristic solver).
+- `submissions/`: Thư mục lưu trữ các file kết quả nộp bài (`submission_v1_public27.1.jsonl`, v.v.).
+
+### 5.2. Các lệnh thực thi chính
+```bash
+# 1. Sinh tập dữ liệu huấn luyện SFT CoT v3
+python scripts/data/generate_reasoning_sft.py
+
+# 2. Huấn luyện LoRA v3
+python train_sft.py --model Qwen/Qwen3-4B --data-dir data/sft --output-dir checkpoints/qwen3-4b-zac-lora-v3 --epochs 3
+
+# 3. Chạy suy luận trên public_test với Preprocessor A (Dynamic Context Aligner)
+python run_infer.py --split public_test --model Qwen/Qwen3-4B --lora-path checkpoints/qwen3-4b-zac-lora-v3 --preprocessor a --output submissions/submission_v3.jsonl
+
+# 4. Đánh giá chất lượng dự đoán (trên tập train)
+python evaluate.py --predictions submissions/train_pred.jsonl --ground-truth train/train.jsonl
+```

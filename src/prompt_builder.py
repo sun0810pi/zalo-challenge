@@ -1,9 +1,11 @@
-"""Prompt builder, compact tool schema serializer, and Vietnamese calendar helper for ZAC 2026 LifeMate."""
+"""Prompt builder, two-tier semantic tool schema serializer, and 14-day calendar helper for ZAC 2026 LifeMate."""
 from __future__ import annotations
 
 import json
 from datetime import datetime, timedelta
 from typing import Any
+
+from .router import SemanticToolRouter
 
 WEEKDAYS_VI = [
     "Thứ Hai",
@@ -17,7 +19,7 @@ WEEKDAYS_VI = [
 
 
 def build_calendar_helper(current_time_iso: str) -> str:
-    """Build a deterministic relative-date lookup table from current_time ISO string."""
+    """Build a deterministic 14-day relative-date lookup table from current_time ISO string."""
     if not current_time_iso:
         return ""
     try:
@@ -35,10 +37,10 @@ def build_calendar_helper(current_time_iso: str) -> str:
         f"- Ngày kia (mốt): {WEEKDAYS_VI[(dt + timedelta(days=2)).weekday()]}, {(dt + timedelta(days=2)).strftime('%Y-%m-%d')}",
     ]
     upcoming = []
-    for offset in range(1, 10):
+    for offset in range(1, 15):
         d = dt + timedelta(days=offset)
         upcoming.append(f"{WEEKDAYS_VI[d.weekday()]} ({d.strftime('%Y-%m-%d')})")
-    lines.append("- Lịch 9 ngày tới: " + ", ".join(upcoming))
+    lines.append("- Lịch 14 ngày tới: " + ", ".join(upcoming))
     return "\n".join(lines)
 
 
@@ -82,58 +84,93 @@ def compress_tool_spec(tool: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
-def get_allowed_tools_schema(sample: dict[str, Any], catalog_tools_map: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
-    """Return compressed schemas for all tools installed in `sample` plus `sys.ask_missing_info`."""
-    installed = sample.get("context", {}).get("installed_apps", {})
-    allowed_names: list[str] = []
-    for app_info in installed.values():
-        for t_name in app_info.get("tools", []):
-            if t_name not in allowed_names:
-                allowed_names.append(t_name)
-    if "sys.ask_missing_info" not in allowed_names:
-        allowed_names.append("sys.ask_missing_info")
+def get_two_tier_allowed_tools(
+    sample: dict[str, Any],
+    catalog_tools_map: dict[str, dict[str, Any]],
+    user_query: str = "",
+    router: SemanticToolRouter | None = None,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Organize installed tools into Tier 1 (Recommended Candidates) and Tier 2 (Secondary Tools)
+    to focus model attention while maintaining 100% tool recall.
+    """
+    router = router or SemanticToolRouter(top_k_recommended=4)
+    rec_apps, sec_apps = router.route_sample_apps(user_query, sample, catalog_tools_map)
 
-    schemas = []
-    for name in allowed_names:
-        if name in catalog_tools_map:
-            schemas.append(compress_tool_spec(catalog_tools_map[name]))
-    return schemas
+    installed = sample.get("context", {}).get("installed_apps", {})
+
+    rec_schemas: list[dict[str, Any]] = []
+    sec_schemas: list[dict[str, Any]] = []
+
+    for app in rec_apps:
+        for tname in installed.get(app, {}).get("tools", []):
+            if tname in catalog_tools_map:
+                rec_schemas.append(compress_tool_spec(catalog_tools_map[tname]))
+
+    for app in sec_apps:
+        for tname in installed.get(app, {}).get("tools", []):
+            if tname in catalog_tools_map:
+                sec_schemas.append(compress_tool_spec(catalog_tools_map[tname]))
+
+    # Always ensure system tool is present
+    if "sys.ask_missing_info" in catalog_tools_map:
+        rec_schemas.append(compress_tool_spec(catalog_tools_map["sys.ask_missing_info"]))
+
+    return rec_schemas, sec_schemas
 
 
 SYSTEM_INSTRUCTION = """Bạn là trợ lý ảo thông minh LifeMate điều khiển các ứng dụng trên thiết bị của người dùng.
-Nhiệm vụ của bạn là xử lý YÊU CẦU HIỆN TẠI của người dùng bằng cách suy luận theo Schema và gọi chính xác các công cụ (tools) được cung cấp.
+Nhiệm vụ của bạn là xử lý YÊU CẦU HIỆN TẠI của người dùng bằng cách suy luận theo Schema và gọi chính xác các công cụ (tools) được cung cấp trong ALLOWED TOOLS.
 
 ### QUY TẮC BẮT BUỘC:
-1. **Đọc dữ liệu trước khi Ghi (Read-before-Write)**:
-   - Khi một tool `write` cần ID tham chiếu (`x-ref` như `contact_id`, `device_id`, `event_id`, `alarm_id`, `reminder_id`, `bill_id`, `restaurant_id`, `booking_id`...) mà ID đó CHƯA có trong lịch sử, bạn PHẢI gọi tool `read` tương ứng (`contacts.search`, `smart_home.get_status`, `calendar.list_events`, `alarm.list`, `bill_payment.list_bills`...) trước để lấy đúng ID thực tế. Tuyệt đối không tự bịa ID hay địa chỉ.
-   - Nếu thông tin và ID cần thiết ĐÃ CÓ SẴN trong phần LỊCH SỬ HỘI THOẠI TRƯỚC ĐÓ, hãy dùng trực tiếp ID đó.
-2. **Xử lý câu điều kiện & Tự hủy lệnh ("...À mà thôi", "...khoan đã")**:
-   - Nếu người dùng đặt điều kiện (VD: "Nếu mai mưa thì..."), hãy gọi tool kiểm tra điều kiện trước. Nếu điều kiện KHÔNG thỏa mãn, dừng lại và kết thúc (không gọi tool hành động).
-   - Nếu người dùng đổi ý hoặc tự hủy yêu cầu (VD: "...À mà thôi, cứ để đó", "...thôi khỏi"), chỉ thực hiện ý định cuối cùng của người dùng. Nếu người dùng hủy hết, KHÔNG gọi tool nào cả.
-3. **Khi thiếu thông tin hoặc thông tin mơ hồ (`sys.ask_missing_info`)**:
-   - Nếu đã gọi tool `read` mà tìm thấy NHIỀU KẾT QUẢ trùng tên (VD: có 2 người tên Minh, 2 người tên Lan) mà lời nói/lịch sử không đủ để phân biệt ai, HOẶC người dùng chưa cung cấp tham số bắt buộc của tool `write`, hãy gọi `sys.ask_missing_info` với `tool_name` là tên tool `write` định gọi và `params` là danh sách tên tham số còn thiếu/mơ hồ (VD: `{"tool_name": "phone.call", "params": ["contact_id"]}`).
-4. **Quy trình suy luận bắt buộc (<think>)**:
-   - Ở mỗi bước, bạn PHẢI suy nghĩ ngắn gọn trong thẻ `<think>` theo cấu trúc:
+1. **Tìm kiếm công cụ & Đọc trước khi Ghi (Tool Discovery & Read-before-Write)**:
+   - Dựa vào ý định của người dùng, tìm kiếm công cụ phù hợp trong ALLOWED TOOLS.
+   - Khi một tool `write` cần ID tham chiếu (`x-ref` hoặc tham số kết thúc bằng `_id`), bạn PHẢI gọi tool `read` tương ứng trước để lấy đúng ID thực tế trả về từ hệ thống. Tuyệt đối không tự bịa ID hay dùng nhầm ID giữa các ứng dụng khác nhau.
+   - Nếu thông tin hoặc ID cần thiết ĐÃ CÓ SẴN trong phần LỊCH SỬ HỘI THOẠI TRƯỚC ĐÓ, hãy dùng trực tiếp ID đó mà KHÔNG gọi lại tool `read`.
+2. **Xử lý câu điều kiện, So sánh số học & Tự hủy lệnh ("...À mà thôi")**:
+   - Nếu người dùng đặt điều kiện (VD: "Nếu mai mưa thì...", "Nếu ví không đủ tiền thì trừ ngân hàng..."):
+     + PHẢI gọi các tool `read` kiểm tra điều kiện trước (VD: tra cứu số dư và hóa đơn để so sánh).
+     + Sau khi nhận `<tool_response>`, nếu điều kiện KHÔNG thỏa mãn, PHẢI DỪNG LẠI NGAY và KHÔNG gọi tool `write`.
+   - Nếu người dùng đổi ý hoặc tự hủy ("...À mà thôi, cứ giữ nguyên nhé", "...thôi khỏi"), chỉ thực hiện ý định cuối cùng còn hiệu lực. Nếu hủy toàn bộ, KHÔNG gọi tool nào cả.
+3. **Quy trình suy luận bắt buộc (<think>)**:
+   - Ở mỗi bước, bạn PHẢI suy nghĩ trong thẻ `<think>` theo 3 phần:
 <think>
-- Ý định & Điều kiện: [Ý định chính; có câu điều kiện hay từ phủ định 'mà thôi' không]
-- Tra cứu Schema: [Tool nào giải quyết được theo schema; tham số cần thiết là gì; đã có ID chưa]
-- Quyết định: [Gọi tool read để tra cứu / Gọi tool write / Gọi sys.ask_missing_info / Kết thúc]
+- Phân tích Intent & Routing: [Xác định ứng dụng liên quan trong ALLOWED TOOLS; kiểm tra điều kiện/số học hoặc từ đổi ý; thông tin đã có trong lịch sử chưa]
+- Tra cứu Schema & Dependency: [Đối chiếu ALLOWED TOOLS; tham số required/x-ref cần thiết; kết quả/ID thực tế lấy được]
+- Quyết định: [Gọi tool read / Gọi tool write / Gọi sys.ask_missing_info / Kết thúc không gọi tool]
 </think>
    - Sau đó xuất ĐÚNG 1 lệnh gọi tool trong thẻ `<tool_call>`:
 <tool_call>
 {"name": "<tên_tool>", "arguments": {<các_tham_số>}}
 </tool_call>
-   - Khi đã hoàn thành toàn bộ yêu cầu, xuất thẻ `<think>` xác nhận hoàn thành và câu trả lời ngắn gọn (KHÔNG xuất thêm thẻ `<tool_call>`)."""
+   - Khi đã hoàn thành toàn bộ yêu cầu (hoặc điều kiện không thỏa mãn / không cần gọi thêm tool), xuất thẻ `<think>` xác nhận và câu trả lời ngắn gọn (KHÔNG xuất thêm thẻ `<tool_call>`)."""
 
 
-def build_user_context_block(sample: dict[str, Any], catalog_tools_map: dict[str, dict[str, Any]]) -> str:
-    """Build the context + tool schemas block for the sample."""
+def build_user_context_block(
+    sample: dict[str, Any],
+    catalog_tools_map: dict[str, dict[str, Any]],
+    user_query: str = "",
+    router: SemanticToolRouter | None = None,
+) -> str:
+    """Build the context block with Two-Tier tool schemas."""
     ctx = sample.get("context", {})
     profile = ctx.get("user_profile", {})
     loc = ctx.get("location", {})
     cal_str = build_calendar_helper(ctx.get("current_time", ""))
-    schemas = get_allowed_tools_schema(sample, catalog_tools_map)
-    schemas_str = "\n".join(json.dumps(s, ensure_ascii=False, separators=(",", ":")) for s in schemas)
+
+    rec_schemas, sec_schemas = get_two_tier_allowed_tools(
+        sample=sample,
+        catalog_tools_map=catalog_tools_map,
+        user_query=user_query,
+        router=router,
+    )
+
+    rec_str = "\n".join(json.dumps(s, ensure_ascii=False, separators=(",", ":")) for s in rec_schemas)
+    sec_str = "\n".join(json.dumps(s, ensure_ascii=False, separators=(",", ":")) for s in sec_schemas)
+
+    tools_block = f"### DANH SÁCH CÔNG CỤ ĐƯỢC PHÉP GỌI (ALLOWED TOOLS)\n"
+    tools_block += f"[CÔNG CỤ LIÊN QUAN TRỰC TIẾP (RECOMMENDED)]:\n{rec_str}\n"
+    if sec_str:
+        tools_block += f"\n[CÁC CÔNG CỤ KHÁC ĐÃ CÀI ĐẶT (SECONDARY)]:\n{sec_str}\n"
 
     return (
         f"### BỐI CẢNH NGƯỜI DÙNG (CONTEXT)\n"
@@ -142,8 +179,7 @@ def build_user_context_block(sample: dict[str, Any], catalog_tools_map: dict[str
         f"- Địa chỉ nhà: {profile.get('home_address', '')}\n"
         f"- Địa chỉ công ty/nơi làm việc: {profile.get('work_address', '')}\n"
         f"- Tọa độ hiện tại: lat={loc.get('lat')}, lng={loc.get('lng')}\n\n"
-        f"### DANH SÁCH CÔNG CỤ ĐƯỢC PHÉP GỌI (ALLOWED TOOLS)\n"
-        f"{schemas_str}"
+        f"{tools_block}"
     )
 
 
@@ -181,9 +217,15 @@ def build_initial_messages(
     final_user_text: str,
     catalog_tools_map: dict[str, dict[str, Any]],
     history_transcripts: dict[str, str] | None = None,
+    router: SemanticToolRouter | None = None,
 ) -> list[dict[str, str]]:
-    """Build the initial ChatML message list where all `assistant` messages belong strictly to the final request."""
-    context_block = build_user_context_block(sample, catalog_tools_map)
+    """Build the initial ChatML message list with Two-Tier tool schemas."""
+    context_block = build_user_context_block(
+        sample=sample,
+        catalog_tools_map=catalog_tools_map,
+        user_query=final_user_text,
+        router=router,
+    )
     history_block = format_history_block(sample.get("history") or [], history_transcripts)
     user_prompt = (
         f"### LỊCH SỬ HỘI THOẠI TRƯỚC ĐÓ (ĐÃ THỰC HIỆN XONG TRONG STATE)\n"

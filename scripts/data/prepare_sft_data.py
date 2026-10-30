@@ -8,6 +8,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from src.prompt_builder import build_initial_messages
 
 
@@ -78,8 +82,8 @@ def build_sft_trajectory(
 
 def main():
     ap = argparse.ArgumentParser(description="Tạo dữ liệu SFT multi-turn từ train/train.jsonl")
-    ap.add_argument("--root", default=".")
-    ap.add_argument("--out-dir", default="data/sft")
+    ap.add_argument("--root", default=str(ROOT))
+    ap.add_argument("--out-dir", default=str(ROOT / "data/sft"))
     ap.add_argument("--val-size", type=int, default=145, help="Số mẫu tách làm tập validation (mặc định 145 / 1545)")
     ap.add_argument("--seed", type=int, default=42)
     args = ap.parse_args()
