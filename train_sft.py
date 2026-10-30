@@ -81,7 +81,10 @@ class AssistantOnlyDataCollator:
                 pos = end_token_inclusive
 
             if not found_any:
-                labels = list(ids)
+                raise ValueError(
+                    f"No assistant span found in sequence (length={len(ids)}). "
+                    "Ensure ChatML '<|im_start|>assistant' and '<|im_end|>' tokens are properly formatted."
+                )
 
             batch_input_ids.append(ids)
             batch_labels.append(labels)

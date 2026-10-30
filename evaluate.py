@@ -109,6 +109,9 @@ def evaluate_predictions(
 
     n = 0
     schema_errors = 0
+    hash_mismatches = 0
+    total_calls = 0
+    invalid_calls = 0
     state_matches = 0
     name_f1_sum = 0.0
     full_f1_sum = 0.0
@@ -128,9 +131,16 @@ def evaluate_predictions(
             if not v["ok"]:
                 schema_errors += 1
         for c in pred_calls:
-            env_pred.call(c.get("name", ""), c.get("arguments") or {})
+            total_calls += 1
+            call_res = env_pred.call(c.get("name", ""), c.get("arguments") or {})
+            if not call_res.get("ok"):
+                invalid_calls += 1
         replayed_hash = env_pred.get_state_hash()
-        sub_hash = pred.get("state_hash") or replayed_hash
+        sub_hash = pred.get("state_hash")
+        if sub_hash is not None and sub_hash != replayed_hash:
+            hash_mismatches += 1
+        if sub_hash is None:
+            sub_hash = replayed_hash
 
         # Ground-truth state hash
         if "label" in gt_row:
@@ -169,7 +179,9 @@ def evaluate_predictions(
     print("\n" + "=" * 55)
     print(f"KẾT QUẢ ĐÁNH GIÁ ({split} - {n} mẫu)")
     print("=" * 55)
-    print(f"- Lỗi Schema (Schema Errors) : {schema_errors}")
+    print(f"- Lỗi Schema (Schema Errors)     : {schema_errors}")
+    print(f"- Hash Mismatches (Sub != Replay) : {hash_mismatches}")
+    print(f"- Invalid Calls (ok=False)       : {invalid_calls} / {total_calls} ({(invalid_calls/max(total_calls,1))*100:.1f}%)")
     if "label" in next(iter(gt_map.values())):
         print(f"- State Hash Accuracy        : {metrics['state_acc'] * 100:.2f}% ({state_matches}/{n})")
         print(f"- Tool Name F1               : {metrics['tool_name_f1'] * 100:.2f}%")
