@@ -184,7 +184,7 @@ class LLMBackend:
         dtype = torch.bfloat16 if (torch.cuda.is_available() and torch.cuda.is_bf16_supported()) else torch.float16
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_name_or_path,
-            dtype=dtype if torch.cuda.is_available() else torch.float32,
+            torch_dtype=dtype if torch.cuda.is_available() else torch.float32,
             device_map="auto" if torch.cuda.is_available() else None,
             trust_remote_code=True,
         )

@@ -167,20 +167,29 @@ class Transcriber:
     ):
         if lora_path:
             lp = Path(lora_path)
-            if not (lp / "adapter_config.json").is_file():
-                sub_ckpts = sorted(
-                    lp.glob("checkpoint-*/adapter_config.json"),
-                    key=lambda p: int(p.parent.name.split("-")[-1]) if p.parent.name.split("-")[-1].isdigit() else 0,
+            if (lp / "adapter_config.json").is_file():
+                lora_path = str(lp.resolve())
+            else:
+                sub_adapters = sorted(
+                    lp.rglob("adapter_config.json"),
+                    key=lambda f: (
+                        int(re.findall(r"\d+", f.parent.name)[-1]) if re.findall(r"\d+", f.parent.name) else 0,
+                        f.stat().st_mtime,
+                    ),
                 )
-                if sub_ckpts:
-                    resolved_sub = sub_ckpts[-1].parent.resolve()
+                if sub_adapters:
+                    resolved_sub = sub_adapters[-1].parent.resolve()
                     print(f"[Transcriber] Tự động chọn checkpoint LoRA mới nhất: {resolved_sub}")
                     lora_path = str(resolved_sub)
                 else:
-                    print(f"[CẢNH BÁO] Không tìm thấy 'adapter_config.json' trong '{lora_path}'. Sẽ dùng model gốc '{model_name}'.")
-                    lora_path = None
-            else:
-                lora_path = str(lp.resolve())
+                    weight_exts = ("*.safetensors", "*.bin")
+                    if (lp / "config.json").is_file() and any(lp.glob(ext) for ext in weight_exts):
+                        print(f"[Transcriber] Phát hiện '{lora_path}' là Full Fine-Tuned Model. Sẽ nạp trực tiếp làm ASR model chính!")
+                        model_name = str(lp.resolve())
+                        lora_path = None
+                    else:
+                        print(f"[CẢNH BÁO] Không tìm thấy 'adapter_config.json' trong '{lora_path}'. Sẽ dùng model gốc '{model_name}'.")
+                        lora_path = None
 
         self.model_name = model_name
         self.lora_path = lora_path

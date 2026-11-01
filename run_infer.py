@@ -27,6 +27,7 @@ def main():
     ap.add_argument("--asr-lora-path", default=None, help="Đường dẫn tới Whisper LoRA adapter")
     ap.add_argument("--gpu-memory-utilization", type=float, default=0.68, help="Tỷ lệ VRAM cấp cho vLLM (mặc định 0.68)")
     ap.add_argument("--preprocessor", default="a", choices=["a", "b"], help="Tiền xử lý ngôn ngữ: a (Fuzzy Context Aligner, 0-param) hoặc b (Neural Restorer < 0.5B)")
+    ap.add_argument("--ignore-asr-cache", action="store_true", help="Bỏ qua cache ASR, ép transcriber chạy lại toàn bộ audio với model/LoRA mới")
     ap.add_argument("--use-gt-asr", action="store_true", help="Dùng audio_text có sẵn (chỉ dùng khi test nhanh LLM trên tập train)")
     ap.add_argument("--ids-file", default=None, help="File JSON chứa danh sách ID cần chạy (VD: data/sft/val_ids.json)")
     ap.add_argument("--limit", type=int, default=0, help="Giới hạn số mẫu chạy thử (0 = chạy toàn bộ)")
@@ -67,7 +68,11 @@ def main():
     transcriber = Transcriber(
         model_name=args.asr_model,
         lora_path=args.asr_lora_path,
-        cache_path=root / "cache" / f"asr_{args.split}.json",
+        cache_path=(
+            None if args.ignore_asr_cache
+            else (root / "cache" / f"asr_{args.split}_{Path(args.asr_lora_path).name}.json") if args.asr_lora_path
+            else (root / "cache" / f"asr_{args.split}.json")
+        ),
         use_gt_audio_text=(args.use_gt_asr and args.split == "train"),
     )
     llm = LLMBackend(
