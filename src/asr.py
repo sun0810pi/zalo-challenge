@@ -335,26 +335,37 @@ class Transcriber:
                 )
             raw_text = " ".join(seg.text.strip() for seg in segments).strip()
         else:
+            import torch
+
             gen_kwargs = {
                 "language": "vi",
                 "task": "transcribe",
-                "num_beams": 1,
-                "do_sample": False,
-                "repetition_penalty": 1.2,
-                "no_repeat_ngram_size": 3,
             }
             if initial_prompt and hasattr(self, "_processor") and self._processor is not None:
                 try:
-                    prompt_ids = self._processor.get_prompt_ids(initial_prompt, return_tensors="pt")
-                    if hasattr(prompt_ids, "tolist"):
-                        prompt_ids = prompt_ids[0].tolist() if prompt_ids.ndim > 1 else prompt_ids.tolist()
-                    gen_kwargs["prompt_ids"] = prompt_ids
+                    p_ids = self._processor.get_prompt_ids(initial_prompt, return_tensors="pt")
+                    if isinstance(p_ids, torch.Tensor):
+                        p_ids = p_ids.squeeze()
+                        model_dev = getattr(getattr(self._model, "model", None), "device", None)
+                        if model_dev is None and torch.cuda.is_available():
+                            model_dev = torch.device("cuda:0")
+                        if model_dev is not None:
+                            p_ids = p_ids.to(model_dev)
+                        gen_kwargs["prompt_ids"] = p_ids
                 except Exception:
                     pass
-            out = self._model(
-                str(wav_path),
-                generate_kwargs=gen_kwargs,
-            )
+
+            try:
+                out = self._model(
+                    str(wav_path),
+                    generate_kwargs=gen_kwargs,
+                )
+            except Exception as e:
+                # Fallback to bare transcribe if prompt_ids or custom args cause issues in transformers
+                out = self._model(
+                    str(wav_path),
+                    generate_kwargs={"language": "vi", "task": "transcribe"},
+                )
             raw_text = out["text"].strip()
 
         cleaned = clean_asr_transcript(raw_text, installed_apps=installed_apps)
