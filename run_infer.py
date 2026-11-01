@@ -65,16 +65,33 @@ def main():
         f"Preprocessor={args.preprocessor.upper()}"
     )
 
+    if args.ignore_asr_cache:
+        asr_cache_p = None
+    elif args.asr_lora_path:
+        lora_tag = Path(args.asr_lora_path).name or "lora"
+        asr_cache_p = root / "cache" / f"asr_{args.split}_{lora_tag}.json"
+    elif "turbo" in args.asr_model or "ct2" in args.asr_model:
+        asr_cache_p = root / "cache" / f"asr_{args.split}.json"
+    else:
+        model_tag = Path(args.asr_model).name or "custom"
+        asr_cache_p = root / "cache" / f"asr_{args.split}_{model_tag}.json"
+
     transcriber = Transcriber(
         model_name=args.asr_model,
         lora_path=args.asr_lora_path,
-        cache_path=(
-            None if args.ignore_asr_cache
-            else (root / "cache" / f"asr_{args.split}_{Path(args.asr_lora_path).name}.json") if args.asr_lora_path
-            else (root / "cache" / f"asr_{args.split}.json")
-        ),
+        cache_path=asr_cache_p,
         use_gt_audio_text=(args.use_gt_asr and args.split == "train"),
     )
+
+    # 1. GIAI DOAN 1: Nhan dang truoc toan bo audio va luu cache an toan
+    print(f"\n[GIAI ĐOẠN 1/2] Chuẩn bị nhận dạng ASR cho {len(samples)} mẫu...")
+    transcriber.pretranscribe_samples(samples, split_dir)
+
+    # 2. GIAI DOAN 2: Giai phong hoan toan Whisper khoi GPU VRAM truoc khi khoi dong vLLM
+    transcriber.unload_model()
+
+    # 3. GIAI DOAN 3: Khoi dong LLM engine (vLLM so huu 100% GPU, khong con xung dot cuDNN)
+    print(f"\n[GIAI ĐOẠN 2/2] Khởi động LLM Engine: {args.model}...")
     llm = LLMBackend(
         model_name_or_path=args.model,
         lora_path=args.lora_path,

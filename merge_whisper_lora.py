@@ -118,6 +118,9 @@ def merge_and_save(
         processor = AutoProcessor.from_pretrained(base_model)
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
+    if device == "cuda":
+        torch.backends.cudnn.enabled = False
+        torch.backends.cudnn.benchmark = False
     torch_dtype = torch.float16 if device == "cuda" else torch.float32
 
     model = AutoModelForSpeechSeq2Seq.from_pretrained(

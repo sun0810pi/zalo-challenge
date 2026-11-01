@@ -217,6 +217,11 @@ class Transcriber:
             from peft import PeftModel
             from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
 
+            # Tat cuDNN de tranh loi CUDNN_STATUS_SUBLIBRARY_VERSION_MISMATCH giua PyTorch va vLLM
+            torch.backends.cudnn.enabled = False
+            torch.backends.cudnn.benchmark = False
+            torch.backends.cudnn.deterministic = True
+
             base_model_name = self.model_name
             if "ct2" in self.model_name or "faster-whisper" in self.model_name:
                 base_model_name = "openai/whisper-large-v3-turbo"
@@ -248,16 +253,29 @@ class Transcriber:
             model.eval()
 
             device_id = 0 if (self.device == "cuda" and torch.cuda.is_available()) else -1
-            self._model = pipeline(
-                "automatic-speech-recognition",
-                model=model,
-                tokenizer=self._processor.tokenizer,
-                feature_extractor=self._processor.feature_extractor,
-                device=device_id,
-                torch_dtype=torch_dtype,
-            )
+            try:
+                self._model = pipeline(
+                    "automatic-speech-recognition",
+                    model=model,
+                    tokenizer=self._processor.tokenizer,
+                    feature_extractor=self._processor.feature_extractor,
+                    device=device_id,
+                    torch_dtype=torch_dtype,
+                )
+                print(f"[ASR] Đã nạp thành công mô hình Whisper fine-tuned (Transformers HF) trên device={device_id} (cuDNN disabled)!")
+            except Exception as e:
+                print(f"[ASR CẢNH BÁO] Không thể nạp pipeline trên GPU ({e}). Tự động fallback sang CPU...")
+                model = model.to("cpu", dtype=torch.float32)
+                self._model = pipeline(
+                    "automatic-speech-recognition",
+                    model=model,
+                    tokenizer=self._processor.tokenizer,
+                    feature_extractor=self._processor.feature_extractor,
+                    device=-1,
+                    torch_dtype=torch.float32,
+                )
+                print("[ASR] Đã nạp thành công mô hình Whisper fine-tuned trên CPU!")
             self._backend = "transformers"
-            print(f"[ASR] Đã nạp thành công mô hình Whisper fine-tuned (Transformers HF) trên device={device_id}!")
             return
 
         # Case 2: No LoRA adapter -> prefer faster-whisper CT2 for max speed
@@ -270,21 +288,35 @@ class Transcriber:
                 compute_type=self.compute_type,
             )
             self._backend = "faster_whisper"
-        except ImportError:
+        except (ImportError, Exception) as fw_err:
             import torch
             from transformers import pipeline
+
+            torch.backends.cudnn.enabled = False
+            torch.backends.cudnn.benchmark = False
 
             hf_model = (
                 "openai/whisper-large-v3-turbo"
                 if "turbo" in self.model_name
                 else self.model_name
             )
-            self._model = pipeline(
-                "automatic-speech-recognition",
-                model=hf_model,
-                device=0 if self.device == "cuda" and torch.cuda.is_available() else -1,
-                torch_dtype=torch.float16 if self.device == "cuda" else torch.float32,
-            )
+            print(f"[ASR] faster-whisper không khả dụng ({fw_err}), chuyển sang Transformers HF '{hf_model}'...")
+            try:
+                device_id = 0 if self.device == "cuda" and torch.cuda.is_available() else -1
+                self._model = pipeline(
+                    "automatic-speech-recognition",
+                    model=hf_model,
+                    device=device_id,
+                    torch_dtype=torch.float16 if device_id >= 0 else torch.float32,
+                )
+            except Exception as e:
+                print(f"[ASR CẢNH BÁO] Không thể nạp pipeline trên GPU ({e}). Tự động fallback sang CPU...")
+                self._model = pipeline(
+                    "automatic-speech-recognition",
+                    model=hf_model,
+                    device=-1,
+                    torch_dtype=torch.float32,
+                )
             self._backend = "transformers"
 
     def save_cache(self):
@@ -355,18 +387,47 @@ class Transcriber:
                 except Exception:
                     pass
 
+            torch.backends.cudnn.enabled = False
+            out = None
             try:
                 out = self._model(
                     str(wav_path),
                     generate_kwargs=gen_kwargs,
                 )
-            except Exception as e:
-                # Fallback to bare transcribe if prompt_ids or custom args cause issues in transformers
-                out = self._model(
-                    str(wav_path),
-                    generate_kwargs={"language": "vi", "task": "transcribe"},
-                )
-            raw_text = out["text"].strip()
+            except RuntimeError as e:
+                err_str = str(e).lower()
+                if "cudnn" in err_str or "cuda" in err_str or "sublibrary" in err_str:
+                    print(f"[ASR CẢNH BÁO] Phát hiện lỗi CUDA/cuDNN ({e}). Tự động chuyển pipeline sang CPU để tiếp tục không gián đoạn...")
+                    try:
+                        torch.backends.cudnn.enabled = False
+                        if hasattr(self._model, "model"):
+                            self._model.model = self._model.model.to("cpu", dtype=torch.float32)
+                        self._model.device = torch.device("cpu")
+                        out = self._model(
+                            str(wav_path),
+                            generate_kwargs={"language": "vi", "task": "transcribe"},
+                        )
+                    except Exception as inner_e:
+                        print(f"[ASR LỖI] Không thể transcribe trên CPU ({inner_e}), bỏ qua audio: {wav_path}")
+                        out = {"text": ""}
+                else:
+                    try:
+                        out = self._model(
+                            str(wav_path),
+                            generate_kwargs={"language": "vi", "task": "transcribe"},
+                        )
+                    except Exception:
+                        out = {"text": ""}
+            except Exception:
+                try:
+                    out = self._model(
+                        str(wav_path),
+                        generate_kwargs={"language": "vi", "task": "transcribe"},
+                    )
+                except Exception:
+                    out = {"text": ""}
+
+            raw_text = (out.get("text", "") if isinstance(out, dict) else str(out or "")).strip()
 
         cleaned = clean_asr_transcript(raw_text, installed_apps=installed_apps)
         self.cache[key] = cleaned
@@ -411,3 +472,78 @@ class Transcriber:
             )
 
         return final_text, history_transcripts
+
+    def unload_model(self) -> None:
+        """Giải phóng hoàn toàn mô hình Whisper khỏi bộ nhớ GPU / RAM."""
+        import gc
+        if self._model is not None:
+            del self._model
+            self._model = None
+        if self._processor is not None:
+            del self._processor
+            self._processor = None
+        self._backend = None
+        gc.collect()
+        try:
+            import torch
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+                torch.backends.cudnn.enabled = True
+        except ImportError:
+            pass
+        print("[ASR] Đã giải phóng hoàn toàn bộ nhớ Whisper khỏi GPU để nhường 100% VRAM cho LLM.")
+
+    def pretranscribe_samples(
+        self,
+        samples: list[dict[str, Any]],
+        split_dir: Path,
+    ) -> None:
+        """Nhận dạng trước toàn bộ audio và lưu cache an toàn trên đĩa/Google Drive.
+        Tách biệt hoàn toàn thời gian chạy của ASR và LLM, loại bỏ 100% xung đột cuDNN
+        và tiết kiệm tối đa VRAM GPU.
+        """
+        if self.use_gt_audio_text:
+            print("[ASR Pre-transcribe] Đang dùng ground-truth audio_text, bỏ qua nhận dạng âm thanh.")
+            return
+
+        uncached_files = 0
+        total_audio_files = 0
+        for s in samples:
+            for turn in s.get("history") or []:
+                if turn.get("role") == "user" and turn.get("audio"):
+                    total_audio_files += 1
+                    if turn["audio"] not in self.cache:
+                        uncached_files += 1
+            if s.get("audio"):
+                total_audio_files += 1
+                if s["audio"] not in self.cache:
+                    uncached_files += 1
+
+        if uncached_files == 0:
+            print(
+                f"[ASR Pre-transcribe] Toàn bộ {total_audio_files} file audio của {len(samples)} mẫu "
+                f"đã có sẵn trong cache ({self.cache_path})! Không cần nạp lại mô hình Whisper."
+            )
+            return
+
+        print(
+            f"[ASR Pre-transcribe] Cần nhận dạng {uncached_files}/{total_audio_files} file audio "
+            f"cho {len(samples)} mẫu. Bắt đầu pre-transcribe..."
+        )
+        import time
+        t0 = time.perf_counter()
+        for idx, item in enumerate(samples, 1):
+            self.transcribe_sample(item, split_dir)
+            if idx % 20 == 0 or idx == len(samples):
+                self.save_cache()
+                elapsed = time.perf_counter() - t0
+                print(
+                    f"[ASR Pre-transcribe] Tiến độ: {idx}/{len(samples)} mẫu "
+                    f"({elapsed:.1f}s, {len(self.cache)} audio trong cache)..."
+                )
+
+        self.save_cache()
+        print(
+            f"[ASR Pre-transcribe] Hoàn tất nhận dạng {len(samples)} mẫu trong {time.perf_counter() - t0:.1f}s! "
+            f"Đã lưu cache an toàn tại: {self.cache_path}"
+        )
