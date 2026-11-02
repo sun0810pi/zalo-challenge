@@ -18,6 +18,7 @@ from typing import Any
 os.environ.setdefault("VLLM_WORKER_MULTIPROC_METHOD", "spawn")
 
 from .guardrail import PureSchemaStateTracker, normalize_arguments, parse_tool_calls
+from .hybrid_engine import HybridProgramAidedEngine
 from .preprocessor_a import ContextLanguagePreprocessorA
 from .prompt_builder import build_initial_messages
 from .router import SemanticToolRouter
@@ -274,12 +275,14 @@ class LifeMateAgent:
         max_steps: int = 8,
         preprocessor: Any | None = None,
         router: SemanticToolRouter | None = None,
+        catalog_apps_map: dict[str, dict[str, Any]] | None = None,
     ):
         self.llm = llm
         self.catalog_tools_map = catalog_tools_map
         self.max_steps = max_steps
         self.preprocessor = preprocessor or ContextLanguagePreprocessorA()
         self.router = router or SemanticToolRouter(top_k_recommended=4)
+        self.catalog_apps_map = catalog_apps_map
 
     @staticmethod
     def _augment_empty_read_hint(
@@ -319,6 +322,10 @@ class LifeMateAgent:
         if not cleaned_user_text:
             return env.get_tool_calls(), env.get_state_hash()
 
+        # Hybrid Rule 1: Instant stop on complete cancellation at end of speech
+        if HybridProgramAidedEngine.is_complete_cancellation(cleaned_user_text):
+            return env.get_tool_calls(), env.get_state_hash()
+
         # 2. Build initial ChatML messages with Two-Tier tool schemas
         messages = build_initial_messages(
             sample=sample,
@@ -326,12 +333,14 @@ class LifeMateAgent:
             catalog_tools_map=self.catalog_tools_map,
             history_transcripts=cleaned_hist_transcripts,
             router=self.router,
+            catalog_apps_map=self.catalog_apps_map,
         )
 
         cur_time = sample.get("context", {}).get("current_time", "")
         tz_offset = cur_time[19:] if len(cur_time) > 19 else "+07:00"
         seen_calls: set[str] = set()
         guardrail_retries = 0
+        suppress_sms = False
 
         # 3. Initialize pure schema-driven state tracker
         state_tracker = PureSchemaStateTracker(
@@ -357,6 +366,31 @@ class LifeMateAgent:
                 self.catalog_tools_map,
                 tz_offset=tz_offset,
             )
+
+            # Hybrid Rule: Stock Math Adjustment
+            if t_name == "stocks.place_order":
+                t_args = HybridProgramAidedEngine.adjust_stock_order(
+                    t_args, cleaned_user_text, state_tracker.observed_entities
+                )
+
+            # Hybrid Rule: Bill Payment Balance & Source Adjustment
+            if t_name == "bill_payment.pay":
+                t_args, supp_sms = HybridProgramAidedEngine.adjust_bill_payment(
+                    t_args, cleaned_user_text, state_tracker.observed_entities, state_tracker.balances
+                )
+                if t_args is None:
+                    suppress_sms = True
+                    continue
+                if supp_sms:
+                    suppress_sms = True
+
+            # Hybrid Rule: Suppress fake SMS when condition failed
+            if t_name == "sms.send" and suppress_sms:
+                continue
+
+            # Hybrid Rule: Over-call pruning (no parking when taking bike)
+            if t_name == "parking.reserve" and any("ride_hailing.book" in s and "bike" in s for s in seen_calls):
+                continue
 
             messages.append({"role": "assistant", "content": reply})
 
@@ -419,6 +453,22 @@ class LifeMateAgent:
             seen_calls.add(call_sig)
             exec_res = env.call(t_name, t_args)
             state_tracker.record_observation(t_name, t_args, exec_res)
+
+            # Hybrid Rule: Weather condition verification (stop if target day does not rain)
+            if t_name in ("weather.get_forecast", "weather.get_current"):
+                if not HybridProgramAidedEngine.check_weather_condition(cleaned_user_text, exec_res):
+                    break
+
+            # Hybrid Rule: Smart Home multi-fan expansion
+            if t_name == "smart_home.fan_set":
+                extra_fans = HybridProgramAidedEngine.expand_smart_home_fans(
+                    env, cleaned_user_text, state_tracker.observed_entities, t_args
+                )
+                for ef in extra_fans:
+                    seen_calls.add(f"{ef['name']}:{json.dumps(ef['arguments'], sort_keys=True, ensure_ascii=False)}")
+                    ef_res = env.call(ef["name"], ef["arguments"])
+                    state_tracker.record_observation(ef["name"], ef["arguments"], ef_res)
+
             prompt_res = self._augment_empty_read_hint(t_name, t_args, exec_res)
             messages.append(
                 {

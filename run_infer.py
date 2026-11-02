@@ -46,6 +46,7 @@ def main():
     catalog_path = split_dir / f"{args.split}_tools_catalog.json"
     catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
     catalog_tools_map = catalog_tools(catalog)
+    catalog_apps_map = {app["id"]: app for app in catalog.get("apps", [])}
 
     samples = [
         json.loads(line)
@@ -112,6 +113,7 @@ def main():
         max_steps=args.max_steps,
         preprocessor=preprocessor,
         router=router,
+        catalog_apps_map=catalog_apps_map,
     )
 
     t0 = time.perf_counter()
