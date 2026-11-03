@@ -1,0 +1,215 @@
+{
+  "scenario_id": "pilot_011_grocery_buy_checkout",
+  "split": "train",
+  "template_id": "tpl_grocery_buy_checkout",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "grocery"
+  ],
+  "installed_apps": [
+    "grocery",
+    "pantry",
+    "shopping_list",
+    "ewallet"
+  ],
+  "objective": "Search milk on grocery app, add 2 to cart, and checkout to home_address.",
+  "expect_mutation": true,
+  "user_request": "Tìm mua 2 hộp sữa tươi trên ứng dụng đi chợ rồi thanh toán đặt giao về địa chỉ nhà giúp anh.",
+  "serialized_user_prompt": "Tìm mua 2 hộp sữa tươi trên ứng dụng đi chợ rồi thanh toán đặt giao về địa chỉ nhà giúp anh",
+  "current_time": "2026-11-20T08:45:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Nguyễn Minh Quân",
+    "city": "Hà Nội",
+    "home_address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+    "work_address": "Tòa nhà Keangnam, Phạm Hùng, Nam Từ Liêm, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0245,
+    "lng": 105.8091
+  },
+  "history": [],
+  "initial_state": {
+    "grocery": {
+      "products": [
+        {
+          "id": "gro_milk_01",
+          "name": "Sữa tươi tiệt trùng Vinamilk 1L",
+          "price": 36000,
+          "unit": "hộp",
+          "category": "sữa",
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": []
+    },
+    "pantry": {},
+    "shopping_list": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "grocery.search",
+      "arguments": {
+        "query": "sữa tươi"
+      }
+    },
+    {
+      "name": "grocery.add_to_cart",
+      "arguments": {
+        "product_id": "gro_milk_01",
+        "quantity": 2
+      }
+    },
+    {
+      "name": "grocery.checkout",
+      "arguments": {
+        "address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "products": [
+        {
+          "id": "gro_milk_01",
+          "name": "Sữa tươi tiệt trùng Vinamilk 1L",
+          "price": 36000,
+          "unit": "hộp",
+          "category": "sữa",
+          "in_stock": true
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "cart": [
+        {
+          "product_id": "gro_milk_01",
+          "name": "Sữa tươi tiệt trùng Vinamilk 1L",
+          "price": 36000,
+          "quantity": 2
+        }
+      ],
+      "cart_total": 72000
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "items": [
+          {
+            "product_id": "gro_milk_01",
+            "name": "Sữa tươi tiệt trùng Vinamilk 1L",
+            "price": 36000,
+            "quantity": 2
+          }
+        ],
+        "total": 72000,
+        "status": "placed",
+        "address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng"
+      }
+    }
+  ],
+  "final_state": {
+    "grocery": {
+      "products": [
+        {
+          "id": "gro_milk_01",
+          "name": "Sữa tươi tiệt trùng Vinamilk 1L",
+          "price": 36000,
+          "unit": "hộp",
+          "category": "sữa",
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": [
+        {
+          "id": "ord_01",
+          "items": [
+            {
+              "product_id": "gro_milk_01",
+              "name": "Sữa tươi tiệt trùng Vinamilk 1L",
+              "price": 36000,
+              "quantity": 2
+            }
+          ],
+          "total": 72000,
+          "status": "placed",
+          "address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng"
+        }
+      ]
+    },
+    "pantry": {},
+    "shopping_list": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "grocery": {
+      "before": {
+        "products": [
+          {
+            "id": "gro_milk_01",
+            "name": "Sữa tươi tiệt trùng Vinamilk 1L",
+            "price": 36000,
+            "unit": "hộp",
+            "category": "sữa",
+            "in_stock": true
+          }
+        ],
+        "cart": [],
+        "orders": []
+      },
+      "after": {
+        "products": [
+          {
+            "id": "gro_milk_01",
+            "name": "Sữa tươi tiệt trùng Vinamilk 1L",
+            "price": 36000,
+            "unit": "hộp",
+            "category": "sữa",
+            "in_stock": true
+          }
+        ],
+        "cart": [],
+        "orders": [
+          {
+            "id": "ord_01",
+            "items": [
+              {
+                "product_id": "gro_milk_01",
+                "name": "Sữa tươi tiệt trùng Vinamilk 1L",
+                "price": 36000,
+                "quantity": 2
+              }
+            ],
+            "total": 72000,
+            "status": "placed",
+            "address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "97149c2783851db8417c8274750d98e1bdd8ef2b03874c0f44143469134a13b9",
+  "validation": {
+    "scenario_id": "pilot_011_grocery_buy_checkout",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "grocery"
+    ],
+    "state_hash": "97149c2783851db8417c8274750d98e1bdd8ef2b03874c0f44143469134a13b9",
+    "errors": []
+  }
+}

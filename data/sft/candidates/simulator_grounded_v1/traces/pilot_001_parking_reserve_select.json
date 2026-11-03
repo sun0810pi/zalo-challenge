@@ -1,0 +1,206 @@
+{
+  "scenario_id": "pilot_001_parking_reserve_select",
+  "split": "train",
+  "template_id": "tpl_parking_reserve_select",
+  "scenario_type": "multi_result_selection",
+  "primary_apps": [
+    "parking"
+  ],
+  "installed_apps": [
+    "parking",
+    "maps",
+    "ewallet",
+    "calendar"
+  ],
+  "objective": "Select the parking lot near Bà Triệu with available_spots > 0 and reserve for 3 hours.",
+  "expect_mutation": true,
+  "user_request": "Tìm bãi đỗ xe gần Bà Triệu xem bãi nào còn chỗ trống thì đặt giữ chỗ từ 14 giờ chiều nay trong 3 tiếng giúp anh.",
+  "current_time": "2026-11-20T10:15:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_bt_01",
+          "name": "Bãi đỗ xe Bà Triệu A",
+          "address": "110 Bà Triệu",
+          "area": "Hai Bà Trưng",
+          "price_per_hour": 25000,
+          "available_spots": 0
+        },
+        {
+          "id": "lot_bt_02",
+          "name": "Bãi đỗ xe Vincom Bà Triệu",
+          "address": "191 Bà Triệu",
+          "area": "Hai Bà Trưng",
+          "price_per_hour": 30000,
+          "available_spots": 9
+        }
+      ],
+      "sessions": []
+    },
+    "maps": {},
+    "ewallet": {},
+    "calendar": {}
+  },
+  "tool_calls": [
+    {
+      "name": "parking.find",
+      "arguments": {
+        "near": "Bà Triệu"
+      }
+    },
+    {
+      "name": "parking.reserve",
+      "arguments": {
+        "lot_id": "lot_bt_02",
+        "from_time": "2026-11-20T14:00:00+07:00",
+        "hours": 3
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "lots": [
+        {
+          "id": "lot_bt_01",
+          "name": "Bãi đỗ xe Bà Triệu A",
+          "address": "110 Bà Triệu",
+          "area": "Hai Bà Trưng",
+          "price_per_hour": 25000,
+          "available_spots": 0
+        },
+        {
+          "id": "lot_bt_02",
+          "name": "Bãi đỗ xe Vincom Bà Triệu",
+          "address": "191 Bà Triệu",
+          "area": "Hai Bà Trưng",
+          "price_per_hour": 30000,
+          "available_spots": 9
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "session": {
+        "id": "park_01",
+        "lot_id": "lot_bt_02",
+        "from_time": "2026-11-20T14:00:00+07:00",
+        "hours": 3,
+        "end_time": "2026-11-20T17:00:00+07:00",
+        "total": 90000,
+        "status": "reserved"
+      }
+    }
+  ],
+  "final_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_bt_01",
+          "name": "Bãi đỗ xe Bà Triệu A",
+          "address": "110 Bà Triệu",
+          "area": "Hai Bà Trưng",
+          "price_per_hour": 25000,
+          "available_spots": 0
+        },
+        {
+          "id": "lot_bt_02",
+          "name": "Bãi đỗ xe Vincom Bà Triệu",
+          "address": "191 Bà Triệu",
+          "area": "Hai Bà Trưng",
+          "price_per_hour": 30000,
+          "available_spots": 8
+        }
+      ],
+      "sessions": [
+        {
+          "id": "park_01",
+          "lot_id": "lot_bt_02",
+          "from_time": "2026-11-20T14:00:00+07:00",
+          "hours": 3,
+          "end_time": "2026-11-20T17:00:00+07:00",
+          "total": 90000,
+          "status": "reserved"
+        }
+      ]
+    },
+    "maps": {},
+    "ewallet": {},
+    "calendar": {}
+  },
+  "state_diff": {
+    "parking": {
+      "before": {
+        "lots": [
+          {
+            "id": "lot_bt_01",
+            "name": "Bãi đỗ xe Bà Triệu A",
+            "address": "110 Bà Triệu",
+            "area": "Hai Bà Trưng",
+            "price_per_hour": 25000,
+            "available_spots": 0
+          },
+          {
+            "id": "lot_bt_02",
+            "name": "Bãi đỗ xe Vincom Bà Triệu",
+            "address": "191 Bà Triệu",
+            "area": "Hai Bà Trưng",
+            "price_per_hour": 30000,
+            "available_spots": 9
+          }
+        ],
+        "sessions": []
+      },
+      "after": {
+        "lots": [
+          {
+            "id": "lot_bt_01",
+            "name": "Bãi đỗ xe Bà Triệu A",
+            "address": "110 Bà Triệu",
+            "area": "Hai Bà Trưng",
+            "price_per_hour": 25000,
+            "available_spots": 0
+          },
+          {
+            "id": "lot_bt_02",
+            "name": "Bãi đỗ xe Vincom Bà Triệu",
+            "address": "191 Bà Triệu",
+            "area": "Hai Bà Trưng",
+            "price_per_hour": 30000,
+            "available_spots": 8
+          }
+        ],
+        "sessions": [
+          {
+            "id": "park_01",
+            "lot_id": "lot_bt_02",
+            "from_time": "2026-11-20T14:00:00+07:00",
+            "hours": 3,
+            "end_time": "2026-11-20T17:00:00+07:00",
+            "total": 90000,
+            "status": "reserved"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "7f0ef7691970facd3d9c27aafc06155ee9d65fdcded89bcf9f666d6d0accfc43",
+  "validation": {
+    "scenario_id": "pilot_001_parking_reserve_select",
+    "scenario_type": "multi_result_selection",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "parking"
+    ],
+    "state_hash": "7f0ef7691970facd3d9c27aafc06155ee9d65fdcded89bcf9f666d6d0accfc43",
+    "errors": []
+  }
+}

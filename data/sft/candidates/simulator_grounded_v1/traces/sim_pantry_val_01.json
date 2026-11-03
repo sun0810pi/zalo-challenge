@@ -1,0 +1,153 @@
+{
+  "scenario_id": "sim_pantry_val_01",
+  "split": "val",
+  "template_id": "tpl_pantry_consume_val_True",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "pantry"
+  ],
+  "installed_apps": [
+    "pantry",
+    "grocery",
+    "recipes"
+  ],
+  "objective": "List pantry items; if stock (6) >= 2, consume 2.",
+  "expect_mutation": true,
+  "user_request": "Cập nhật tủ bếp giúp mình: vừa lấy 2 củ khoai tây ra nấu canh rồi nhé.",
+  "current_time": "2026-11-22T11:00:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "pantry": {
+      "items": [
+        {
+          "id": "pan_potato_01",
+          "name": "khoai tây",
+          "stock": 6,
+          "unit": "củ"
+        },
+        {
+          "id": "pan_salt_99",
+          "name": "muối biển",
+          "stock": 2,
+          "unit": "gói"
+        }
+      ]
+    },
+    "grocery": {},
+    "recipes": {}
+  },
+  "tool_calls": [
+    {
+      "name": "pantry.list_items",
+      "arguments": {}
+    },
+    {
+      "name": "pantry.consume",
+      "arguments": {
+        "item_id": "pan_potato_01",
+        "quantity": 2
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "items": [
+        {
+          "id": "pan_potato_01",
+          "name": "khoai tây",
+          "stock": 6,
+          "unit": "củ"
+        },
+        {
+          "id": "pan_salt_99",
+          "name": "muối biển",
+          "stock": 2,
+          "unit": "gói"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "item": {
+        "id": "pan_potato_01",
+        "name": "khoai tây",
+        "stock": 4,
+        "unit": "củ"
+      }
+    }
+  ],
+  "final_state": {
+    "pantry": {
+      "items": [
+        {
+          "id": "pan_potato_01",
+          "name": "khoai tây",
+          "stock": 4,
+          "unit": "củ"
+        },
+        {
+          "id": "pan_salt_99",
+          "name": "muối biển",
+          "stock": 2,
+          "unit": "gói"
+        }
+      ]
+    },
+    "grocery": {},
+    "recipes": {}
+  },
+  "state_diff": {
+    "pantry": {
+      "before": {
+        "items": [
+          {
+            "id": "pan_potato_01",
+            "name": "khoai tây",
+            "stock": 6,
+            "unit": "củ"
+          },
+          {
+            "id": "pan_salt_99",
+            "name": "muối biển",
+            "stock": 2,
+            "unit": "gói"
+          }
+        ]
+      },
+      "after": {
+        "items": [
+          {
+            "id": "pan_potato_01",
+            "name": "khoai tây",
+            "stock": 4,
+            "unit": "củ"
+          },
+          {
+            "id": "pan_salt_99",
+            "name": "muối biển",
+            "stock": 2,
+            "unit": "gói"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "36e2a102b4a1082add661d05276e3c21d6be69c04b29306b198d51644607b739",
+  "validation": {
+    "scenario_id": "sim_pantry_val_01",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "pantry"
+    ],
+    "state_hash": "36e2a102b4a1082add661d05276e3c21d6be69c04b29306b198d51644607b739",
+    "errors": []
+  }
+}

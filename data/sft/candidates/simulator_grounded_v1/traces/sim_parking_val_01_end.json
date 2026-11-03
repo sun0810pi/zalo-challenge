@@ -1,0 +1,256 @@
+{
+  "scenario_id": "sim_parking_val_01_end",
+  "split": "val",
+  "template_id": "tpl_parking_end_val",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "parking"
+  ],
+  "installed_apps": [
+    "parking",
+    "ewallet"
+  ],
+  "objective": "List parking sessions and end active session park_nhl_02.",
+  "expect_mutation": true,
+  "user_request": "Chị vừa đánh xe ra khỏi bãi Nhà hát Lớn, đóng phiên đỗ xe đang chạy giúp chị nha.",
+  "current_time": "2026-11-22T17:00:00+07:00",
+  "city": "Đà Nẵng",
+  "initial_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_old_01",
+          "name": "Bãi xe Tràng Thi",
+          "address": "15 Tràng Thi",
+          "area": "Hoàn Kiếm",
+          "price_per_hour": 25000,
+          "available_spots": 5
+        },
+        {
+          "id": "lot_cur_02",
+          "name": "Bãi xe Nhà hát Lớn",
+          "address": "Nhà hát Lớn",
+          "area": "Nhà hát Lớn",
+          "price_per_hour": 30000,
+          "available_spots": 4
+        }
+      ],
+      "sessions": [
+        {
+          "id": "park_old_01",
+          "lot_id": "lot_old_01",
+          "from_time": "2026-11-20T08:00:00+07:00",
+          "hours": 2,
+          "end_time": "2026-11-20T10:00:00+07:00",
+          "total": 50000,
+          "status": "ended"
+        },
+        {
+          "id": "park_nhl_02",
+          "lot_id": "lot_cur_02",
+          "from_time": "2026-11-22T14:00:00+07:00",
+          "hours": 3,
+          "end_time": "2026-11-22T17:00:00+07:00",
+          "total": 90000,
+          "status": "reserved"
+        }
+      ]
+    },
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "parking.list_sessions",
+      "arguments": {}
+    },
+    {
+      "name": "parking.end_session",
+      "arguments": {
+        "session_id": "park_nhl_02"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "sessions": [
+        {
+          "id": "park_old_01",
+          "lot_id": "lot_old_01",
+          "from_time": "2026-11-20T08:00:00+07:00",
+          "hours": 2,
+          "end_time": "2026-11-20T10:00:00+07:00",
+          "total": 50000,
+          "status": "ended",
+          "lot_name": "Bãi xe Tràng Thi"
+        },
+        {
+          "id": "park_nhl_02",
+          "lot_id": "lot_cur_02",
+          "from_time": "2026-11-22T14:00:00+07:00",
+          "hours": 3,
+          "end_time": "2026-11-22T17:00:00+07:00",
+          "total": 90000,
+          "status": "reserved",
+          "lot_name": "Bãi xe Nhà hát Lớn"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "session": {
+        "id": "park_nhl_02",
+        "lot_id": "lot_cur_02",
+        "from_time": "2026-11-22T14:00:00+07:00",
+        "hours": 3,
+        "end_time": "2026-11-22T17:00:00+07:00",
+        "total": 90000,
+        "status": "ended"
+      }
+    }
+  ],
+  "final_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_old_01",
+          "name": "Bãi xe Tràng Thi",
+          "address": "15 Tràng Thi",
+          "area": "Hoàn Kiếm",
+          "price_per_hour": 25000,
+          "available_spots": 5
+        },
+        {
+          "id": "lot_cur_02",
+          "name": "Bãi xe Nhà hát Lớn",
+          "address": "Nhà hát Lớn",
+          "area": "Nhà hát Lớn",
+          "price_per_hour": 30000,
+          "available_spots": 5
+        }
+      ],
+      "sessions": [
+        {
+          "id": "park_old_01",
+          "lot_id": "lot_old_01",
+          "from_time": "2026-11-20T08:00:00+07:00",
+          "hours": 2,
+          "end_time": "2026-11-20T10:00:00+07:00",
+          "total": 50000,
+          "status": "ended"
+        },
+        {
+          "id": "park_nhl_02",
+          "lot_id": "lot_cur_02",
+          "from_time": "2026-11-22T14:00:00+07:00",
+          "hours": 3,
+          "end_time": "2026-11-22T17:00:00+07:00",
+          "total": 90000,
+          "status": "ended"
+        }
+      ]
+    },
+    "ewallet": {}
+  },
+  "state_diff": {
+    "parking": {
+      "before": {
+        "lots": [
+          {
+            "id": "lot_old_01",
+            "name": "Bãi xe Tràng Thi",
+            "address": "15 Tràng Thi",
+            "area": "Hoàn Kiếm",
+            "price_per_hour": 25000,
+            "available_spots": 5
+          },
+          {
+            "id": "lot_cur_02",
+            "name": "Bãi xe Nhà hát Lớn",
+            "address": "Nhà hát Lớn",
+            "area": "Nhà hát Lớn",
+            "price_per_hour": 30000,
+            "available_spots": 4
+          }
+        ],
+        "sessions": [
+          {
+            "id": "park_old_01",
+            "lot_id": "lot_old_01",
+            "from_time": "2026-11-20T08:00:00+07:00",
+            "hours": 2,
+            "end_time": "2026-11-20T10:00:00+07:00",
+            "total": 50000,
+            "status": "ended"
+          },
+          {
+            "id": "park_nhl_02",
+            "lot_id": "lot_cur_02",
+            "from_time": "2026-11-22T14:00:00+07:00",
+            "hours": 3,
+            "end_time": "2026-11-22T17:00:00+07:00",
+            "total": 90000,
+            "status": "reserved"
+          }
+        ]
+      },
+      "after": {
+        "lots": [
+          {
+            "id": "lot_old_01",
+            "name": "Bãi xe Tràng Thi",
+            "address": "15 Tràng Thi",
+            "area": "Hoàn Kiếm",
+            "price_per_hour": 25000,
+            "available_spots": 5
+          },
+          {
+            "id": "lot_cur_02",
+            "name": "Bãi xe Nhà hát Lớn",
+            "address": "Nhà hát Lớn",
+            "area": "Nhà hát Lớn",
+            "price_per_hour": 30000,
+            "available_spots": 5
+          }
+        ],
+        "sessions": [
+          {
+            "id": "park_old_01",
+            "lot_id": "lot_old_01",
+            "from_time": "2026-11-20T08:00:00+07:00",
+            "hours": 2,
+            "end_time": "2026-11-20T10:00:00+07:00",
+            "total": 50000,
+            "status": "ended"
+          },
+          {
+            "id": "park_nhl_02",
+            "lot_id": "lot_cur_02",
+            "from_time": "2026-11-22T14:00:00+07:00",
+            "hours": 3,
+            "end_time": "2026-11-22T17:00:00+07:00",
+            "total": 90000,
+            "status": "ended"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "81fd1f46db3b79c7f581548b0c32b54bcd10377e52bf6cbdc6da69adbed1e898",
+  "validation": {
+    "scenario_id": "sim_parking_val_01_end",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "parking"
+    ],
+    "state_hash": "81fd1f46db3b79c7f581548b0c32b54bcd10377e52bf6cbdc6da69adbed1e898",
+    "errors": []
+  }
+}

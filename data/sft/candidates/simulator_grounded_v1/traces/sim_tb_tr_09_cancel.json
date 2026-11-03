@@ -1,0 +1,181 @@
+{
+  "scenario_id": "sim_tb_tr_09_cancel",
+  "split": "train",
+  "template_id": "tpl_tb_cancel_train",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "train_bus_tickets"
+  ],
+  "installed_apps": [
+    "train_bus_tickets",
+    "ewallet"
+  ],
+  "objective": "Read bookings and cancel tk_can_02.",
+  "expect_mutation": true,
+  "user_request": "Mở mục vé của tôi và hủy vé tàu đi Nha Trang đang xác nhận giúp mình.",
+  "current_time": "2026-11-22T12:00:00+07:00",
+  "city": "TP.HCM",
+  "initial_state": {
+    "train_bus_tickets": {
+      "trips": [
+        {
+          "id": "trip_c_01",
+          "type": "train",
+          "operator": "ĐSVN",
+          "origin": "Hà Nội",
+          "destination": "Sa Pa",
+          "date": "2026-11-29",
+          "depart": "21:00",
+          "arrive": "05:00",
+          "price": 350000,
+          "seats_left": 5
+        }
+      ],
+      "bookings": [
+        {
+          "id": "tk_can_02",
+          "trip_id": "trip_c_01",
+          "seats": 1,
+          "total": 350000,
+          "status": "confirmed"
+        }
+      ]
+    },
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "train_bus_tickets.my_bookings",
+      "arguments": {}
+    },
+    {
+      "name": "train_bus_tickets.cancel",
+      "arguments": {
+        "booking_id": "tk_can_02"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "bookings": [
+        {
+          "id": "tk_can_02",
+          "trip_id": "trip_c_01",
+          "seats": 1,
+          "total": 350000,
+          "status": "confirmed"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "booking": {
+        "id": "tk_can_02",
+        "trip_id": "trip_c_01",
+        "seats": 1,
+        "total": 350000,
+        "status": "cancelled"
+      }
+    }
+  ],
+  "final_state": {
+    "train_bus_tickets": {
+      "trips": [
+        {
+          "id": "trip_c_01",
+          "type": "train",
+          "operator": "ĐSVN",
+          "origin": "Hà Nội",
+          "destination": "Sa Pa",
+          "date": "2026-11-29",
+          "depart": "21:00",
+          "arrive": "05:00",
+          "price": 350000,
+          "seats_left": 6
+        }
+      ],
+      "bookings": [
+        {
+          "id": "tk_can_02",
+          "trip_id": "trip_c_01",
+          "seats": 1,
+          "total": 350000,
+          "status": "cancelled"
+        }
+      ]
+    },
+    "ewallet": {}
+  },
+  "state_diff": {
+    "train_bus_tickets": {
+      "before": {
+        "trips": [
+          {
+            "id": "trip_c_01",
+            "type": "train",
+            "operator": "ĐSVN",
+            "origin": "Hà Nội",
+            "destination": "Sa Pa",
+            "date": "2026-11-29",
+            "depart": "21:00",
+            "arrive": "05:00",
+            "price": 350000,
+            "seats_left": 5
+          }
+        ],
+        "bookings": [
+          {
+            "id": "tk_can_02",
+            "trip_id": "trip_c_01",
+            "seats": 1,
+            "total": 350000,
+            "status": "confirmed"
+          }
+        ]
+      },
+      "after": {
+        "trips": [
+          {
+            "id": "trip_c_01",
+            "type": "train",
+            "operator": "ĐSVN",
+            "origin": "Hà Nội",
+            "destination": "Sa Pa",
+            "date": "2026-11-29",
+            "depart": "21:00",
+            "arrive": "05:00",
+            "price": 350000,
+            "seats_left": 6
+          }
+        ],
+        "bookings": [
+          {
+            "id": "tk_can_02",
+            "trip_id": "trip_c_01",
+            "seats": 1,
+            "total": 350000,
+            "status": "cancelled"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "2ef5ce682d6c64d5df865a525ed79a2a6527063a672f63d54b930b1f90315070",
+  "validation": {
+    "scenario_id": "sim_tb_tr_09_cancel",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "train_bus_tickets"
+    ],
+    "state_hash": "2ef5ce682d6c64d5df865a525ed79a2a6527063a672f63d54b930b1f90315070",
+    "errors": []
+  }
+}

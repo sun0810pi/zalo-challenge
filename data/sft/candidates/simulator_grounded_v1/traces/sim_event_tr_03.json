@@ -1,0 +1,218 @@
+{
+  "scenario_id": "sim_event_tr_03",
+  "split": "train",
+  "template_id": "tpl_event_book_train_True",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "event_tickets",
+    "calendar"
+  ],
+  "installed_apps": [
+    "event_tickets",
+    "calendar",
+    "ewallet"
+  ],
+  "objective": "Search event Giao hưởng Mùa Đông, book 2 tickets on event_gh_03, and create calendar event.",
+  "expect_mutation": true,
+  "user_request": "Tìm đặt 2 vé Hòa nhạc Giao hưởng Mùa Đông rồi thêm lịch sự kiện đó vào ứng dụng Lịch giúp chị.",
+  "current_time": "2026-11-22T10:00:00+07:00",
+  "city": "Đà Nẵng",
+  "initial_state": {
+    "event_tickets": {
+      "events": [
+        {
+          "id": "event_gh_03",
+          "name": "Hòa nhạc Giao hưởng Mùa Đông",
+          "category": "sự kiện",
+          "date": "2026-12-02",
+          "time": "19:30",
+          "venue": "Học viện Âm nhạc",
+          "price": 500000,
+          "available": 30
+        }
+      ],
+      "bookings": []
+    },
+    "calendar": {
+      "events": []
+    },
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "event_tickets.search",
+      "arguments": {
+        "query": "Giao hưởng Mùa Đông"
+      }
+    },
+    {
+      "name": "event_tickets.book",
+      "arguments": {
+        "event_id": "event_gh_03",
+        "quantity": 2
+      }
+    },
+    {
+      "name": "calendar.create_event",
+      "arguments": {
+        "title": "Hòa nhạc Giao hưởng Mùa Đông",
+        "start": "2026-12-02T19:30:00+07:00",
+        "location": "Học viện Âm nhạc"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "events": [
+        {
+          "id": "event_gh_03",
+          "name": "Hòa nhạc Giao hưởng Mùa Đông",
+          "category": "sự kiện",
+          "date": "2026-12-02",
+          "time": "19:30",
+          "venue": "Học viện Âm nhạc",
+          "price": 500000,
+          "available": 30
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "booking": {
+        "id": "tk_01",
+        "event_id": "event_gh_03",
+        "quantity": 2,
+        "total": 1000000,
+        "status": "confirmed"
+      }
+    },
+    {
+      "ok": true,
+      "id": "evt_01",
+      "item": {
+        "id": "evt_01",
+        "status": "confirmed",
+        "title": "Hòa nhạc Giao hưởng Mùa Đông",
+        "start": "2026-12-02T19:30:00+07:00",
+        "end": "2026-12-02T20:30:00+07:00",
+        "location": "Học viện Âm nhạc"
+      }
+    }
+  ],
+  "final_state": {
+    "event_tickets": {
+      "events": [
+        {
+          "id": "event_gh_03",
+          "name": "Hòa nhạc Giao hưởng Mùa Đông",
+          "category": "sự kiện",
+          "date": "2026-12-02",
+          "time": "19:30",
+          "venue": "Học viện Âm nhạc",
+          "price": 500000,
+          "available": 28
+        }
+      ],
+      "bookings": [
+        {
+          "id": "tk_01",
+          "event_id": "event_gh_03",
+          "quantity": 2,
+          "total": 1000000,
+          "status": "confirmed"
+        }
+      ]
+    },
+    "calendar": {
+      "events": [
+        {
+          "id": "evt_01",
+          "status": "confirmed",
+          "title": "Hòa nhạc Giao hưởng Mùa Đông",
+          "start": "2026-12-02T19:30:00+07:00",
+          "end": "2026-12-02T20:30:00+07:00",
+          "location": "Học viện Âm nhạc"
+        }
+      ]
+    },
+    "ewallet": {}
+  },
+  "state_diff": {
+    "event_tickets": {
+      "before": {
+        "events": [
+          {
+            "id": "event_gh_03",
+            "name": "Hòa nhạc Giao hưởng Mùa Đông",
+            "category": "sự kiện",
+            "date": "2026-12-02",
+            "time": "19:30",
+            "venue": "Học viện Âm nhạc",
+            "price": 500000,
+            "available": 30
+          }
+        ],
+        "bookings": []
+      },
+      "after": {
+        "events": [
+          {
+            "id": "event_gh_03",
+            "name": "Hòa nhạc Giao hưởng Mùa Đông",
+            "category": "sự kiện",
+            "date": "2026-12-02",
+            "time": "19:30",
+            "venue": "Học viện Âm nhạc",
+            "price": 500000,
+            "available": 28
+          }
+        ],
+        "bookings": [
+          {
+            "id": "tk_01",
+            "event_id": "event_gh_03",
+            "quantity": 2,
+            "total": 1000000,
+            "status": "confirmed"
+          }
+        ]
+      }
+    },
+    "calendar": {
+      "before": {
+        "events": []
+      },
+      "after": {
+        "events": [
+          {
+            "id": "evt_01",
+            "status": "confirmed",
+            "title": "Hòa nhạc Giao hưởng Mùa Đông",
+            "start": "2026-12-02T19:30:00+07:00",
+            "end": "2026-12-02T20:30:00+07:00",
+            "location": "Học viện Âm nhạc"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "e1839b4dc7583ccb8550c19442010ac696d3d8af4bdf888307a111a9862cb5d8",
+  "validation": {
+    "scenario_id": "sim_event_tr_03",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "calendar",
+      "event_tickets"
+    ],
+    "state_hash": "e1839b4dc7583ccb8550c19442010ac696d3d8af4bdf888307a111a9862cb5d8",
+    "errors": []
+  }
+}

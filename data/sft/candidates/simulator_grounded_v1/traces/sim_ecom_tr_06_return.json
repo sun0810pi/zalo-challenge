@@ -1,0 +1,259 @@
+{
+  "scenario_id": "sim_ecom_tr_06_return",
+  "split": "train",
+  "template_id": "tpl_ecom_return_train",
+  "scenario_type": "multi_result_selection",
+  "primary_apps": [
+    "ecommerce"
+  ],
+  "installed_apps": [
+    "ecommerce",
+    "ewallet"
+  ],
+  "objective": "Inspect ecommerce orders and perform return on ord_ec_r2.",
+  "expect_mutation": true,
+  "user_request": "Xem danh sách đơn hàng đã giao trên sàn thương mại điện tử và tạo yêu cầu hoàn trả đơn giá đỡ laptop do mình đổi ý không dùng nữa.",
+  "current_time": "2026-11-23T15:00:00+07:00",
+  "city": "TP.HCM",
+  "initial_state": {
+    "ecommerce": {
+      "products": [],
+      "cart": [],
+      "orders": [
+        {
+          "id": "ord_ec_r2",
+          "items": [
+            {
+              "product_id": "p_1",
+              "name": "Giá đỡ laptop nhôm",
+              "price": 320000,
+              "quantity": 1
+            }
+          ],
+          "total": 320000,
+          "status": "delivered"
+        },
+        {
+          "id": "ord_other_ship",
+          "items": [
+            {
+              "product_id": "p_2",
+              "name": "Ốp lưng điện thoại",
+              "price": 50000,
+              "quantity": 1
+            }
+          ],
+          "total": 50000,
+          "status": "shipping"
+        }
+      ],
+      "returns": []
+    },
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "ecommerce.order_status",
+      "arguments": {}
+    },
+    {
+      "name": "ecommerce.request_return",
+      "arguments": {
+        "order_id": "ord_ec_r2",
+        "reason": "changed_mind"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "orders": [
+        {
+          "id": "ord_ec_r2",
+          "items": [
+            {
+              "product_id": "p_1",
+              "name": "Giá đỡ laptop nhôm",
+              "price": 320000,
+              "quantity": 1
+            }
+          ],
+          "total": 320000,
+          "status": "delivered"
+        },
+        {
+          "id": "ord_other_ship",
+          "items": [
+            {
+              "product_id": "p_2",
+              "name": "Ốp lưng điện thoại",
+              "price": 50000,
+              "quantity": 1
+            }
+          ],
+          "total": 50000,
+          "status": "shipping"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "return": {
+        "id": "ret_01",
+        "status": "requested",
+        "order_id": "ord_ec_r2",
+        "reason": "changed_mind"
+      },
+      "order": {
+        "id": "ord_ec_r2",
+        "items": [
+          {
+            "product_id": "p_1",
+            "name": "Giá đỡ laptop nhôm",
+            "price": 320000,
+            "quantity": 1
+          }
+        ],
+        "total": 320000,
+        "status": "return_requested"
+      }
+    }
+  ],
+  "final_state": {
+    "ecommerce": {
+      "products": [],
+      "cart": [],
+      "orders": [
+        {
+          "id": "ord_ec_r2",
+          "items": [
+            {
+              "product_id": "p_1",
+              "name": "Giá đỡ laptop nhôm",
+              "price": 320000,
+              "quantity": 1
+            }
+          ],
+          "total": 320000,
+          "status": "return_requested"
+        },
+        {
+          "id": "ord_other_ship",
+          "items": [
+            {
+              "product_id": "p_2",
+              "name": "Ốp lưng điện thoại",
+              "price": 50000,
+              "quantity": 1
+            }
+          ],
+          "total": 50000,
+          "status": "shipping"
+        }
+      ],
+      "returns": [
+        {
+          "id": "ret_01",
+          "status": "requested",
+          "order_id": "ord_ec_r2",
+          "reason": "changed_mind"
+        }
+      ]
+    },
+    "ewallet": {}
+  },
+  "state_diff": {
+    "ecommerce": {
+      "before": {
+        "products": [],
+        "cart": [],
+        "orders": [
+          {
+            "id": "ord_ec_r2",
+            "items": [
+              {
+                "product_id": "p_1",
+                "name": "Giá đỡ laptop nhôm",
+                "price": 320000,
+                "quantity": 1
+              }
+            ],
+            "total": 320000,
+            "status": "delivered"
+          },
+          {
+            "id": "ord_other_ship",
+            "items": [
+              {
+                "product_id": "p_2",
+                "name": "Ốp lưng điện thoại",
+                "price": 50000,
+                "quantity": 1
+              }
+            ],
+            "total": 50000,
+            "status": "shipping"
+          }
+        ],
+        "returns": []
+      },
+      "after": {
+        "products": [],
+        "cart": [],
+        "orders": [
+          {
+            "id": "ord_ec_r2",
+            "items": [
+              {
+                "product_id": "p_1",
+                "name": "Giá đỡ laptop nhôm",
+                "price": 320000,
+                "quantity": 1
+              }
+            ],
+            "total": 320000,
+            "status": "return_requested"
+          },
+          {
+            "id": "ord_other_ship",
+            "items": [
+              {
+                "product_id": "p_2",
+                "name": "Ốp lưng điện thoại",
+                "price": 50000,
+                "quantity": 1
+              }
+            ],
+            "total": 50000,
+            "status": "shipping"
+          }
+        ],
+        "returns": [
+          {
+            "id": "ret_01",
+            "status": "requested",
+            "order_id": "ord_ec_r2",
+            "reason": "changed_mind"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "424e3829a4b57c3d6787b2f92bb9c26491bfc5431d56c3b8d393168a79ec286a",
+  "validation": {
+    "scenario_id": "sim_ecom_tr_06_return",
+    "scenario_type": "multi_result_selection",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "ecommerce"
+    ],
+    "state_hash": "424e3829a4b57c3d6787b2f92bb9c26491bfc5431d56c3b8d393168a79ec286a",
+    "errors": []
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "scenario_id": "sim_cancel_tr_06_transit",
+  "split": "train",
+  "template_id": "tpl_self_cancel_train_public_transit",
+  "scenario_type": "cancellation",
+  "primary_apps": [
+    "public_transit"
+  ],
+  "installed_apps": [
+    "public_transit",
+    "ewallet",
+    "reminders"
+  ],
+  "objective": "Recognize self-cancellation phrase at end of request and emit 0 tool calls.",
+  "expect_mutation": false,
+  "user_request": "Nạp 100 nghìn vào thẻ tàu điện công cộng cho anh. Ơ thôi khỏi, trong thẻ vẫn còn nhiều tiền lắm chưa cần nạp đâu.",
+  "serialized_user_prompt": "Nạp 100 nghìn vào thẻ tàu điện công cộng cho anh. Ơ thôi khỏi, trong thẻ vẫn còn nhiều tiền lắm chưa cần nạp đâu",
+  "current_time": "2026-11-23T12:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Nguyễn Minh Quân",
+    "city": "Hà Nội",
+    "home_address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+    "work_address": "Tòa nhà Keangnam, Phạm Hùng, Nam Từ Liêm, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0245,
+    "lng": 105.8091
+  },
+  "history": [],
+  "initial_state": {
+    "public_transit": {},
+    "ewallet": {},
+    "reminders": {}
+  },
+  "tool_calls": [],
+  "tool_results": [],
+  "final_state": {
+    "public_transit": {},
+    "ewallet": {},
+    "reminders": {}
+  },
+  "state_diff": {},
+  "state_hash": "3fbeab2827966eeab19893e972b73ff4f8e2c850115e68da4028526fbf7071e1",
+  "validation": {
+    "scenario_id": "sim_cancel_tr_06_transit",
+    "scenario_type": "cancellation",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "3fbeab2827966eeab19893e972b73ff4f8e2c850115e68da4028526fbf7071e1",
+    "errors": []
+  }
+}

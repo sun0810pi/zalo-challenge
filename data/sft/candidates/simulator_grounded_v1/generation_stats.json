@@ -1,0 +1,201 @@
+{
+  "generator_version": "simulator_grounded_v1.0.0",
+  "total_scenarios": 140,
+  "train_scenarios": 112,
+  "val_scenarios": 28,
+  "total_tool_calls_executed": 307,
+  "avg_tool_calls_per_scenario": 2.19,
+  "tool_call_frequency": {
+    "banking.get_balance": 4,
+    "banking.list_beneficiaries": 3,
+    "banking.open_savings": 1,
+    "banking.transfer": 3,
+    "bill_payment.list_bills": 6,
+    "bill_payment.pay": 4,
+    "calendar.cancel_event": 1,
+    "calendar.create_event": 6,
+    "calendar.list_events": 2,
+    "calendar.update_event": 1,
+    "chat_ott.list_chats": 3,
+    "chat_ott.send_message": 3,
+    "contacts.search": 2,
+    "ecommerce.add_to_cart": 5,
+    "ecommerce.cancel_order": 2,
+    "ecommerce.checkout": 5,
+    "ecommerce.order_status": 6,
+    "ecommerce.request_return": 4,
+    "ecommerce.search": 7,
+    "email.send": 1,
+    "event_tickets.book": 7,
+    "event_tickets.search": 9,
+    "ewallet.get_balance": 6,
+    "flights.book": 3,
+    "flights.check_in": 1,
+    "flights.my_bookings": 1,
+    "flights.search": 3,
+    "food_delivery.get_menu": 4,
+    "food_delivery.list_restaurants": 4,
+    "food_delivery.place_order": 4,
+    "grocery.add_to_cart": 9,
+    "grocery.checkout": 9,
+    "grocery.search": 10,
+    "habit_tracker.list_habits": 8,
+    "habit_tracker.log": 7,
+    "notes.create": 1,
+    "pantry.consume": 4,
+    "pantry.list_items": 10,
+    "parking.end_session": 4,
+    "parking.find": 7,
+    "parking.list_sessions": 4,
+    "parking.reserve": 5,
+    "public_transit.find_routes": 6,
+    "public_transit.next_departures": 4,
+    "public_transit.topup_card": 5,
+    "recipes.get": 3,
+    "recipes.save": 5,
+    "recipes.search": 10,
+    "shopping_list.add": 1,
+    "smart_home.climate_set": 1,
+    "smart_home.fan_set": 3,
+    "smart_home.get_status": 6,
+    "smart_home.light_set": 1,
+    "smart_home.scene_run": 2,
+    "sms.send": 2,
+    "stocks.get_portfolio": 6,
+    "stocks.get_quote": 9,
+    "stocks.place_order": 10,
+    "stocks.set_price_alert": 3,
+    "sys.ask_missing_info": 6,
+    "train_bus_tickets.book": 8,
+    "train_bus_tickets.cancel": 4,
+    "train_bus_tickets.my_bookings": 4,
+    "train_bus_tickets.search": 8,
+    "translator.translate": 7,
+    "weather.get_forecast": 4
+  },
+  "scenario_type_distribution": {
+    "arithmetic_condition": 11,
+    "cancellation": 8,
+    "missing_info": 6,
+    "multi_result_selection": 22,
+    "multi_step_chain": 46,
+    "negative_condition": 12,
+    "read_before_write": 35
+  },
+  "unseen_11_apps_summary": {
+    "ecommerce": {
+      "total": 14,
+      "train": 11,
+      "val": 3
+    },
+    "event_tickets": {
+      "total": 10,
+      "train": 9,
+      "val": 1
+    },
+    "grocery": {
+      "total": 11,
+      "train": 9,
+      "val": 2
+    },
+    "habit_tracker": {
+      "total": 8,
+      "train": 6,
+      "val": 2
+    },
+    "pantry": {
+      "total": 10,
+      "train": 8,
+      "val": 2
+    },
+    "parking": {
+      "total": 12,
+      "train": 10,
+      "val": 2
+    },
+    "public_transit": {
+      "total": 8,
+      "train": 7,
+      "val": 1
+    },
+    "recipes": {
+      "total": 10,
+      "train": 8,
+      "val": 2
+    },
+    "stocks": {
+      "total": 16,
+      "train": 13,
+      "val": 3
+    },
+    "train_bus_tickets": {
+      "total": 14,
+      "train": 10,
+      "val": 4
+    },
+    "translator": {
+      "total": 7,
+      "train": 6,
+      "val": 1
+    }
+  },
+  "preflight_verification": {
+    "scenario_id": "pilot_001_parking_reserve_select",
+    "tool_calls": [
+      {
+        "name": "parking.find",
+        "arguments": {
+          "near": "Bà Triệu"
+        }
+      },
+      {
+        "name": "parking.reserve",
+        "arguments": {
+          "lot_id": "lot_bt_02",
+          "from_time": "2026-11-20T14:00:00+07:00",
+          "hours": 3
+        }
+      }
+    ],
+    "tool_results": [
+      {
+        "ok": true,
+        "lots": [
+          {
+            "id": "lot_bt_01",
+            "name": "Bãi đỗ xe Bà Triệu A",
+            "address": "110 Bà Triệu",
+            "area": "Hai Bà Trưng",
+            "price_per_hour": 25000,
+            "available_spots": 0
+          },
+          {
+            "id": "lot_bt_02",
+            "name": "Bãi đỗ xe Vincom Bà Triệu",
+            "address": "191 Bà Triệu",
+            "area": "Hai Bà Trưng",
+            "price_per_hour": 30000,
+            "available_spots": 9
+          }
+        ]
+      },
+      {
+        "ok": true,
+        "session": {
+          "id": "park_01",
+          "lot_id": "lot_bt_02",
+          "from_time": "2026-11-20T14:00:00+07:00",
+          "hours": 3,
+          "end_time": "2026-11-20T17:00:00+07:00",
+          "total": 90000,
+          "status": "reserved"
+        }
+      }
+    ],
+    "state_hash": "7f0ef7691970facd3d9c27aafc06155ee9d65fdcded89bcf9f666d6d0accfc43",
+    "changed_apps": [
+      "parking"
+    ],
+    "passed": true
+  }
+}

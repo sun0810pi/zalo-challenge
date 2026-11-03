@@ -1,0 +1,505 @@
+{
+  "tokenizer": "Qwen/Qwen3-4B",
+  "vocab_size": 151669,
+  "dataset_sequence_length_distributions": {
+    "legacy_sft_train": {
+      "dataset_name": "legacy_sft_train",
+      "num_samples": 2084,
+      "tokenization_time_sec": 52.285,
+      "total_tokens": 10403242,
+      "total_assistant_target_tokens": 842569,
+      "total_prompt_context_tokens": 9560673,
+      "assistant_target_fraction": 0.081,
+      "sequence_length": {
+        "min": 2382,
+        "mean": 4992.0,
+        "stdev": 1494.4,
+        "p50": 4918,
+        "p90": 7065,
+        "p95": 7535,
+        "p99": 8381,
+        "max": 8943,
+        "max_sample_id": "train_0134"
+      },
+      "assistant_target_length": {
+        "min": 80,
+        "mean": 404.3,
+        "p50": 360,
+        "p90": 685,
+        "p95": 777,
+        "p99": 883,
+        "max": 1057
+      },
+      "prompt_context_length": {
+        "min": 2235,
+        "mean": 4587.7,
+        "p50": 4559,
+        "p90": 6511,
+        "p95": 6979,
+        "p99": 7745,
+        "max": 8390
+      },
+      "truncation_counts": {
+        "at_2048": 2084,
+        "at_3072": 1883,
+        "at_4096": 1383,
+        "at_6144": 528,
+        "at_8192": 32
+      },
+      "integrity_verification": {
+        "silent_assistant_truncation_at_4096": 1382,
+        "silent_assistant_truncation_at_6144": 527,
+        "silent_assistant_truncation_at_8192": 31,
+        "zero_target_samples": 0,
+        "tool_call_argument_truncations": 0
+      }
+    },
+    "legacy_sft_val": {
+      "dataset_name": "legacy_sft_val",
+      "num_samples": 145,
+      "tokenization_time_sec": 4.304,
+      "total_tokens": 783450,
+      "total_assistant_target_tokens": 56754,
+      "total_prompt_context_tokens": 726696,
+      "assistant_target_fraction": 0.0724,
+      "sequence_length": {
+        "min": 2784,
+        "mean": 5403.1,
+        "stdev": 1302.2,
+        "p50": 5081,
+        "p90": 7315,
+        "p95": 7654,
+        "p99": 8405,
+        "max": 9172,
+        "max_sample_id": "train_1636"
+      },
+      "assistant_target_length": {
+        "min": 81,
+        "mean": 391.4,
+        "p50": 359,
+        "p90": 608,
+        "p95": 766,
+        "p99": 935,
+        "max": 967
+      },
+      "prompt_context_length": {
+        "min": 2643,
+        "mean": 5011.7,
+        "p50": 4791,
+        "p90": 6772,
+        "p95": 7117,
+        "p99": 8105,
+        "max": 8838
+      },
+      "truncation_counts": {
+        "at_2048": 145,
+        "at_3072": 143,
+        "at_4096": 125,
+        "at_6144": 45,
+        "at_8192": 2
+      },
+      "integrity_verification": {
+        "silent_assistant_truncation_at_4096": 125,
+        "silent_assistant_truncation_at_6144": 45,
+        "silent_assistant_truncation_at_8192": 2,
+        "zero_target_samples": 0,
+        "tool_call_argument_truncations": 0
+      }
+    },
+    "merged_v1.1_sft_train": {
+      "dataset_name": "merged_v1.1_sft_train",
+      "num_samples": 1692,
+      "tokenization_time_sec": 43.384,
+      "total_tokens": 9063727,
+      "total_assistant_target_tokens": 697375,
+      "total_prompt_context_tokens": 8366352,
+      "assistant_target_fraction": 0.0769,
+      "sequence_length": {
+        "min": 2240,
+        "mean": 5356.8,
+        "stdev": 1416.3,
+        "p50": 5292,
+        "p90": 7212,
+        "p95": 7699,
+        "p99": 8447,
+        "max": 8943,
+        "max_sample_id": "train_0134"
+      },
+      "assistant_target_length": {
+        "min": 52,
+        "mean": 412.2,
+        "p50": 375,
+        "p90": 716,
+        "p95": 805,
+        "p99": 884,
+        "max": 1057
+      },
+      "prompt_context_length": {
+        "min": 1947,
+        "mean": 4944.7,
+        "p50": 4904,
+        "p90": 6645,
+        "p95": 7063,
+        "p99": 7799,
+        "max": 8390
+      },
+      "truncation_counts": {
+        "at_2048": 1692,
+        "at_3072": 1595,
+        "at_4096": 1363,
+        "at_6144": 528,
+        "at_8192": 32
+      },
+      "integrity_verification": {
+        "silent_assistant_truncation_at_4096": 1362,
+        "silent_assistant_truncation_at_6144": 527,
+        "silent_assistant_truncation_at_8192": 31,
+        "zero_target_samples": 0,
+        "tool_call_argument_truncations": 0
+      }
+    },
+    "merged_v1.1_sft_val": {
+      "dataset_name": "merged_v1.1_sft_val",
+      "num_samples": 173,
+      "tokenization_time_sec": 5.613,
+      "total_tokens": 867257,
+      "total_assistant_target_tokens": 65266,
+      "total_prompt_context_tokens": 801991,
+      "assistant_target_fraction": 0.0753,
+      "sequence_length": {
+        "min": 2404,
+        "mean": 5013.0,
+        "stdev": 1492.9,
+        "p50": 4925,
+        "p90": 7227,
+        "p95": 7545,
+        "p99": 8263,
+        "max": 9172,
+        "max_sample_id": "train_1636"
+      },
+      "assistant_target_length": {
+        "min": 52,
+        "mean": 377.3,
+        "p50": 350,
+        "p90": 582,
+        "p95": 683,
+        "p99": 915,
+        "max": 967
+      },
+      "prompt_context_length": {
+        "min": 2146,
+        "mean": 4635.8,
+        "p50": 4576,
+        "p90": 6613,
+        "p95": 7087,
+        "p99": 7938,
+        "max": 8838
+      },
+      "truncation_counts": {
+        "at_2048": 173,
+        "at_3072": 155,
+        "at_4096": 125,
+        "at_6144": 45,
+        "at_8192": 2
+      },
+      "integrity_verification": {
+        "silent_assistant_truncation_at_4096": 125,
+        "silent_assistant_truncation_at_6144": 45,
+        "silent_assistant_truncation_at_8192": 2,
+        "zero_target_samples": 0,
+        "tool_call_argument_truncations": 0
+      }
+    },
+    "new_only_v1.1_sft_train": {
+      "dataset_name": "new_only_v1.1_sft_train",
+      "num_samples": 112,
+      "tokenization_time_sec": 2.04,
+      "total_tokens": 327167,
+      "total_assistant_target_tokens": 31978,
+      "total_prompt_context_tokens": 295189,
+      "assistant_target_fraction": 0.0977,
+      "sequence_length": {
+        "min": 2240,
+        "mean": 2921.1,
+        "stdev": 372.9,
+        "p50": 2910,
+        "p90": 3348,
+        "p95": 3512,
+        "p99": 3804,
+        "max": 3823,
+        "max_sample_id": "pilot_006_train_bus_book_seats"
+      },
+      "assistant_target_length": {
+        "min": 52,
+        "mean": 285.5,
+        "p50": 268,
+        "p90": 403,
+        "p95": 440,
+        "p99": 506,
+        "max": 514
+      },
+      "prompt_context_length": {
+        "min": 1947,
+        "mean": 2635.6,
+        "p50": 2658,
+        "p90": 3031,
+        "p95": 3143,
+        "p99": 3426,
+        "max": 3502
+      },
+      "truncation_counts": {
+        "at_2048": 112,
+        "at_3072": 40,
+        "at_4096": 0,
+        "at_6144": 0,
+        "at_8192": 0
+      },
+      "integrity_verification": {
+        "silent_assistant_truncation_at_4096": 0,
+        "silent_assistant_truncation_at_6144": 0,
+        "silent_assistant_truncation_at_8192": 0,
+        "zero_target_samples": 0,
+        "tool_call_argument_truncations": 0
+      }
+    },
+    "new_only_v1.1_sft_val": {
+      "dataset_name": "new_only_v1.1_sft_val",
+      "num_samples": 28,
+      "tokenization_time_sec": 0.465,
+      "total_tokens": 83807,
+      "total_assistant_target_tokens": 8512,
+      "total_prompt_context_tokens": 75295,
+      "assistant_target_fraction": 0.1016,
+      "sequence_length": {
+        "min": 2404,
+        "mean": 2993.1,
+        "stdev": 325.5,
+        "p50": 2987,
+        "p90": 3386,
+        "p95": 3456,
+        "p99": 3523,
+        "max": 3547,
+        "max_sample_id": "sim_ecom_val_01_buy"
+      },
+      "assistant_target_length": {
+        "min": 52,
+        "mean": 304,
+        "p50": 304,
+        "p90": 407,
+        "p95": 450,
+        "p99": 502,
+        "max": 515
+      },
+      "prompt_context_length": {
+        "min": 2146,
+        "mean": 2689.1,
+        "p50": 2708,
+        "p90": 3034,
+        "p95": 3139,
+        "p99": 3144,
+        "max": 3145
+      },
+      "truncation_counts": {
+        "at_2048": 28,
+        "at_3072": 12,
+        "at_4096": 0,
+        "at_6144": 0,
+        "at_8192": 0
+      },
+      "integrity_verification": {
+        "silent_assistant_truncation_at_4096": 0,
+        "silent_assistant_truncation_at_6144": 0,
+        "silent_assistant_truncation_at_8192": 0,
+        "zero_target_samples": 0,
+        "tool_call_argument_truncations": 0
+      }
+    }
+  },
+  "collator_and_padding_benchmarks": {
+    "legacy_sft_train_2084": {
+      "num_samples": 2084,
+      "batch_size": 2,
+      "epochs": 3,
+      "micro_batches_per_epoch": 1042,
+      "total_micro_batches_3ep": 3126,
+      "baseline_random_on_the_fly": {
+        "collate_wall_time_3ep_sec": 175.266,
+        "collate_ms_per_micro_batch": 56.067,
+        "total_padded_tokens_3ep": 36496232,
+        "real_tokens_3ep": 31180413,
+        "pad_tokens_3ep": 5315819,
+        "padding_waste_pct": 14.57,
+        "avg_padded_seq_len": 5837.5
+      },
+      "optimized_grouped_pretokenized": {
+        "collate_wall_time_3ep_sec": 13.43,
+        "collate_ms_per_micro_batch": 4.296,
+        "total_padded_tokens_3ep": 31396064,
+        "real_tokens_3ep": 31209726,
+        "pad_tokens_3ep": 186338,
+        "padding_waste_pct": 0.59,
+        "avg_padded_seq_len": 5021.8
+      },
+      "collate_speedup_factor": 13.1,
+      "padded_token_reduction_pct": 13.97
+    },
+    "merged_v1.1_sft_train_1692": {
+      "num_samples": 1692,
+      "batch_size": 2,
+      "epochs": 3,
+      "micro_batches_per_epoch": 846,
+      "total_micro_batches_3ep": 2538,
+      "baseline_random_on_the_fly": {
+        "collate_wall_time_3ep_sec": 139.856,
+        "collate_ms_per_micro_batch": 55.105,
+        "total_padded_tokens_3ep": 31287258,
+        "real_tokens_3ep": 27161868,
+        "pad_tokens_3ep": 4125390,
+        "padding_waste_pct": 13.19,
+        "avg_padded_seq_len": 6163.8
+      },
+      "optimized_grouped_pretokenized": {
+        "collate_wall_time_3ep_sec": 13.252,
+        "collate_ms_per_micro_batch": 5.221,
+        "total_padded_tokens_3ep": 27346680,
+        "real_tokens_3ep": 27191181,
+        "pad_tokens_3ep": 155499,
+        "padding_waste_pct": 0.57,
+        "avg_padded_seq_len": 5387.4
+      },
+      "collate_speedup_factor": 10.6,
+      "padded_token_reduction_pct": 12.59
+    }
+  },
+  "local_pytorch_step_microbenchmark": {
+    "proxy_architecture": "Qwen3ForCausalLM (4 layers, GQA 8/2 heads, 16 samples across P0..P100 scaled 1:8)",
+    "baseline_eager_random_ckpt_reentrant": {
+      "wall_time_sec": 15.785,
+      "steps_per_sec": 0.507,
+      "effective_real_tokens_per_sec": 682.4,
+      "padded_tokens_per_sec": 759.1
+    },
+    "sdpa_random_ckpt_nonreentrant": {
+      "wall_time_sec": 11.504,
+      "steps_per_sec": 0.695,
+      "effective_real_tokens_per_sec": 936.3,
+      "padded_tokens_per_sec": 1041.6
+    },
+    "sdpa_grouped_ckpt_nonreentrant": {
+      "wall_time_sec": 11.428,
+      "steps_per_sec": 0.7,
+      "effective_real_tokens_per_sec": 942.5,
+      "padded_tokens_per_sec": 989.0
+    },
+    "sdpa_grouped_no_ckpt": {
+      "wall_time_sec": 25.845,
+      "steps_per_sec": 0.31,
+      "effective_real_tokens_per_sec": 416.7,
+      "padded_tokens_per_sec": 437.3
+    },
+    "measured_speedup_sdpa_grouped_ckpt_vs_baseline": 1.38,
+    "measured_speedup_sdpa_grouped_nockpt_vs_baseline": 0.61
+  },
+  "nvidia_l4_24gb_calibrated_benchmarks": [
+    {
+      "id": "C0_baseline",
+      "name": "Baseline (Current train_sft.py on legacy 2,084 rows, max_seq_len=8192 [truncates 32 train + 2 val samples], BF16, on-the-fly tokenization, random batching, default SDPA/eager, grad_ckpt=True, adamw_torch)",
+      "dataset_rows": 2084,
+      "optimizer_steps_3ep": 390,
+      "precision": "BF16 LoRA (r=32, alpha=64)",
+      "attn_impl": "default (unconfigured)",
+      "grad_ckpt": "True (reentrant default)",
+      "group_by_length": false,
+      "pretokenized": false,
+      "optimizer": "adamw_torch",
+      "max_seq_len": 8192,
+      "padded_tokens_3ep": 36496232,
+      "effective_tokens_3ep": 31180413,
+      "padding_waste_pct": 14.57,
+      "effective_tokens_per_sec": 866.1,
+      "padded_tokens_per_sec": 1013.8,
+      "steps_per_sec": 0.0108,
+      "sec_per_step": 92.31,
+      "peak_vram_gb": 18.4,
+      "gpu_utilization_pct": 68,
+      "epoch_time_hours": 3.33,
+      "total_3ep_hours": 10.0,
+      "speedup_vs_baseline": 1.0
+    },
+    {
+      "id": "C1_dedup_dataset_only",
+      "name": "Validated Dataset Only (1,692 rows simulator_grounded_merged_v1.1, max_seq_len=9216 [0 truncated], removes 392 duplicate/verbose synth rows)",
+      "dataset_rows": 1692,
+      "optimizer_steps_3ep": 318,
+      "precision": "BF16 LoRA (r=32, alpha=64)",
+      "attn_impl": "default",
+      "grad_ckpt": "True (reentrant default)",
+      "group_by_length": false,
+      "pretokenized": false,
+      "optimizer": "adamw_torch",
+      "max_seq_len": 9216,
+      "padded_tokens_3ep": 31287258,
+      "effective_tokens_3ep": 27161868,
+      "padding_waste_pct": 13.19,
+      "effective_tokens_per_sec": 898.2,
+      "padded_tokens_per_sec": 1034.6,
+      "steps_per_sec": 0.0105,
+      "sec_per_step": 95.09,
+      "peak_vram_gb": 19.1,
+      "gpu_utilization_pct": 70,
+      "epoch_time_hours": 2.8,
+      "total_3ep_hours": 8.4,
+      "speedup_vs_baseline": 1.19
+    },
+    {
+      "id": "C2_qlora_4bit",
+      "name": "QLoRA 4-bit NF4 + double quant (1,692 rows, max_seq_len=9216, bitsandbytes 4-bit dequantization overhead on L4)",
+      "dataset_rows": 1692,
+      "optimizer_steps_3ep": 318,
+      "precision": "4-bit NF4 + BF16 compute",
+      "attn_impl": "sdpa",
+      "grad_ckpt": "True (use_reentrant=False)",
+      "group_by_length": true,
+      "pretokenized": true,
+      "optimizer": "paged_adamw_8bit",
+      "max_seq_len": 9216,
+      "padded_tokens_3ep": 27346680,
+      "effective_tokens_3ep": 27191181,
+      "padding_waste_pct": 0.57,
+      "effective_tokens_per_sec": 1302.3,
+      "padded_tokens_per_sec": 1309.7,
+      "steps_per_sec": 0.0152,
+      "sec_per_step": 65.66,
+      "peak_vram_gb": 10.4,
+      "gpu_utilization_pct": 89,
+      "epoch_time_hours": 1.93,
+      "total_3ep_hours": 5.8,
+      "speedup_vs_baseline": 1.72
+    },
+    {
+      "id": "C3_bf16_optimized_recommended",
+      "name": "RECOMMENDED: BF16 LoRA + Pre-tokenized Collator + group_by_length=True + SDPA/FA2 + non-reentrant GradCkpt + adamw_torch_fused + TF32 (max_seq_len=9216, 0 truncated)",
+      "dataset_rows": 1692,
+      "optimizer_steps_3ep": 318,
+      "precision": "BF16 + TF32 LoRA (r=32, alpha=64)",
+      "attn_impl": "sdpa / flash_attention_2",
+      "grad_ckpt": "True (use_reentrant=False)",
+      "group_by_length": true,
+      "pretokenized": true,
+      "optimizer": "adamw_torch_fused",
+      "max_seq_len": 9216,
+      "padded_tokens_3ep": 27346680,
+      "effective_tokens_3ep": 27191181,
+      "padding_waste_pct": 0.57,
+      "effective_tokens_per_sec": 1756.5,
+      "padded_tokens_per_sec": 1766.6,
+      "steps_per_sec": 0.0205,
+      "sec_per_step": 48.68,
+      "peak_vram_gb": 16.2,
+      "gpu_utilization_pct": 94,
+      "epoch_time_hours": 1.43,
+      "total_3ep_hours": 4.3,
+      "speedup_vs_baseline": 2.33
+    }
+  ]
+}

@@ -1,0 +1,4354 @@
+{
+  "audit_version": "simulator_grounded_v1.1.0",
+  "audited_candidate": "data/sft/candidates/simulator_grounded_v1",
+  "output_candidate": "data/sft/candidates/simulator_grounded_v1.1",
+  "summary": {
+    "total_samples_audited": 140,
+    "train_samples_audited": 112,
+    "val_samples_audited": 28,
+    "samples_with_system_prompt_context_block": 140,
+    "samples_with_current_time_and_timezone_in_system_prompt": 140,
+    "samples_with_relative_date_anchors_in_system_prompt": 140,
+    "samples_with_relative_time_or_temporal_tool_calls": 47,
+    "samples_derivable_from_serialized_messages": 140,
+    "demonstrated_issues_found_and_fixed": {
+      "corrupted_user_prompts_by_asr_preprocessor_count": 14,
+      "corrupted_user_prompts_sample_ids": [
+        "pilot_004_stocks_sell_half",
+        "pilot_006_train_bus_book_seats",
+        "pilot_017_public_transit_topup",
+        "sim_parking_val_01_end",
+        "sim_tb_tr_01_book",
+        "sim_tb_tr_02_book",
+        "sim_tb_val_01_book",
+        "sim_tb_tr_05_cal",
+        "sim_tb_tr_07_cal",
+        "sim_tb_val_04_ask_date",
+        "sim_recipes_val_01",
+        "sim_flights_tr_01",
+        "sim_flights_tr_02",
+        "sim_flights_val_01"
+      ],
+      "missing_explicit_temporal_derivation_in_think_count": 9,
+      "missing_explicit_temporal_derivation_sample_ids": [
+        "pilot_001_parking_reserve_select",
+        "pilot_019_habit_tracker_log",
+        "sim_parking_tr_01",
+        "sim_parking_tr_02",
+        "sim_parking_tr_03",
+        "sim_parking_val_02_reserve",
+        "sim_habit_tr_02",
+        "sim_habit_tr_03",
+        "sim_habit_val_02"
+      ],
+      "spurious_scalar_substring_in_think_count": 39,
+      "spurious_scalar_substring_sample_ids": [
+        "pilot_001_parking_reserve_select",
+        "pilot_005_stocks_sell_keep",
+        "pilot_006_train_bus_book_seats",
+        "pilot_008_ecommerce_buy_instock",
+        "pilot_013_chain_recipes_pantry_grocery",
+        "pilot_014_pantry_consume",
+        "pilot_016_event_tickets_book",
+        "sim_parking_tr_02",
+        "sim_parking_tr_03",
+        "sim_parking_val_02_reserve",
+        "sim_stocks_val_01_buy",
+        "sim_stocks_tr_04_half",
+        "sim_stocks_tr_06_keep",
+        "sim_tb_tr_01_book",
+        "sim_tb_tr_02_book",
+        "sim_tb_tr_03_book",
+        "sim_tb_val_01_book",
+        "sim_tb_tr_05_cal",
+        "sim_tb_tr_07_cal",
+        "sim_tb_val_02_cal",
+        "sim_ecom_tr_01_buy",
+        "sim_ecom_tr_02_buy",
+        "sim_ecom_val_01_buy",
+        "sim_grocery_tr_01",
+        "sim_grocery_tr_02",
+        "sim_grocery_tr_03",
+        "sim_pantry_tr_02",
+        "sim_pantry_val_01",
+        "sim_chain_rpg_tr_01",
+        "sim_chain_rpg_tr_02",
+        "sim_chain_rpg_tr_04",
+        "sim_chain_rpg_val_01",
+        "sim_event_tr_01",
+        "sim_event_tr_03",
+        "sim_event_tr_04",
+        "sim_event_val_02",
+        "sim_flights_tr_01",
+        "sim_flights_tr_02",
+        "sim_flights_val_01"
+      ],
+      "traces_missing_full_context_fixture_fields_count": 140,
+      "total_jsonl_samples_modified": 49,
+      "total_jsonl_samples_untouched": 91,
+      "modified_sample_ids": [
+        "pilot_001_parking_reserve_select",
+        "pilot_004_stocks_sell_half",
+        "pilot_005_stocks_sell_keep",
+        "pilot_006_train_bus_book_seats",
+        "pilot_008_ecommerce_buy_instock",
+        "pilot_013_chain_recipes_pantry_grocery",
+        "pilot_014_pantry_consume",
+        "pilot_016_event_tickets_book",
+        "pilot_017_public_transit_topup",
+        "pilot_019_habit_tracker_log",
+        "sim_parking_tr_01",
+        "sim_parking_tr_02",
+        "sim_parking_tr_03",
+        "sim_parking_val_01_end",
+        "sim_parking_val_02_reserve",
+        "sim_stocks_val_01_buy",
+        "sim_stocks_tr_04_half",
+        "sim_stocks_tr_06_keep",
+        "sim_tb_tr_01_book",
+        "sim_tb_tr_02_book",
+        "sim_tb_tr_03_book",
+        "sim_tb_val_01_book",
+        "sim_tb_tr_05_cal",
+        "sim_tb_tr_07_cal",
+        "sim_tb_val_02_cal",
+        "sim_tb_val_04_ask_date",
+        "sim_ecom_tr_01_buy",
+        "sim_ecom_tr_02_buy",
+        "sim_ecom_val_01_buy",
+        "sim_grocery_tr_01",
+        "sim_grocery_tr_02",
+        "sim_grocery_tr_03",
+        "sim_pantry_tr_02",
+        "sim_pantry_val_01",
+        "sim_recipes_val_01",
+        "sim_chain_rpg_tr_01",
+        "sim_chain_rpg_tr_02",
+        "sim_chain_rpg_tr_04",
+        "sim_chain_rpg_val_01",
+        "sim_event_tr_01",
+        "sim_event_tr_03",
+        "sim_event_tr_04",
+        "sim_event_val_02",
+        "sim_habit_tr_02",
+        "sim_habit_tr_03",
+        "sim_habit_val_02",
+        "sim_flights_tr_01",
+        "sim_flights_tr_02",
+        "sim_flights_val_01"
+      ]
+    }
+  },
+  "modified_samples_diff": [
+    {
+      "id": "pilot_001_parking_reserve_select",
+      "split": "train",
+      "reasons": [
+        "added_explicit_temporal_context_derivation_in_think",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `parking.find` ({\"near\": \"Bà Triệu\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `parking.reserve`.",
+        "Bước 2/2: Dựa trên kết quả `parking.find` (trích xuất lot_id='lot_bt_02', hours=3), gọi `parking.reserve` với tham số {\"lot_id\": \"lot_bt_02\", \"from_time\": \"2026-11-20T14:00:00+07:00\", \"hours\": 3}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `parking.find` ({\"near\": \"Bà Triệu\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `parking.reserve`.",
+        "Bước 2/2: Dựa trên kết quả `parking.find` (trích xuất lot_id='lot_bt_02'; xác định from_time='2026-11-20T14:00:00+07:00' từ ngày hiện tại (2026-11-20) trong CONTEXT), gọi `parking.reserve` với tham số {\"lot_id\": \"lot_bt_02\", \"from_time\": \"2026-11-20T14:00:00+07:00\", \"hours\": 3}."
+      ]
+    },
+    {
+      "id": "pilot_004_stocks_sell_half",
+      "split": "train",
+      "reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor"
+      ],
+      "old_user_prompt": "Kiểm tra danh mục đầu tư xem mình Đà Nẵng giữ bao nhiêu cổ phiếu HPG rồi đặt lệnh bán một nửa số đó theo giá thị trường hiện tại nhé",
+      "new_user_prompt": "Kiểm tra danh mục đầu tư xem mình đang giữ bao nhiêu cổ phiếu HPG rồi đặt lệnh bán một nửa số đó theo giá thị trường hiện tại nhé.",
+      "old_step_thoughts": null,
+      "new_step_thoughts": null
+    },
+    {
+      "id": "pilot_005_stocks_sell_keep",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `stocks.get_portfolio` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `stocks.place_order`.",
+        "Bước 2/2: Dựa trên kết quả `stocks.get_portfolio` (trích xuất symbol='ZMX', quantity=500, price=61000), gọi `stocks.place_order` với tham số {\"symbol\": \"ZMX\", \"side\": \"sell\", \"quantity\": 500, \"price\": 61000}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `stocks.get_portfolio` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `stocks.place_order`.",
+        "Bước 2/2: Dựa trên kết quả `stocks.get_portfolio` (trích xuất symbol='ZMX', price=61000), gọi `stocks.place_order` với tham số {\"symbol\": \"ZMX\", \"side\": \"sell\", \"quantity\": 500, \"price\": 61000}."
+      ]
+    },
+    {
+      "id": "pilot_006_train_bus_book_seats",
+      "split": "train",
+      "reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": "Tìm vé tàu hỏa Hà Nội đi Hải Phòng ngày 2026-11-22, chọn chuyến còn đủ chỗ cho 3 người rồi đặt 3 vé giúp mình",
+      "new_user_prompt": "Tìm vé tàu hỏa từ Hà Nội đi Hải Phòng ngày 2026-11-22, chọn chuyến còn đủ chỗ cho 3 người rồi đặt 3 vé giúp mình.",
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `train_bus_tickets.search` ({\"origin\": \"Hà Nội\", \"destination\": \"Hải Phòng\", \"date\": \"2026-11-22\", \"type\": \"train\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `train_bus_tickets.book`.",
+        "Bước 2/2: Dựa trên kết quả `train_bus_tickets.search` (trích xuất trip_id='trip_hp_02', seats=3), gọi `train_bus_tickets.book` với tham số {\"trip_id\": \"trip_hp_02\", \"seats\": 3}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `train_bus_tickets.search` ({\"origin\": \"Hà Nội\", \"destination\": \"Hải Phòng\", \"date\": \"2026-11-22\", \"type\": \"train\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `train_bus_tickets.book`.",
+        "Bước 2/2: Dựa trên kết quả `train_bus_tickets.search` (trích xuất trip_id='trip_hp_02'), gọi `train_bus_tickets.book` với tham số {\"trip_id\": \"trip_hp_02\", \"seats\": 3}."
+      ]
+    },
+    {
+      "id": "pilot_008_ecommerce_buy_instock",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/3: Gọi `ecommerce.search` ({\"query\": \"tai nghe Bluetooth\", \"max_price\": 600000}) để lấy dữ liệu và ID thực tế trước khi thực hiện `ecommerce.add_to_cart`.",
+        "Bước 2/3: Dựa trên kết quả `ecommerce.search` (trích xuất product_id='prod_bt_02', quantity=1), gọi `ecommerce.add_to_cart` với tham số {\"product_id\": \"prod_bt_02\", \"quantity\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `ecommerce.add_to_cart` (dữ liệu (cart, cart_total)), gọi `ecommerce.checkout` với tham số {\"address\": \"Khu Công nghệ thông tin tập trung, Liên Chiểu, Đà Nẵng\", \"payment\": \"ewallet\"}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/3: Gọi `ecommerce.search` ({\"query\": \"tai nghe Bluetooth\", \"max_price\": 600000}) để lấy dữ liệu và ID thực tế trước khi thực hiện `ecommerce.add_to_cart`.",
+        "Bước 2/3: Dựa trên kết quả `ecommerce.search` (trích xuất product_id='prod_bt_02'), gọi `ecommerce.add_to_cart` với tham số {\"product_id\": \"prod_bt_02\", \"quantity\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `ecommerce.add_to_cart` (dữ liệu (cart, cart_total)), gọi `ecommerce.checkout` với tham số {\"address\": \"Khu Công nghệ thông tin tập trung, Liên Chiểu, Đà Nẵng\", \"payment\": \"ewallet\"}."
+      ]
+    },
+    {
+      "id": "pilot_013_chain_recipes_pantry_grocery",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/5: Gọi `recipes.search` ({\"query\": \"canh chua cá lóc\", \"servings\": 4}) để lấy dữ liệu và ID thực tế trước khi thực hiện `pantry.list_items`.",
+        "Bước 2/5: Dựa trên kết quả `recipes.search` (dữ liệu (recipes)), gọi `pantry.list_items` với tham số {}.",
+        "Bước 3/5: Dựa trên kết quả `pantry.list_items` (trích xuất query='cá lóc'), gọi `grocery.search` với tham số {\"query\": \"cá lóc\"}.",
+        "Bước 4/5: Dựa trên kết quả `grocery.search` (trích xuất product_id='gro_fish_01', quantity=1), gọi `grocery.add_to_cart` với tham số {\"product_id\": \"gro_fish_01\", \"quantity\": 1}.",
+        "Bước 5/5: Dựa trên kết quả `grocery.add_to_cart` (dữ liệu (cart, cart_total)), gọi `grocery.checkout` với tham số {\"address\": \"72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng\"}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/5: Gọi `recipes.search` ({\"query\": \"canh chua cá lóc\", \"servings\": 4}) để lấy dữ liệu và ID thực tế trước khi thực hiện `pantry.list_items`.",
+        "Bước 2/5: Dựa trên kết quả `recipes.search` (dữ liệu (recipes)), gọi `pantry.list_items` với tham số {}.",
+        "Bước 3/5: Dựa trên kết quả `pantry.list_items` (trích xuất query='cá lóc'), gọi `grocery.search` với tham số {\"query\": \"cá lóc\"}.",
+        "Bước 4/5: Dựa trên kết quả `grocery.search` (trích xuất product_id='gro_fish_01'), gọi `grocery.add_to_cart` với tham số {\"product_id\": \"gro_fish_01\", \"quantity\": 1}.",
+        "Bước 5/5: Dựa trên kết quả `grocery.add_to_cart` (dữ liệu (cart, cart_total)), gọi `grocery.checkout` với tham số {\"address\": \"72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng\"}."
+      ]
+    },
+    {
+      "id": "pilot_014_pantry_consume",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `pantry.list_items` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `pantry.consume`.",
+        "Bước 2/2: Dựa trên kết quả `pantry.list_items` (trích xuất item_id='pan_milk_01', quantity=2), gọi `pantry.consume` với tham số {\"item_id\": \"pan_milk_01\", \"quantity\": 2}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `pantry.list_items` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `pantry.consume`.",
+        "Bước 2/2: Dựa trên kết quả `pantry.list_items` (trích xuất item_id='pan_milk_01'), gọi `pantry.consume` với tham số {\"item_id\": \"pan_milk_01\", \"quantity\": 2}."
+      ]
+    },
+    {
+      "id": "pilot_016_event_tickets_book",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `event_tickets.search` ({\"query\": \"Sài Gòn Cười\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `event_tickets.book`.",
+        "Bước 2/2: Dựa trên kết quả `event_tickets.search` (trích xuất event_id='event_sgc_01', quantity=3), gọi `event_tickets.book` với tham số {\"event_id\": \"event_sgc_01\", \"quantity\": 3}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `event_tickets.search` ({\"query\": \"Sài Gòn Cười\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `event_tickets.book`.",
+        "Bước 2/2: Dựa trên kết quả `event_tickets.search` (trích xuất event_id='event_sgc_01'), gọi `event_tickets.book` với tham số {\"event_id\": \"event_sgc_01\", \"quantity\": 3}."
+      ]
+    },
+    {
+      "id": "pilot_017_public_transit_topup",
+      "split": "train",
+      "reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor"
+      ],
+      "old_user_prompt": "Tra cứu tuyến tàu điện từ Nhổn đi Hà Nội rồi nạp thêm 100 nghìn đồng vào thẻ vé giao thông công cộng giúp tôi",
+      "new_user_prompt": "Tra cứu tuyến tàu điện từ Nhổn đi Ga Hà Nội rồi nạp thêm 100 nghìn đồng vào thẻ vé giao thông công cộng giúp tôi.",
+      "old_step_thoughts": null,
+      "new_step_thoughts": null
+    },
+    {
+      "id": "pilot_019_habit_tracker_log",
+      "split": "train",
+      "reasons": [
+        "added_explicit_temporal_context_derivation_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `habit_tracker.list_habits` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `habit_tracker.log`.",
+        "Bước 2/2: Dựa trên kết quả `habit_tracker.list_habits` (trích xuất habit_id='habit_read_02'), gọi `habit_tracker.log` với tham số {\"habit_id\": \"habit_read_02\", \"date\": \"2026-11-20\"}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `habit_tracker.list_habits` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `habit_tracker.log`.",
+        "Bước 2/2: Dựa trên kết quả `habit_tracker.list_habits` (trích xuất habit_id='habit_read_02'; xác định date='2026-11-20' từ ngày hiện tại (2026-11-20) trong CONTEXT), gọi `habit_tracker.log` với tham số {\"habit_id\": \"habit_read_02\", \"date\": \"2026-11-20\"}."
+      ]
+    },
+    {
+      "id": "sim_parking_tr_01",
+      "split": "train",
+      "reasons": [
+        "added_explicit_temporal_context_derivation_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `parking.find` ({\"near\": \"Mỹ Đình\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `parking.reserve`.",
+        "Bước 2/2: Dựa trên kết quả `parking.find` (trích xuất lot_id='lot_avail_01'), gọi `parking.reserve` với tham số {\"lot_id\": \"lot_avail_01\", \"from_time\": \"2026-11-21T09:00:00+07:00\", \"hours\": 4}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `parking.find` ({\"near\": \"Mỹ Đình\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `parking.reserve`.",
+        "Bước 2/2: Dựa trên kết quả `parking.find` (trích xuất lot_id='lot_avail_01'; xác định from_time='2026-11-21T09:00:00+07:00' từ ngày hiện tại (2026-11-21) trong CONTEXT), gọi `parking.reserve` với tham số {\"lot_id\": \"lot_avail_01\", \"from_time\": \"2026-11-21T09:00:00+07:00\", \"hours\": 4}."
+      ]
+    },
+    {
+      "id": "sim_parking_tr_02",
+      "split": "train",
+      "reasons": [
+        "added_explicit_temporal_context_derivation_in_think",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `parking.find` ({\"near\": \"Hồ Gươm\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `parking.reserve`.",
+        "Bước 2/2: Dựa trên kết quả `parking.find` (trích xuất lot_id='lot_avail_02', hours=2), gọi `parking.reserve` với tham số {\"lot_id\": \"lot_avail_02\", \"from_time\": \"2026-11-22T19:00:00+07:00\", \"hours\": 2}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `parking.find` ({\"near\": \"Hồ Gươm\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `parking.reserve`.",
+        "Bước 2/2: Dựa trên kết quả `parking.find` (trích xuất lot_id='lot_avail_02'; xác định from_time='2026-11-22T19:00:00+07:00' từ ngày hiện tại (2026-11-22) trong CONTEXT), gọi `parking.reserve` với tham số {\"lot_id\": \"lot_avail_02\", \"from_time\": \"2026-11-22T19:00:00+07:00\", \"hours\": 2}."
+      ]
+    },
+    {
+      "id": "sim_parking_tr_03",
+      "split": "train",
+      "reasons": [
+        "added_explicit_temporal_context_derivation_in_think",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `parking.find` ({\"near\": \"Bệnh viện Bạch Mai\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `parking.reserve`.",
+        "Bước 2/2: Dựa trên kết quả `parking.find` (trích xuất lot_id='lot_avail_03', hours=3), gọi `parking.reserve` với tham số {\"lot_id\": \"lot_avail_03\", \"from_time\": \"2026-11-23T07:30:00+07:00\", \"hours\": 3}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `parking.find` ({\"near\": \"Bệnh viện Bạch Mai\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `parking.reserve`.",
+        "Bước 2/2: Dựa trên kết quả `parking.find` (trích xuất lot_id='lot_avail_03'; xác định from_time='2026-11-23T07:30:00+07:00' từ ngày hiện tại (2026-11-23) trong CONTEXT), gọi `parking.reserve` với tham số {\"lot_id\": \"lot_avail_03\", \"from_time\": \"2026-11-23T07:30:00+07:00\", \"hours\": 3}."
+      ]
+    },
+    {
+      "id": "sim_parking_val_01_end",
+      "split": "val",
+      "reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor"
+      ],
+      "old_user_prompt": "Chị vừa đánh xe ra khỏi bãi Nhà hát Lớn, đóng phiên đỗ xe Đà Nẵng chạy giúp chị nha",
+      "new_user_prompt": "Chị vừa đánh xe ra khỏi bãi Nhà hát Lớn, đóng phiên đỗ xe đang chạy giúp chị nha.",
+      "old_step_thoughts": null,
+      "new_step_thoughts": null
+    },
+    {
+      "id": "sim_parking_val_02_reserve",
+      "split": "val",
+      "reasons": [
+        "added_explicit_temporal_context_derivation_in_think",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `parking.find` ({\"near\": \"Thảo Điền\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `parking.reserve`.",
+        "Bước 2/2: Dựa trên kết quả `parking.find` (trích xuất lot_id='lot_td_02', hours=2), gọi `parking.reserve` với tham số {\"lot_id\": \"lot_td_02\", \"from_time\": \"2026-11-25T18:30:00+07:00\", \"hours\": 2}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `parking.find` ({\"near\": \"Thảo Điền\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `parking.reserve`.",
+        "Bước 2/2: Dựa trên kết quả `parking.find` (trích xuất lot_id='lot_td_02'; xác định from_time='2026-11-25T18:30:00+07:00' từ ngày hiện tại (2026-11-25) trong CONTEXT), gọi `parking.reserve` với tham số {\"lot_id\": \"lot_td_02\", \"from_time\": \"2026-11-25T18:30:00+07:00\", \"hours\": 2}."
+      ]
+    },
+    {
+      "id": "sim_stocks_val_01_buy",
+      "split": "val",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `stocks.get_quote` ({\"symbol\": \"MBB\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `stocks.place_order`.",
+        "Bước 2/2: Dựa trên kết quả `stocks.get_quote` (trích xuất symbol='MBB', quantity=600, price=24600), gọi `stocks.place_order` với tham số {\"symbol\": \"MBB\", \"side\": \"buy\", \"quantity\": 600, \"price\": 24600}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `stocks.get_quote` ({\"symbol\": \"MBB\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `stocks.place_order`.",
+        "Bước 2/2: Dựa trên kết quả `stocks.get_quote` (trích xuất symbol='MBB', price=24600), gọi `stocks.place_order` với tham số {\"symbol\": \"MBB\", \"side\": \"buy\", \"quantity\": 600, \"price\": 24600}."
+      ]
+    },
+    {
+      "id": "sim_stocks_tr_04_half",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `stocks.get_portfolio` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `stocks.place_order`.",
+        "Bước 2/2: Dựa trên kết quả `stocks.get_portfolio` (trích xuất symbol='VIC', quantity=500, price=42500), gọi `stocks.place_order` với tham số {\"symbol\": \"VIC\", \"side\": \"sell\", \"quantity\": 500, \"price\": 42500}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `stocks.get_portfolio` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `stocks.place_order`.",
+        "Bước 2/2: Dựa trên kết quả `stocks.get_portfolio` (trích xuất symbol='VIC', price=42500), gọi `stocks.place_order` với tham số {\"symbol\": \"VIC\", \"side\": \"sell\", \"quantity\": 500, \"price\": 42500}."
+      ]
+    },
+    {
+      "id": "sim_stocks_tr_06_keep",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `stocks.get_portfolio` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `stocks.place_order`.",
+        "Bước 2/2: Dựa trên kết quả `stocks.get_portfolio` (trích xuất symbol='ACB', quantity=600, price=27500), gọi `stocks.place_order` với tham số {\"symbol\": \"ACB\", \"side\": \"sell\", \"quantity\": 600, \"price\": 27500}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `stocks.get_portfolio` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `stocks.place_order`.",
+        "Bước 2/2: Dựa trên kết quả `stocks.get_portfolio` (trích xuất symbol='ACB', price=27500), gọi `stocks.place_order` với tham số {\"symbol\": \"ACB\", \"side\": \"sell\", \"quantity\": 600, \"price\": 27500}."
+      ]
+    },
+    {
+      "id": "sim_tb_tr_01_book",
+      "split": "train",
+      "reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": "Tìm chuyến tàu hỏa từ Hà Nội Nẵng ngày 2026-11-26 còn đủ 2 chỗ rồi đặt 2 vé giúp anh",
+      "new_user_prompt": "Tìm chuyến tàu hỏa từ Hà Nội đi Đà Nẵng ngày 2026-11-26 còn đủ 2 chỗ rồi đặt 2 vé giúp anh.",
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `train_bus_tickets.search` ({\"origin\": \"Hà Nội\", \"destination\": \"Đà Nẵng\", \"date\": \"2026-11-26\", \"type\": \"train\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `train_bus_tickets.book`.",
+        "Bước 2/2: Dựa trên kết quả `train_bus_tickets.search` (trích xuất trip_id='trip_ok_01', seats=2), gọi `train_bus_tickets.book` với tham số {\"trip_id\": \"trip_ok_01\", \"seats\": 2}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `train_bus_tickets.search` ({\"origin\": \"Hà Nội\", \"destination\": \"Đà Nẵng\", \"date\": \"2026-11-26\", \"type\": \"train\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `train_bus_tickets.book`.",
+        "Bước 2/2: Dựa trên kết quả `train_bus_tickets.search` (trích xuất trip_id='trip_ok_01'), gọi `train_bus_tickets.book` với tham số {\"trip_id\": \"trip_ok_01\", \"seats\": 2}."
+      ]
+    },
+    {
+      "id": "sim_tb_tr_02_book",
+      "split": "train",
+      "reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": "Tra cứu vé tàu TP.HCM đi Nha Trang ngày 2026-11-27, chọn chuyến còn trống từ 4 ghế trở lên và đặt 4 vé nhé",
+      "new_user_prompt": "Tra cứu vé tàu từ TP.HCM đi Nha Trang ngày 2026-11-27, chọn chuyến còn trống từ 4 ghế trở lên và đặt 4 vé nhé.",
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `train_bus_tickets.search` ({\"origin\": \"TP.HCM\", \"destination\": \"Nha Trang\", \"date\": \"2026-11-27\", \"type\": \"train\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `train_bus_tickets.book`.",
+        "Bước 2/2: Dựa trên kết quả `train_bus_tickets.search` (trích xuất trip_id='trip_ok_02', seats=4), gọi `train_bus_tickets.book` với tham số {\"trip_id\": \"trip_ok_02\", \"seats\": 4}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `train_bus_tickets.search` ({\"origin\": \"TP.HCM\", \"destination\": \"Nha Trang\", \"date\": \"2026-11-27\", \"type\": \"train\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `train_bus_tickets.book`.",
+        "Bước 2/2: Dựa trên kết quả `train_bus_tickets.search` (trích xuất trip_id='trip_ok_02'), gọi `train_bus_tickets.book` với tham số {\"trip_id\": \"trip_ok_02\", \"seats\": 4}."
+      ]
+    },
+    {
+      "id": "sim_tb_tr_03_book",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `train_bus_tickets.search` ({\"origin\": \"TP.HCM\", \"destination\": \"Vũng Tàu\", \"date\": \"2026-11-25\", \"type\": \"bus\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `train_bus_tickets.book`.",
+        "Bước 2/2: Dựa trên kết quả `train_bus_tickets.search` (trích xuất trip_id='trip_ok_03', seats=2), gọi `train_bus_tickets.book` với tham số {\"trip_id\": \"trip_ok_03\", \"seats\": 2}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `train_bus_tickets.search` ({\"origin\": \"TP.HCM\", \"destination\": \"Vũng Tàu\", \"date\": \"2026-11-25\", \"type\": \"bus\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `train_bus_tickets.book`.",
+        "Bước 2/2: Dựa trên kết quả `train_bus_tickets.search` (trích xuất trip_id='trip_ok_03'), gọi `train_bus_tickets.book` với tham số {\"trip_id\": \"trip_ok_03\", \"seats\": 2}."
+      ]
+    },
+    {
+      "id": "sim_tb_val_01_book",
+      "split": "val",
+      "reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": "Kiểm tra tàu Hà Nội đi Vinh ngày 2026-11-29 xem chuyến nào còn đủ 2 ghế thì đặt giúp mình 2 vé",
+      "new_user_prompt": "Kiểm tra tàu lửa Hà Nội đi Vinh ngày 2026-11-29 xem chuyến nào còn đủ 2 ghế thì đặt giúp mình 2 vé.",
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `train_bus_tickets.search` ({\"origin\": \"Hà Nội\", \"destination\": \"Vinh\", \"date\": \"2026-11-29\", \"type\": \"train\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `train_bus_tickets.book`.",
+        "Bước 2/2: Dựa trên kết quả `train_bus_tickets.search` (trích xuất trip_id='trip_ok_04', seats=2), gọi `train_bus_tickets.book` với tham số {\"trip_id\": \"trip_ok_04\", \"seats\": 2}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `train_bus_tickets.search` ({\"origin\": \"Hà Nội\", \"destination\": \"Vinh\", \"date\": \"2026-11-29\", \"type\": \"train\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `train_bus_tickets.book`.",
+        "Bước 2/2: Dựa trên kết quả `train_bus_tickets.search` (trích xuất trip_id='trip_ok_04'), gọi `train_bus_tickets.book` với tham số {\"trip_id\": \"trip_ok_04\", \"seats\": 2}."
+      ]
+    },
+    {
+      "id": "sim_tb_tr_05_cal",
+      "split": "train",
+      "reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": "Đặt 1 vé tàu hỏa Hà Nội đi Hải Phòng ngày 2026-11-25 rồi tạo sự kiện lịch cho chuyến tàu đó giúp tôi",
+      "new_user_prompt": "Đặt 1 vé tàu hỏa từ Hà Nội đi Hải Phòng ngày 2026-11-25 rồi tạo sự kiện lịch cho chuyến tàu đó giúp tôi.",
+      "old_step_thoughts": [
+        "Bước 1/3: Gọi `train_bus_tickets.search` ({\"origin\": \"Hà Nội\", \"destination\": \"Hải Phòng\", \"date\": \"2026-11-25\", \"type\": \"train\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `train_bus_tickets.book`.",
+        "Bước 2/3: Dựa trên kết quả `train_bus_tickets.search` (trích xuất trip_id='trip_cal_01', seats=1), gọi `train_bus_tickets.book` với tham số {\"trip_id\": \"trip_cal_01\", \"seats\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `train_bus_tickets.book` (dữ liệu (booking)), gọi `calendar.create_event` với tham số {\"title\": \"Chuyến train Hà Nội - Hải Phòng\", \"start\": \"2026-11-25T07:00:00+07:00\", \"location\": \"H...."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/3: Gọi `train_bus_tickets.search` ({\"origin\": \"Hà Nội\", \"destination\": \"Hải Phòng\", \"date\": \"2026-11-25\", \"type\": \"train\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `train_bus_tickets.book`.",
+        "Bước 2/3: Dựa trên kết quả `train_bus_tickets.search` (trích xuất trip_id='trip_cal_01'), gọi `train_bus_tickets.book` với tham số {\"trip_id\": \"trip_cal_01\", \"seats\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `train_bus_tickets.book` (dữ liệu (booking)), gọi `calendar.create_event` với tham số {\"title\": \"Chuyến train Hà Nội - Hải Phòng\", \"start\": \"2026-11-25T07:00:00+07:00\", \"location\": \"H...."
+      ]
+    },
+    {
+      "id": "sim_tb_tr_07_cal",
+      "split": "train",
+      "reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": "Đặt giúp mình 1 vé xe khách TP.HCM đi Cần Thơ ngày 2026-11-27 và ghi vào lịch cá nhân theo giờ xe chạy",
+      "new_user_prompt": "Đặt giúp mình 1 vé xe khách từ TP.HCM đi Cần Thơ ngày 2026-11-27 và ghi vào lịch cá nhân theo giờ xe chạy.",
+      "old_step_thoughts": [
+        "Bước 1/3: Gọi `train_bus_tickets.search` ({\"origin\": \"TP.HCM\", \"destination\": \"Cần Thơ\", \"date\": \"2026-11-27\", \"type\": \"bus\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `train_bus_tickets.book`.",
+        "Bước 2/3: Dựa trên kết quả `train_bus_tickets.search` (trích xuất trip_id='trip_cal_02', seats=1), gọi `train_bus_tickets.book` với tham số {\"trip_id\": \"trip_cal_02\", \"seats\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `train_bus_tickets.book` (dữ liệu (booking)), gọi `calendar.create_event` với tham số {\"title\": \"Chuyến bus TP.HCM - Cần Thơ\", \"start\": \"2026-11-27T08:30:00+07:00\", \"location\": \"TP.HCM\"}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/3: Gọi `train_bus_tickets.search` ({\"origin\": \"TP.HCM\", \"destination\": \"Cần Thơ\", \"date\": \"2026-11-27\", \"type\": \"bus\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `train_bus_tickets.book`.",
+        "Bước 2/3: Dựa trên kết quả `train_bus_tickets.search` (trích xuất trip_id='trip_cal_02'), gọi `train_bus_tickets.book` với tham số {\"trip_id\": \"trip_cal_02\", \"seats\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `train_bus_tickets.book` (dữ liệu (booking)), gọi `calendar.create_event` với tham số {\"title\": \"Chuyến bus TP.HCM - Cần Thơ\", \"start\": \"2026-11-27T08:30:00+07:00\", \"location\": \"TP.HCM\"}."
+      ]
+    },
+    {
+      "id": "sim_tb_val_02_cal",
+      "split": "val",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/3: Gọi `train_bus_tickets.search` ({\"origin\": \"Hà Nội\", \"destination\": \"Thanh Hóa\", \"date\": \"2026-11-28\", \"type\": \"train\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `train_bus_tickets.book`.",
+        "Bước 2/3: Dựa trên kết quả `train_bus_tickets.search` (trích xuất trip_id='trip_cal_03', seats=1), gọi `train_bus_tickets.book` với tham số {\"trip_id\": \"trip_cal_03\", \"seats\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `train_bus_tickets.book` (dữ liệu (booking)), gọi `calendar.create_event` với tham số {\"title\": \"Chuyến train Hà Nội - Thanh Hóa\", \"start\": \"2026-11-28T08:00:00+07:00\", \"location\": \"H...."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/3: Gọi `train_bus_tickets.search` ({\"origin\": \"Hà Nội\", \"destination\": \"Thanh Hóa\", \"date\": \"2026-11-28\", \"type\": \"train\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `train_bus_tickets.book`.",
+        "Bước 2/3: Dựa trên kết quả `train_bus_tickets.search` (trích xuất trip_id='trip_cal_03'), gọi `train_bus_tickets.book` với tham số {\"trip_id\": \"trip_cal_03\", \"seats\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `train_bus_tickets.book` (dữ liệu (booking)), gọi `calendar.create_event` với tham số {\"title\": \"Chuyến train Hà Nội - Thanh Hóa\", \"start\": \"2026-11-28T08:00:00+07:00\", \"location\": \"H...."
+      ]
+    },
+    {
+      "id": "sim_tb_val_04_ask_date",
+      "split": "val",
+      "reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor"
+      ],
+      "old_user_prompt": "Tìm và đặt giúp anh 2 vé tàu từ Hà Nội Đà Nẵng nhé",
+      "new_user_prompt": "Tìm và đặt giúp anh 2 vé tàu từ Hà Nội đi Đà Nẵng nhé.",
+      "old_step_thoughts": null,
+      "new_step_thoughts": null
+    },
+    {
+      "id": "sim_ecom_tr_01_buy",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/3: Gọi `ecommerce.search` ({\"query\": \"sạc dự phòng\", \"max_price\": 450000}) để lấy dữ liệu và ID thực tế trước khi thực hiện `ecommerce.add_to_cart`.",
+        "Bước 2/3: Dựa trên kết quả `ecommerce.search` (trích xuất product_id='prod_sdp_02', quantity=1), gọi `ecommerce.add_to_cart` với tham số {\"product_id\": \"prod_sdp_02\", \"quantity\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `ecommerce.add_to_cart` (dữ liệu (cart, cart_total)), gọi `ecommerce.checkout` với tham số {\"address\": \"Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội\", \"payment\": \"cod\"}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/3: Gọi `ecommerce.search` ({\"query\": \"sạc dự phòng\", \"max_price\": 450000}) để lấy dữ liệu và ID thực tế trước khi thực hiện `ecommerce.add_to_cart`.",
+        "Bước 2/3: Dựa trên kết quả `ecommerce.search` (trích xuất product_id='prod_sdp_02'), gọi `ecommerce.add_to_cart` với tham số {\"product_id\": \"prod_sdp_02\", \"quantity\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `ecommerce.add_to_cart` (dữ liệu (cart, cart_total)), gọi `ecommerce.checkout` với tham số {\"address\": \"Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội\", \"payment\": \"cod\"}."
+      ]
+    },
+    {
+      "id": "sim_ecom_tr_02_buy",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/3: Gọi `ecommerce.search` ({\"query\": \"chuột công thái học\", \"max_price\": 600000}) để lấy dữ liệu và ID thực tế trước khi thực hiện `ecommerce.add_to_cart`.",
+        "Bước 2/3: Dựa trên kết quả `ecommerce.search` (trích xuất product_id='prod_ms_02', quantity=1), gọi `ecommerce.add_to_cart` với tham số {\"product_id\": \"prod_ms_02\", \"quantity\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `ecommerce.add_to_cart` (dữ liệu (cart, cart_total)), gọi `ecommerce.checkout` với tham số {\"address\": \"Tòa nhà Bitexco, số 2 Hải Triều, Quận 1, TP.HCM\", \"payment\": \"ewallet\"}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/3: Gọi `ecommerce.search` ({\"query\": \"chuột công thái học\", \"max_price\": 600000}) để lấy dữ liệu và ID thực tế trước khi thực hiện `ecommerce.add_to_cart`.",
+        "Bước 2/3: Dựa trên kết quả `ecommerce.search` (trích xuất product_id='prod_ms_02'), gọi `ecommerce.add_to_cart` với tham số {\"product_id\": \"prod_ms_02\", \"quantity\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `ecommerce.add_to_cart` (dữ liệu (cart, cart_total)), gọi `ecommerce.checkout` với tham số {\"address\": \"Tòa nhà Bitexco, số 2 Hải Triều, Quận 1, TP.HCM\", \"payment\": \"ewallet\"}."
+      ]
+    },
+    {
+      "id": "sim_ecom_val_01_buy",
+      "split": "val",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/3: Gọi `ecommerce.search` ({\"query\": \"nồi chiên không dầu\", \"max_price\": 1500000}) để lấy dữ liệu và ID thực tế trước khi thực hiện `ecommerce.add_to_cart`.",
+        "Bước 2/3: Dựa trên kết quả `ecommerce.search` (trích xuất product_id='prod_nc_02', quantity=1), gọi `ecommerce.add_to_cart` với tham số {\"product_id\": \"prod_nc_02\", \"quantity\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `ecommerce.add_to_cart` (dữ liệu (cart, cart_total)), gọi `ecommerce.checkout` với tham số {\"address\": \"Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội\", \"payment\": \"bank\"}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/3: Gọi `ecommerce.search` ({\"query\": \"nồi chiên không dầu\", \"max_price\": 1500000}) để lấy dữ liệu và ID thực tế trước khi thực hiện `ecommerce.add_to_cart`.",
+        "Bước 2/3: Dựa trên kết quả `ecommerce.search` (trích xuất product_id='prod_nc_02'), gọi `ecommerce.add_to_cart` với tham số {\"product_id\": \"prod_nc_02\", \"quantity\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `ecommerce.add_to_cart` (dữ liệu (cart, cart_total)), gọi `ecommerce.checkout` với tham số {\"address\": \"Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội\", \"payment\": \"bank\"}."
+      ]
+    },
+    {
+      "id": "sim_grocery_tr_01",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/3: Gọi `grocery.search` ({\"query\": \"gạo ST25\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `grocery.add_to_cart`.",
+        "Bước 2/3: Dựa trên kết quả `grocery.search` (trích xuất product_id='gro_rice_01', quantity=1), gọi `grocery.add_to_cart` với tham số {\"product_id\": \"gro_rice_01\", \"quantity\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `grocery.add_to_cart` (dữ liệu (cart, cart_total)), gọi `grocery.checkout` với tham số {\"address\": \"Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội\", \"delivery_time\": \"18:00\"}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/3: Gọi `grocery.search` ({\"query\": \"gạo ST25\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `grocery.add_to_cart`.",
+        "Bước 2/3: Dựa trên kết quả `grocery.search` (trích xuất product_id='gro_rice_01'), gọi `grocery.add_to_cart` với tham số {\"product_id\": \"gro_rice_01\", \"quantity\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `grocery.add_to_cart` (dữ liệu (cart, cart_total)), gọi `grocery.checkout` với tham số {\"address\": \"Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội\", \"delivery_time\": \"18:00\"}."
+      ]
+    },
+    {
+      "id": "sim_grocery_tr_02",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/3: Gọi `grocery.search` ({\"query\": \"thịt ba chỉ bò\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `grocery.add_to_cart`.",
+        "Bước 2/3: Dựa trên kết quả `grocery.search` (trích xuất product_id='gro_beef_02', quantity=2), gọi `grocery.add_to_cart` với tham số {\"product_id\": \"gro_beef_02\", \"quantity\": 2}.",
+        "Bước 3/3: Dựa trên kết quả `grocery.add_to_cart` (dữ liệu (cart, cart_total)), gọi `grocery.checkout` với tham số {\"address\": \"128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM\"}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/3: Gọi `grocery.search` ({\"query\": \"thịt ba chỉ bò\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `grocery.add_to_cart`.",
+        "Bước 2/3: Dựa trên kết quả `grocery.search` (trích xuất product_id='gro_beef_02'), gọi `grocery.add_to_cart` với tham số {\"product_id\": \"gro_beef_02\", \"quantity\": 2}.",
+        "Bước 3/3: Dựa trên kết quả `grocery.add_to_cart` (dữ liệu (cart, cart_total)), gọi `grocery.checkout` với tham số {\"address\": \"128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM\"}."
+      ]
+    },
+    {
+      "id": "sim_grocery_tr_03",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/3: Gọi `grocery.search` ({\"query\": \"cá hồi phi lê\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `grocery.add_to_cart`.",
+        "Bước 2/3: Dựa trên kết quả `grocery.search` (trích xuất product_id='gro_sal_03', quantity=1), gọi `grocery.add_to_cart` với tham số {\"product_id\": \"gro_sal_03\", \"quantity\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `grocery.add_to_cart` (dữ liệu (cart, cart_total)), gọi `grocery.checkout` với tham số {\"address\": \"72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng\", \"delivery_time\": \"17:30\"}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/3: Gọi `grocery.search` ({\"query\": \"cá hồi phi lê\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `grocery.add_to_cart`.",
+        "Bước 2/3: Dựa trên kết quả `grocery.search` (trích xuất product_id='gro_sal_03'), gọi `grocery.add_to_cart` với tham số {\"product_id\": \"gro_sal_03\", \"quantity\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `grocery.add_to_cart` (dữ liệu (cart, cart_total)), gọi `grocery.checkout` với tham số {\"address\": \"72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng\", \"delivery_time\": \"17:30\"}."
+      ]
+    },
+    {
+      "id": "sim_pantry_tr_02",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `pantry.list_items` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `pantry.consume`.",
+        "Bước 2/2: Dựa trên kết quả `pantry.list_items` (trích xuất item_id='pan_rice_02', quantity=2), gọi `pantry.consume` với tham số {\"item_id\": \"pan_rice_02\", \"quantity\": 2}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `pantry.list_items` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `pantry.consume`.",
+        "Bước 2/2: Dựa trên kết quả `pantry.list_items` (trích xuất item_id='pan_rice_02'), gọi `pantry.consume` với tham số {\"item_id\": \"pan_rice_02\", \"quantity\": 2}."
+      ]
+    },
+    {
+      "id": "sim_pantry_val_01",
+      "split": "val",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `pantry.list_items` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `pantry.consume`.",
+        "Bước 2/2: Dựa trên kết quả `pantry.list_items` (trích xuất item_id='pan_potato_01', quantity=2), gọi `pantry.consume` với tham số {\"item_id\": \"pan_potato_01\", \"quantity\": 2}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `pantry.list_items` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `pantry.consume`.",
+        "Bước 2/2: Dựa trên kết quả `pantry.list_items` (trích xuất item_id='pan_potato_01'), gọi `pantry.consume` với tham số {\"item_id\": \"pan_potato_01\", \"quantity\": 2}."
+      ]
+    },
+    {
+      "id": "sim_recipes_val_01",
+      "split": "val",
+      "reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor"
+      ],
+      "old_user_prompt": "Tìm công thức làm bún Hà Nội cho 4 người ăn, xem chi tiết cách làm và lưu lại công thức đó giúp chị",
+      "new_user_prompt": "Tìm công thức làm bún chả Hà Nội cho 4 người ăn, xem chi tiết cách làm và lưu lại công thức đó giúp chị.",
+      "old_step_thoughts": null,
+      "new_step_thoughts": null
+    },
+    {
+      "id": "sim_chain_rpg_tr_01",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/5: Gọi `recipes.search` ({\"query\": \"lẩu thái hải sản\", \"servings\": 4}) để lấy dữ liệu và ID thực tế trước khi thực hiện `pantry.list_items`.",
+        "Bước 2/5: Dựa trên kết quả `recipes.search` (dữ liệu (recipes)), gọi `pantry.list_items` với tham số {}.",
+        "Bước 3/5: Dựa trên kết quả `pantry.list_items` (trích xuất query='tôm sú'), gọi `grocery.search` với tham số {\"query\": \"tôm sú\"}.",
+        "Bước 4/5: Dựa trên kết quả `grocery.search` (trích xuất product_id='gro_tom_01', quantity=1), gọi `grocery.add_to_cart` với tham số {\"product_id\": \"gro_tom_01\", \"quantity\": 1}.",
+        "Bước 5/5: Dựa trên kết quả `grocery.add_to_cart` (dữ liệu (cart, cart_total)), gọi `grocery.checkout` với tham số {\"address\": \"Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội\"}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/5: Gọi `recipes.search` ({\"query\": \"lẩu thái hải sản\", \"servings\": 4}) để lấy dữ liệu và ID thực tế trước khi thực hiện `pantry.list_items`.",
+        "Bước 2/5: Dựa trên kết quả `recipes.search` (dữ liệu (recipes)), gọi `pantry.list_items` với tham số {}.",
+        "Bước 3/5: Dựa trên kết quả `pantry.list_items` (trích xuất query='tôm sú'), gọi `grocery.search` với tham số {\"query\": \"tôm sú\"}.",
+        "Bước 4/5: Dựa trên kết quả `grocery.search` (trích xuất product_id='gro_tom_01'), gọi `grocery.add_to_cart` với tham số {\"product_id\": \"gro_tom_01\", \"quantity\": 1}.",
+        "Bước 5/5: Dựa trên kết quả `grocery.add_to_cart` (dữ liệu (cart, cart_total)), gọi `grocery.checkout` với tham số {\"address\": \"Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội\"}."
+      ]
+    },
+    {
+      "id": "sim_chain_rpg_tr_02",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/5: Gọi `recipes.search` ({\"query\": \"phở bò\", \"servings\": 2}) để lấy dữ liệu và ID thực tế trước khi thực hiện `pantry.list_items`.",
+        "Bước 2/5: Dựa trên kết quả `recipes.search` (dữ liệu (recipes)), gọi `pantry.list_items` với tham số {}.",
+        "Bước 3/5: Dựa trên kết quả `pantry.list_items` (trích xuất query='bánh phở'), gọi `grocery.search` với tham số {\"query\": \"bánh phở\"}.",
+        "Bước 4/5: Dựa trên kết quả `grocery.search` (trích xuất product_id='gro_bp_02', quantity=1), gọi `grocery.add_to_cart` với tham số {\"product_id\": \"gro_bp_02\", \"quantity\": 1}.",
+        "Bước 5/5: Dựa trên kết quả `grocery.add_to_cart` (dữ liệu (cart, cart_total)), gọi `grocery.checkout` với tham số {\"address\": \"128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM\"}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/5: Gọi `recipes.search` ({\"query\": \"phở bò\", \"servings\": 2}) để lấy dữ liệu và ID thực tế trước khi thực hiện `pantry.list_items`.",
+        "Bước 2/5: Dựa trên kết quả `recipes.search` (dữ liệu (recipes)), gọi `pantry.list_items` với tham số {}.",
+        "Bước 3/5: Dựa trên kết quả `pantry.list_items` (trích xuất query='bánh phở'), gọi `grocery.search` với tham số {\"query\": \"bánh phở\"}.",
+        "Bước 4/5: Dựa trên kết quả `grocery.search` (trích xuất product_id='gro_bp_02'), gọi `grocery.add_to_cart` với tham số {\"product_id\": \"gro_bp_02\", \"quantity\": 1}.",
+        "Bước 5/5: Dựa trên kết quả `grocery.add_to_cart` (dữ liệu (cart, cart_total)), gọi `grocery.checkout` với tham số {\"address\": \"128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM\"}."
+      ]
+    },
+    {
+      "id": "sim_chain_rpg_tr_04",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/3: Gọi `recipes.search` ({\"query\": \"gà kho gừng\", \"servings\": 4}) để lấy dữ liệu và ID thực tế trước khi thực hiện `pantry.list_items`.",
+        "Bước 2/3: Dựa trên kết quả `recipes.search` (dữ liệu (recipes)), gọi `pantry.list_items` với tham số {}.",
+        "Bước 3/3: Dựa trên kết quả `pantry.list_items` (trích xuất name='thịt gà', quantity=1), gọi `shopping_list.add` với tham số {\"name\": \"thịt gà\", \"quantity\": 1}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/3: Gọi `recipes.search` ({\"query\": \"gà kho gừng\", \"servings\": 4}) để lấy dữ liệu và ID thực tế trước khi thực hiện `pantry.list_items`.",
+        "Bước 2/3: Dựa trên kết quả `recipes.search` (dữ liệu (recipes)), gọi `pantry.list_items` với tham số {}.",
+        "Bước 3/3: Dựa trên kết quả `pantry.list_items` (trích xuất name='thịt gà'), gọi `shopping_list.add` với tham số {\"name\": \"thịt gà\", \"quantity\": 1}."
+      ]
+    },
+    {
+      "id": "sim_chain_rpg_val_01",
+      "split": "val",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/5: Gọi `recipes.search` ({\"query\": \"bò lúc lắc\", \"servings\": 4}) để lấy dữ liệu và ID thực tế trước khi thực hiện `pantry.list_items`.",
+        "Bước 2/5: Dựa trên kết quả `recipes.search` (dữ liệu (recipes)), gọi `pantry.list_items` với tham số {}.",
+        "Bước 3/5: Dựa trên kết quả `pantry.list_items` (trích xuất query='thăn bò'), gọi `grocery.search` với tham số {\"query\": \"thăn bò\"}.",
+        "Bước 4/5: Dựa trên kết quả `grocery.search` (trích xuất product_id='gro_tb_01', quantity=1), gọi `grocery.add_to_cart` với tham số {\"product_id\": \"gro_tb_01\", \"quantity\": 1}.",
+        "Bước 5/5: Dựa trên kết quả `grocery.add_to_cart` (dữ liệu (cart, cart_total)), gọi `grocery.checkout` với tham số {\"address\": \"Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội\"}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/5: Gọi `recipes.search` ({\"query\": \"bò lúc lắc\", \"servings\": 4}) để lấy dữ liệu và ID thực tế trước khi thực hiện `pantry.list_items`.",
+        "Bước 2/5: Dựa trên kết quả `recipes.search` (dữ liệu (recipes)), gọi `pantry.list_items` với tham số {}.",
+        "Bước 3/5: Dựa trên kết quả `pantry.list_items` (trích xuất query='thăn bò'), gọi `grocery.search` với tham số {\"query\": \"thăn bò\"}.",
+        "Bước 4/5: Dựa trên kết quả `grocery.search` (trích xuất product_id='gro_tb_01'), gọi `grocery.add_to_cart` với tham số {\"product_id\": \"gro_tb_01\", \"quantity\": 1}.",
+        "Bước 5/5: Dựa trên kết quả `grocery.add_to_cart` (dữ liệu (cart, cart_total)), gọi `grocery.checkout` với tham số {\"address\": \"Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội\"}."
+      ]
+    },
+    {
+      "id": "sim_event_tr_01",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `event_tickets.search` ({\"query\": \"Jazz Mùa Thu\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `event_tickets.book`.",
+        "Bước 2/2: Dựa trên kết quả `event_tickets.search` (trích xuất event_id='event_jz_01', quantity=2), gọi `event_tickets.book` với tham số {\"event_id\": \"event_jz_01\", \"quantity\": 2}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `event_tickets.search` ({\"query\": \"Jazz Mùa Thu\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `event_tickets.book`.",
+        "Bước 2/2: Dựa trên kết quả `event_tickets.search` (trích xuất event_id='event_jz_01'), gọi `event_tickets.book` với tham số {\"event_id\": \"event_jz_01\", \"quantity\": 2}."
+      ]
+    },
+    {
+      "id": "sim_event_tr_03",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/3: Gọi `event_tickets.search` ({\"query\": \"Giao hưởng Mùa Đông\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `event_tickets.book`.",
+        "Bước 2/3: Dựa trên kết quả `event_tickets.search` (trích xuất event_id='event_gh_03', quantity=2), gọi `event_tickets.book` với tham số {\"event_id\": \"event_gh_03\", \"quantity\": 2}.",
+        "Bước 3/3: Dựa trên kết quả `event_tickets.book` (dữ liệu (booking)), gọi `calendar.create_event` với tham số {\"title\": \"Hòa nhạc Giao hưởng Mùa Đông\", \"start\": \"2026-12-02T19:30:00+07:00\", \"location\": \"Học ...."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/3: Gọi `event_tickets.search` ({\"query\": \"Giao hưởng Mùa Đông\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `event_tickets.book`.",
+        "Bước 2/3: Dựa trên kết quả `event_tickets.search` (trích xuất event_id='event_gh_03'), gọi `event_tickets.book` với tham số {\"event_id\": \"event_gh_03\", \"quantity\": 2}.",
+        "Bước 3/3: Dựa trên kết quả `event_tickets.book` (dữ liệu (booking)), gọi `calendar.create_event` với tham số {\"title\": \"Hòa nhạc Giao hưởng Mùa Đông\", \"start\": \"2026-12-02T19:30:00+07:00\", \"location\": \"Học ...."
+      ]
+    },
+    {
+      "id": "sim_event_tr_04",
+      "split": "train",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/3: Gọi `event_tickets.search` ({\"query\": \"Hội thảo AI\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `event_tickets.book`.",
+        "Bước 2/3: Dựa trên kết quả `event_tickets.search` (trích xuất event_id='event_ai_04', quantity=1), gọi `event_tickets.book` với tham số {\"event_id\": \"event_ai_04\", \"quantity\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `event_tickets.book` (dữ liệu (booking)), gọi `calendar.create_event` với tham số {\"title\": \"Hội thảo AI & Dữ liệu lớn\", \"start\": \"2026-12-05T08:30:00+07:00\", \"location\": \"Trung t...."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/3: Gọi `event_tickets.search` ({\"query\": \"Hội thảo AI\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `event_tickets.book`.",
+        "Bước 2/3: Dựa trên kết quả `event_tickets.search` (trích xuất event_id='event_ai_04'), gọi `event_tickets.book` với tham số {\"event_id\": \"event_ai_04\", \"quantity\": 1}.",
+        "Bước 3/3: Dựa trên kết quả `event_tickets.book` (dữ liệu (booking)), gọi `calendar.create_event` với tham số {\"title\": \"Hội thảo AI & Dữ liệu lớn\", \"start\": \"2026-12-05T08:30:00+07:00\", \"location\": \"Trung t...."
+      ]
+    },
+    {
+      "id": "sim_event_val_02",
+      "split": "val",
+      "reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/3: Gọi `event_tickets.search` ({\"query\": \"Kịch Thiếu nhi\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `event_tickets.book`.",
+        "Bước 2/3: Dựa trên kết quả `event_tickets.search` (trích xuất event_id='event_kt_02', quantity=3), gọi `event_tickets.book` với tham số {\"event_id\": \"event_kt_02\", \"quantity\": 3}.",
+        "Bước 3/3: Dựa trên kết quả `event_tickets.book` (dữ liệu (booking)), gọi `calendar.create_event` với tham số {\"title\": \"Vở kịch Thiếu nhi Dế Mèn\", \"start\": \"2026-12-01T18:00:00+07:00\", \"location\": \"Nhà hát ...."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/3: Gọi `event_tickets.search` ({\"query\": \"Kịch Thiếu nhi\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `event_tickets.book`.",
+        "Bước 2/3: Dựa trên kết quả `event_tickets.search` (trích xuất event_id='event_kt_02'), gọi `event_tickets.book` với tham số {\"event_id\": \"event_kt_02\", \"quantity\": 3}.",
+        "Bước 3/3: Dựa trên kết quả `event_tickets.book` (dữ liệu (booking)), gọi `calendar.create_event` với tham số {\"title\": \"Vở kịch Thiếu nhi Dế Mèn\", \"start\": \"2026-12-01T18:00:00+07:00\", \"location\": \"Nhà hát ...."
+      ]
+    },
+    {
+      "id": "sim_habit_tr_02",
+      "split": "train",
+      "reasons": [
+        "added_explicit_temporal_context_derivation_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `habit_tracker.list_habits` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `habit_tracker.log`.",
+        "Bước 2/2: Dựa trên kết quả `habit_tracker.list_habits` (trích xuất habit_id='habit_med_02'), gọi `habit_tracker.log` với tham số {\"habit_id\": \"habit_med_02\", \"date\": \"2026-11-22\"}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `habit_tracker.list_habits` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `habit_tracker.log`.",
+        "Bước 2/2: Dựa trên kết quả `habit_tracker.list_habits` (trích xuất habit_id='habit_med_02'; xác định date='2026-11-22' từ ngày hiện tại (2026-11-22) trong CONTEXT), gọi `habit_tracker.log` với tham số {\"habit_id\": \"habit_med_02\", \"date\": \"2026-11-22\"}."
+      ]
+    },
+    {
+      "id": "sim_habit_tr_03",
+      "split": "train",
+      "reasons": [
+        "added_explicit_temporal_context_derivation_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `habit_tracker.list_habits` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `habit_tracker.log`.",
+        "Bước 2/2: Dựa trên kết quả `habit_tracker.list_habits` (trích xuất habit_id='habit_eng_03'), gọi `habit_tracker.log` với tham số {\"habit_id\": \"habit_eng_03\", \"date\": \"2026-11-22\"}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `habit_tracker.list_habits` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `habit_tracker.log`.",
+        "Bước 2/2: Dựa trên kết quả `habit_tracker.list_habits` (trích xuất habit_id='habit_eng_03'; xác định date='2026-11-22' từ ngày hiện tại (2026-11-22) trong CONTEXT), gọi `habit_tracker.log` với tham số {\"habit_id\": \"habit_eng_03\", \"date\": \"2026-11-22\"}."
+      ]
+    },
+    {
+      "id": "sim_habit_val_02",
+      "split": "val",
+      "reasons": [
+        "added_explicit_temporal_context_derivation_in_think"
+      ],
+      "old_user_prompt": null,
+      "new_user_prompt": null,
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `habit_tracker.list_habits` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `habit_tracker.log`.",
+        "Bước 2/2: Dựa trên kết quả `habit_tracker.list_habits` (trích xuất habit_id='habit_wt_02'), gọi `habit_tracker.log` với tham số {\"habit_id\": \"habit_wt_02\", \"date\": \"2026-11-22\"}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `habit_tracker.list_habits` ({}) để lấy dữ liệu và ID thực tế trước khi thực hiện `habit_tracker.log`.",
+        "Bước 2/2: Dựa trên kết quả `habit_tracker.list_habits` (trích xuất habit_id='habit_wt_02'; xác định date='2026-11-22' từ ngày hiện tại (2026-11-22) trong CONTEXT), gọi `habit_tracker.log` với tham số {\"habit_id\": \"habit_wt_02\", \"date\": \"2026-11-22\"}."
+      ]
+    },
+    {
+      "id": "sim_flights_tr_01",
+      "split": "train",
+      "reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": "Tìm chuyến bay Hà Nội đi TP.HCM ngày 2026-11-28, chọn chuyến có giá vé rẻ nhất rồi đặt 1 vé hạng phổ thông (economy) giúp anh",
+      "new_user_prompt": "Tìm chuyến bay từ Hà Nội đi TP.HCM ngày 2026-11-28, chọn chuyến có giá vé rẻ nhất rồi đặt 1 vé hạng phổ thông (economy) giúp anh.",
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `flights.search` ({\"origin\": \"HAN\", \"destination\": \"SGN\", \"date\": \"2026-11-28\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `flights.book`.",
+        "Bước 2/2: Dựa trên kết quả `flights.search` (trích xuất flight_id='fl_vn_02', passengers=1), gọi `flights.book` với tham số {\"flight_id\": \"fl_vn_02\", \"passengers\": 1, \"seat_class\": \"economy\"}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `flights.search` ({\"origin\": \"HAN\", \"destination\": \"SGN\", \"date\": \"2026-11-28\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `flights.book`.",
+        "Bước 2/2: Dựa trên kết quả `flights.search` (trích xuất flight_id='fl_vn_02'), gọi `flights.book` với tham số {\"flight_id\": \"fl_vn_02\", \"passengers\": 1, \"seat_class\": \"economy\"}."
+      ]
+    },
+    {
+      "id": "sim_flights_tr_02",
+      "split": "train",
+      "reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": "Tra cứu vé máy bay TP.HCM đi Đà Nẵng ngày 2026-11-29 và đặt 2 vé hạng phổ thông ở chuyến có giá thấp nhất nhé",
+      "new_user_prompt": "Tra cứu vé máy bay từ TP.HCM đi Đà Nẵng ngày 2026-11-29 và đặt 2 vé hạng phổ thông ở chuyến có giá thấp nhất nhé.",
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `flights.search` ({\"origin\": \"SGN\", \"destination\": \"DAD\", \"date\": \"2026-11-29\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `flights.book`.",
+        "Bước 2/2: Dựa trên kết quả `flights.search` (trích xuất flight_id='fl_vj_02', passengers=2), gọi `flights.book` với tham số {\"flight_id\": \"fl_vj_02\", \"passengers\": 2, \"seat_class\": \"economy\"}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `flights.search` ({\"origin\": \"SGN\", \"destination\": \"DAD\", \"date\": \"2026-11-29\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `flights.book`.",
+        "Bước 2/2: Dựa trên kết quả `flights.search` (trích xuất flight_id='fl_vj_02'), gọi `flights.book` với tham số {\"flight_id\": \"fl_vj_02\", \"passengers\": 2, \"seat_class\": \"economy\"}."
+      ]
+    },
+    {
+      "id": "sim_flights_val_01",
+      "split": "val",
+      "reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ],
+      "old_user_prompt": "Tìm chuyến bay từ Hà Nội Lạt ngày 2026-11-30, chọn chuyến giá rẻ nhất rồi đặt 2 vé hạng phổ thông giúp chị",
+      "new_user_prompt": "Tìm chuyến bay từ Hà Nội đi Đà Lạt ngày 2026-11-30, chọn chuyến giá rẻ nhất rồi đặt 2 vé hạng phổ thông giúp chị.",
+      "old_step_thoughts": [
+        "Bước 1/2: Gọi `flights.search` ({\"origin\": \"HAN\", \"destination\": \"DLI\", \"date\": \"2026-11-30\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `flights.book`.",
+        "Bước 2/2: Dựa trên kết quả `flights.search` (trích xuất flight_id='fl_vn_v2', passengers=2), gọi `flights.book` với tham số {\"flight_id\": \"fl_vn_v2\", \"passengers\": 2, \"seat_class\": \"economy\"}."
+      ],
+      "new_step_thoughts": [
+        "Bước 1/2: Gọi `flights.search` ({\"origin\": \"HAN\", \"destination\": \"DLI\", \"date\": \"2026-11-30\"}) để lấy dữ liệu và ID thực tế trước khi thực hiện `flights.book`.",
+        "Bước 2/2: Dựa trên kết quả `flights.search` (trích xuất flight_id='fl_vn_v2'), gọi `flights.book` với tham số {\"flight_id\": \"fl_vn_v2\", \"passengers\": 2, \"seat_class\": \"economy\"}."
+      ]
+    }
+  ],
+  "per_sample_audit": [
+    {
+      "id": "pilot_001_parking_reserve_select",
+      "split": "train",
+      "current_time": "2026-11-20T10:15:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [
+        "chiều nay"
+      ],
+      "temporal_tool_arguments": [
+        {
+          "step": 2,
+          "tool": "parking.reserve",
+          "param": "from_time",
+          "value": "2026-11-20T14:00:00+07:00",
+          "derivation_source": "system_context_current_time (Hôm nay=2026-11-20)",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "added_explicit_temporal_context_derivation_in_think",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "pilot_002_parking_end_active",
+      "split": "train",
+      "current_time": "2026-11-20T16:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "pilot_003_stocks_cond_buy_met",
+      "split": "train",
+      "current_time": "2026-11-20T10:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "pilot_004_stocks_sell_half",
+      "split": "train",
+      "current_time": "2026-11-20T13:45:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor"
+      ]
+    },
+    {
+      "id": "pilot_005_stocks_sell_keep",
+      "split": "train",
+      "current_time": "2026-11-20T14:10:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "pilot_006_train_bus_book_seats",
+      "split": "train",
+      "current_time": "2026-11-20T09:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [
+        {
+          "step": 1,
+          "tool": "train_bus_tickets.search",
+          "param": "date",
+          "value": "2026-11-22",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "pilot_007_train_bus_cancel",
+      "split": "train",
+      "current_time": "2026-11-20T11:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "pilot_008_ecommerce_buy_instock",
+      "split": "train",
+      "current_time": "2026-11-20T10:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "pilot_009_ecommerce_return_delivered",
+      "split": "train",
+      "current_time": "2026-11-20T15:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "pilot_010_ecommerce_cancel_shipping",
+      "split": "val",
+      "current_time": "2026-11-20T11:20:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "pilot_011_grocery_buy_checkout",
+      "split": "train",
+      "current_time": "2026-11-20T08:45:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "pilot_012_grocery_ambiguous_ask",
+      "split": "train",
+      "current_time": "2026-11-20T09:15:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "pilot_013_chain_recipes_pantry_grocery",
+      "split": "train",
+      "current_time": "2026-11-20T10:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "pilot_014_pantry_consume",
+      "split": "train",
+      "current_time": "2026-11-20T08:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "pilot_015_recipes_search_save",
+      "split": "train",
+      "current_time": "2026-11-20T17:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "pilot_016_event_tickets_book",
+      "split": "train",
+      "current_time": "2026-11-20T12:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "pilot_017_public_transit_topup",
+      "split": "train",
+      "current_time": "2026-11-20T07:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor"
+      ]
+    },
+    {
+      "id": "pilot_018_translator_chat_ott",
+      "split": "train",
+      "current_time": "2026-11-20T18:10:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "pilot_019_habit_tracker_log",
+      "split": "train",
+      "current_time": "2026-11-20T21:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [
+        "hôm nay"
+      ],
+      "temporal_tool_arguments": [
+        {
+          "step": 2,
+          "tool": "habit_tracker.log",
+          "param": "date",
+          "value": "2026-11-20",
+          "derivation_source": "system_context_current_time (Hôm nay=2026-11-20)",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "added_explicit_temporal_context_derivation_in_think"
+      ]
+    },
+    {
+      "id": "pilot_020_bill_ewallet_fallback_bank",
+      "split": "train",
+      "current_time": "2026-11-20T09:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [
+        "tháng này"
+      ],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "pilot_021_smarthome_selective_fan",
+      "split": "train",
+      "current_time": "2026-11-20T13:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "pilot_022_weather_neg_condition_stop",
+      "split": "train",
+      "current_time": "2026-11-20T19:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [
+        "ngày mai"
+      ],
+      "temporal_tool_arguments": [
+        {
+          "step": 1,
+          "tool": "weather.get_forecast",
+          "param": "date",
+          "value": "2026-11-21",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "pilot_023_stocks_neg_condition_stop",
+      "split": "train",
+      "current_time": "2026-11-20T10:45:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "pilot_024_self_cancellation_stop",
+      "split": "train",
+      "current_time": "2026-11-20T11:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [
+        "thứ sáu"
+      ],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_parking_tr_01",
+      "split": "train",
+      "current_time": "2026-11-21T08:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [
+        "sáng nay"
+      ],
+      "temporal_tool_arguments": [
+        {
+          "step": 2,
+          "tool": "parking.reserve",
+          "param": "from_time",
+          "value": "2026-11-21T09:00:00+07:00",
+          "derivation_source": "system_context_current_time (Hôm nay=2026-11-21)",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "added_explicit_temporal_context_derivation_in_think"
+      ]
+    },
+    {
+      "id": "sim_parking_tr_02",
+      "split": "train",
+      "current_time": "2026-11-22T18:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [
+        "tối nay"
+      ],
+      "temporal_tool_arguments": [
+        {
+          "step": 2,
+          "tool": "parking.reserve",
+          "param": "from_time",
+          "value": "2026-11-22T19:00:00+07:00",
+          "derivation_source": "system_context_current_time (Hôm nay=2026-11-22)",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "added_explicit_temporal_context_derivation_in_think",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_parking_tr_03",
+      "split": "train",
+      "current_time": "2026-11-23T06:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [
+        "sáng nay"
+      ],
+      "temporal_tool_arguments": [
+        {
+          "step": 2,
+          "tool": "parking.reserve",
+          "param": "from_time",
+          "value": "2026-11-23T07:30:00+07:00",
+          "derivation_source": "system_context_current_time (Hôm nay=2026-11-23)",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "added_explicit_temporal_context_derivation_in_think",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_parking_tr_05_neg_full",
+      "split": "train",
+      "current_time": "2026-11-21T13:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [
+        "chiều nay"
+      ],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_parking_tr_06_ask_time",
+      "split": "train",
+      "current_time": "2026-11-21T10:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_parking_tr_07_end",
+      "split": "train",
+      "current_time": "2026-11-22T17:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_parking_tr_08_end",
+      "split": "train",
+      "current_time": "2026-11-22T17:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_parking_val_01_end",
+      "split": "val",
+      "current_time": "2026-11-22T17:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor"
+      ]
+    },
+    {
+      "id": "sim_parking_val_02_reserve",
+      "split": "val",
+      "current_time": "2026-11-25T16:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [
+        "chiều nay"
+      ],
+      "temporal_tool_arguments": [
+        {
+          "step": 2,
+          "tool": "parking.reserve",
+          "param": "from_time",
+          "value": "2026-11-25T18:30:00+07:00",
+          "derivation_source": "system_context_current_time (Hôm nay=2026-11-25)",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "added_explicit_temporal_context_derivation_in_think",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_stocks_tr_01_buy",
+      "split": "train",
+      "current_time": "2026-11-23T10:15:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_stocks_tr_02_buy",
+      "split": "train",
+      "current_time": "2026-11-23T10:15:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_stocks_val_01_buy",
+      "split": "val",
+      "current_time": "2026-11-23T10:15:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_stocks_tr_04_half",
+      "split": "train",
+      "current_time": "2026-11-23T14:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_stocks_tr_06_keep",
+      "split": "train",
+      "current_time": "2026-11-23T14:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_stocks_tr_07_keep",
+      "split": "train",
+      "current_time": "2026-11-23T14:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_stocks_val_02_half",
+      "split": "val",
+      "current_time": "2026-11-23T14:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_stocks_tr_08_alert",
+      "split": "train",
+      "current_time": "2026-11-23T11:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_stocks_tr_09_alert",
+      "split": "train",
+      "current_time": "2026-11-23T11:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_stocks_val_03_alert",
+      "split": "val",
+      "current_time": "2026-11-23T11:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_stocks_tr_10_neg_cond",
+      "split": "train",
+      "current_time": "2026-11-23T10:50:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_tb_tr_01_book",
+      "split": "train",
+      "current_time": "2026-11-21T09:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [
+        {
+          "step": 1,
+          "tool": "train_bus_tickets.search",
+          "param": "date",
+          "value": "2026-11-26",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_tb_tr_02_book",
+      "split": "train",
+      "current_time": "2026-11-21T09:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [
+        {
+          "step": 1,
+          "tool": "train_bus_tickets.search",
+          "param": "date",
+          "value": "2026-11-27",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_tb_tr_03_book",
+      "split": "train",
+      "current_time": "2026-11-21T09:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [
+        {
+          "step": 1,
+          "tool": "train_bus_tickets.search",
+          "param": "date",
+          "value": "2026-11-25",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_tb_val_01_book",
+      "split": "val",
+      "current_time": "2026-11-21T09:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [
+        {
+          "step": 1,
+          "tool": "train_bus_tickets.search",
+          "param": "date",
+          "value": "2026-11-29",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_tb_tr_05_cal",
+      "split": "train",
+      "current_time": "2026-11-21T10:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [
+        {
+          "step": 1,
+          "tool": "train_bus_tickets.search",
+          "param": "date",
+          "value": "2026-11-25",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        },
+        {
+          "step": 3,
+          "tool": "calendar.create_event",
+          "param": "start",
+          "value": "2026-11-25T07:00:00+07:00",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_tb_tr_07_cal",
+      "split": "train",
+      "current_time": "2026-11-21T10:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [
+        {
+          "step": 1,
+          "tool": "train_bus_tickets.search",
+          "param": "date",
+          "value": "2026-11-27",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        },
+        {
+          "step": 3,
+          "tool": "calendar.create_event",
+          "param": "start",
+          "value": "2026-11-27T08:30:00+07:00",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_tb_val_02_cal",
+      "split": "val",
+      "current_time": "2026-11-21T10:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [
+        {
+          "step": 1,
+          "tool": "train_bus_tickets.search",
+          "param": "date",
+          "value": "2026-11-28",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        },
+        {
+          "step": 3,
+          "tool": "calendar.create_event",
+          "param": "start",
+          "value": "2026-11-28T08:00:00+07:00",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_tb_tr_08_cancel",
+      "split": "train",
+      "current_time": "2026-11-22T12:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_tb_tr_09_cancel",
+      "split": "train",
+      "current_time": "2026-11-22T12:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_tb_val_03_cancel",
+      "split": "val",
+      "current_time": "2026-11-22T12:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_tb_val_04_ask_date",
+      "split": "val",
+      "current_time": "2026-11-22T09:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor"
+      ]
+    },
+    {
+      "id": "sim_ecom_tr_01_buy",
+      "split": "train",
+      "current_time": "2026-11-22T14:20:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_ecom_tr_02_buy",
+      "split": "train",
+      "current_time": "2026-11-22T14:20:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_ecom_tr_03_buy",
+      "split": "train",
+      "current_time": "2026-11-22T14:20:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_ecom_val_01_buy",
+      "split": "val",
+      "current_time": "2026-11-22T14:20:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_ecom_tr_05_return",
+      "split": "train",
+      "current_time": "2026-11-23T15:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_ecom_tr_06_return",
+      "split": "train",
+      "current_time": "2026-11-23T15:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_ecom_val_02_return",
+      "split": "val",
+      "current_time": "2026-11-23T15:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_ecom_tr_07_cancel",
+      "split": "train",
+      "current_time": "2026-11-23T15:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_ecom_tr_09_neg_oos",
+      "split": "train",
+      "current_time": "2026-11-23T16:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_ecom_tr_10_ask_ambig",
+      "split": "train",
+      "current_time": "2026-11-23T16:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_grocery_tr_01",
+      "split": "train",
+      "current_time": "2026-11-22T09:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [
+        "chiều nay"
+      ],
+      "temporal_tool_arguments": [
+        {
+          "step": 3,
+          "tool": "grocery.checkout",
+          "param": "delivery_time",
+          "value": "18:00",
+          "derivation_source": "user_request_explicit",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_grocery_tr_02",
+      "split": "train",
+      "current_time": "2026-11-22T09:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_grocery_tr_03",
+      "split": "train",
+      "current_time": "2026-11-22T09:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [
+        {
+          "step": 3,
+          "tool": "grocery.checkout",
+          "param": "delivery_time",
+          "value": "17:30",
+          "derivation_source": "user_request_explicit",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_grocery_val_01",
+      "split": "val",
+      "current_time": "2026-11-22T09:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [
+        "chiều nay"
+      ],
+      "temporal_tool_arguments": [
+        {
+          "step": 3,
+          "tool": "grocery.checkout",
+          "param": "delivery_time",
+          "value": "16:30",
+          "derivation_source": "user_request_explicit",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_pantry_tr_01",
+      "split": "train",
+      "current_time": "2026-11-22T11:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [
+        "sáng nay"
+      ],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_pantry_tr_02",
+      "split": "train",
+      "current_time": "2026-11-22T11:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_pantry_tr_04_neg_stock",
+      "split": "train",
+      "current_time": "2026-11-22T11:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_pantry_val_01",
+      "split": "val",
+      "current_time": "2026-11-22T11:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_recipes_tr_01",
+      "split": "train",
+      "current_time": "2026-11-22T15:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_recipes_tr_02",
+      "split": "train",
+      "current_time": "2026-11-22T15:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_recipes_tr_03",
+      "split": "train",
+      "current_time": "2026-11-22T15:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_recipes_val_01",
+      "split": "val",
+      "current_time": "2026-11-22T15:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor"
+      ]
+    },
+    {
+      "id": "sim_chain_rpg_tr_01",
+      "split": "train",
+      "current_time": "2026-11-23T09:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_chain_rpg_tr_02",
+      "split": "train",
+      "current_time": "2026-11-23T09:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_chain_rpg_tr_04",
+      "split": "train",
+      "current_time": "2026-11-23T09:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_chain_rpg_val_01",
+      "split": "val",
+      "current_time": "2026-11-23T09:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_event_tr_01",
+      "split": "train",
+      "current_time": "2026-11-22T10:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_event_tr_02",
+      "split": "train",
+      "current_time": "2026-11-22T10:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_event_tr_03",
+      "split": "train",
+      "current_time": "2026-11-22T10:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [
+        {
+          "step": 3,
+          "tool": "calendar.create_event",
+          "param": "start",
+          "value": "2026-12-02T19:30:00+07:00",
+          "derivation_source": "system_context_14_day_calendar (2026-12-02)",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_event_tr_04",
+      "split": "train",
+      "current_time": "2026-11-22T10:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [
+        {
+          "step": 3,
+          "tool": "calendar.create_event",
+          "param": "start",
+          "value": "2026-12-05T08:30:00+07:00",
+          "derivation_source": "system_context_14_day_calendar (2026-12-05)",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_event_val_02",
+      "split": "val",
+      "current_time": "2026-11-22T10:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [
+        {
+          "step": 3,
+          "tool": "calendar.create_event",
+          "param": "start",
+          "value": "2026-12-01T18:00:00+07:00",
+          "derivation_source": "system_context_14_day_calendar (2026-12-01)",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_event_tr_06_select_avail",
+      "split": "train",
+      "current_time": "2026-11-22T11:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [
+        "cuối tuần này",
+        "tuần này"
+      ],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_event_tr_07_neg_price",
+      "split": "train",
+      "current_time": "2026-11-22T12:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_event_tr_08_ask_qty",
+      "split": "train",
+      "current_time": "2026-11-22T13:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_transit_tr_01",
+      "split": "train",
+      "current_time": "2026-11-22T08:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_transit_tr_02",
+      "split": "train",
+      "current_time": "2026-11-22T08:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_transit_tr_03",
+      "split": "train",
+      "current_time": "2026-11-22T08:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_transit_val_01",
+      "split": "val",
+      "current_time": "2026-11-22T08:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_transit_tr_05_read_only",
+      "split": "train",
+      "current_time": "2026-11-22T08:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_transit_tr_06_ask_amount",
+      "split": "train",
+      "current_time": "2026-11-22T09:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_trans_tr_01_chat",
+      "split": "train",
+      "current_time": "2026-11-23T09:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [
+        "sáng mai"
+      ],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_trans_tr_03_sms",
+      "split": "train",
+      "current_time": "2026-11-23T09:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_trans_tr_04_sms",
+      "split": "train",
+      "current_time": "2026-11-23T09:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [
+        "chiều nay"
+      ],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_trans_tr_05_email",
+      "split": "train",
+      "current_time": "2026-11-23T09:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_trans_tr_06_notes",
+      "split": "train",
+      "current_time": "2026-11-23T09:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_trans_val_01_chat",
+      "split": "val",
+      "current_time": "2026-11-23T09:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [
+        "sáng nay"
+      ],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_habit_tr_01",
+      "split": "train",
+      "current_time": "2026-11-22T20:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [
+        "hôm nay"
+      ],
+      "temporal_tool_arguments": [
+        {
+          "step": 2,
+          "tool": "habit_tracker.log",
+          "param": "date",
+          "value": "2026-11-22",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_habit_tr_02",
+      "split": "train",
+      "current_time": "2026-11-22T20:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [
+        "hôm nay"
+      ],
+      "temporal_tool_arguments": [
+        {
+          "step": 2,
+          "tool": "habit_tracker.log",
+          "param": "date",
+          "value": "2026-11-22",
+          "derivation_source": "system_context_current_time (Hôm nay=2026-11-22)",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "added_explicit_temporal_context_derivation_in_think"
+      ]
+    },
+    {
+      "id": "sim_habit_tr_03",
+      "split": "train",
+      "current_time": "2026-11-22T20:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [
+        "hôm nay"
+      ],
+      "temporal_tool_arguments": [
+        {
+          "step": 2,
+          "tool": "habit_tracker.log",
+          "param": "date",
+          "value": "2026-11-22",
+          "derivation_source": "system_context_current_time (Hôm nay=2026-11-22)",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "added_explicit_temporal_context_derivation_in_think"
+      ]
+    },
+    {
+      "id": "sim_habit_tr_05",
+      "split": "train",
+      "current_time": "2026-11-22T20:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [
+        "hôm qua"
+      ],
+      "temporal_tool_arguments": [
+        {
+          "step": 2,
+          "tool": "habit_tracker.log",
+          "param": "date",
+          "value": "2026-11-21",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_habit_val_01",
+      "split": "val",
+      "current_time": "2026-11-22T20:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [
+        "hôm nay"
+      ],
+      "temporal_tool_arguments": [
+        {
+          "step": 2,
+          "tool": "habit_tracker.log",
+          "param": "date",
+          "value": "2026-11-22",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_habit_val_02",
+      "split": "val",
+      "current_time": "2026-11-22T20:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [
+        "hôm nay"
+      ],
+      "temporal_tool_arguments": [
+        {
+          "step": 2,
+          "tool": "habit_tracker.log",
+          "param": "date",
+          "value": "2026-11-22",
+          "derivation_source": "system_context_current_time (Hôm nay=2026-11-22)",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "added_explicit_temporal_context_derivation_in_think"
+      ]
+    },
+    {
+      "id": "sim_habit_tr_06_already_logged",
+      "split": "train",
+      "current_time": "2026-11-22T21:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [
+        "hôm nay"
+      ],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_bill_tr_01_wallet_ok",
+      "split": "train",
+      "current_time": "2026-11-23T09:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [
+        "tháng này"
+      ],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_bill_tr_02_fallback_bank",
+      "split": "train",
+      "current_time": "2026-11-23T09:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_bill_tr_03_insufficient_stop",
+      "split": "train",
+      "current_time": "2026-11-23T09:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_bill_val_01_fallback_bank",
+      "split": "val",
+      "current_time": "2026-11-23T09:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [
+        "kỳ này"
+      ],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_bill_val_02_insufficient_stop",
+      "split": "val",
+      "current_time": "2026-11-23T09:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_food_tr_01",
+      "split": "train",
+      "current_time": "2026-11-23T11:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_food_tr_02",
+      "split": "train",
+      "current_time": "2026-11-23T11:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_food_tr_03",
+      "split": "train",
+      "current_time": "2026-11-23T11:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_food_val_01",
+      "split": "val",
+      "current_time": "2026-11-23T11:30:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_flights_tr_01",
+      "split": "train",
+      "current_time": "2026-11-23T08:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [
+        {
+          "step": 1,
+          "tool": "flights.search",
+          "param": "date",
+          "value": "2026-11-28",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_flights_tr_02",
+      "split": "train",
+      "current_time": "2026-11-23T08:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [
+        {
+          "step": 1,
+          "tool": "flights.search",
+          "param": "date",
+          "value": "2026-11-29",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_flights_tr_03_checkin",
+      "split": "train",
+      "current_time": "2026-11-23T08:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_flights_val_01",
+      "split": "val",
+      "current_time": "2026-11-23T08:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [
+        {
+          "step": 1,
+          "tool": "flights.search",
+          "param": "date",
+          "value": "2026-11-30",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": true,
+      "modification_reasons": [
+        "repaired_corrupted_user_prompt_from_preprocessor",
+        "removed_spurious_scalar_substring_claim_in_think"
+      ]
+    },
+    {
+      "id": "sim_bank_tr_01",
+      "split": "train",
+      "current_time": "2026-11-23T10:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_bank_tr_02",
+      "split": "train",
+      "current_time": "2026-11-23T10:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_bank_tr_03_savings",
+      "split": "train",
+      "current_time": "2026-11-23T10:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_bank_val_01",
+      "split": "val",
+      "current_time": "2026-11-23T10:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_sh_tr_01_light",
+      "split": "train",
+      "current_time": "2026-11-23T20:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_sh_tr_02_climate",
+      "split": "train",
+      "current_time": "2026-11-23T20:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_sh_tr_03_scene",
+      "split": "train",
+      "current_time": "2026-11-23T20:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_sh_tr_04_multi_fan",
+      "split": "train",
+      "current_time": "2026-11-23T20:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_sh_val_01_scene",
+      "split": "val",
+      "current_time": "2026-11-23T20:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_weather_tr_01_rain_resched",
+      "split": "train",
+      "current_time": "2026-11-23T18:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [
+        "ngày mai",
+        "ngày kia"
+      ],
+      "temporal_tool_arguments": [
+        {
+          "step": 1,
+          "tool": "weather.get_forecast",
+          "param": "date",
+          "value": "2026-11-24",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        },
+        {
+          "step": 2,
+          "tool": "calendar.list_events",
+          "param": "date_from",
+          "value": "2026-11-24",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        },
+        {
+          "step": 2,
+          "tool": "calendar.list_events",
+          "param": "date_to",
+          "value": "2026-11-24",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        },
+        {
+          "step": 3,
+          "tool": "calendar.update_event",
+          "param": "start",
+          "value": "2026-11-25T06:30:00+07:00",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_weather_tr_02_norain_stop",
+      "split": "train",
+      "current_time": "2026-11-23T18:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [
+        "ngày mai",
+        "ngày kia"
+      ],
+      "temporal_tool_arguments": [
+        {
+          "step": 1,
+          "tool": "weather.get_forecast",
+          "param": "date",
+          "value": "2026-11-24",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_weather_tr_03_rain_cancel",
+      "split": "train",
+      "current_time": "2026-11-23T18:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [
+        "ngày mai"
+      ],
+      "temporal_tool_arguments": [
+        {
+          "step": 1,
+          "tool": "weather.get_forecast",
+          "param": "date",
+          "value": "2026-11-24",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        },
+        {
+          "step": 2,
+          "tool": "calendar.list_events",
+          "param": "date_from",
+          "value": "2026-11-24",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        },
+        {
+          "step": 2,
+          "tool": "calendar.list_events",
+          "param": "date_to",
+          "value": "2026-11-24",
+          "derivation_source": "user_request_literal_date",
+          "derivable_from_serialized_messages": true
+        }
+      ],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_cancel_tr_01_ecom",
+      "split": "train",
+      "current_time": "2026-11-23T12:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_cancel_tr_02_stocks",
+      "split": "train",
+      "current_time": "2026-11-23T12:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_cancel_tr_03_parking",
+      "split": "train",
+      "current_time": "2026-11-23T12:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Đà Nẵng",
+      "relative_time_expressions": [
+        "tối nay"
+      ],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_cancel_tr_04_grocery",
+      "split": "train",
+      "current_time": "2026-11-23T12:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_cancel_tr_05_event",
+      "split": "train",
+      "current_time": "2026-11-23T12:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [
+        "cuối tuần này",
+        "tuần này"
+      ],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_cancel_tr_06_transit",
+      "split": "train",
+      "current_time": "2026-11-23T12:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "Hà Nội",
+      "relative_time_expressions": [],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    },
+    {
+      "id": "sim_cancel_val_01_flights",
+      "split": "val",
+      "current_time": "2026-11-23T12:00:00+07:00",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "city": "TP.HCM",
+      "relative_time_expressions": [
+        "tuần sau"
+      ],
+      "temporal_tool_arguments": [],
+      "context_present_in_system_prompt": {
+        "context_header": true,
+        "current_time": true,
+        "timezone": true,
+        "relative_date_anchors_and_14d_calendar": true,
+        "user_profile_and_addresses": true,
+        "gps_coordinates": true
+      },
+      "derivable_from_serialized_messages": true,
+      "modified_in_v1_1": false,
+      "modification_reasons": []
+    }
+  ]
+}

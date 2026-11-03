@@ -1,0 +1,170 @@
+{
+  "scenario_id": "sim_event_tr_01",
+  "split": "train",
+  "template_id": "tpl_event_book_train_False",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "event_tickets"
+  ],
+  "installed_apps": [
+    "event_tickets",
+    "calendar",
+    "ewallet"
+  ],
+  "objective": "Search event Jazz Mùa Thu, book 2 tickets on event_jz_01.",
+  "expect_mutation": true,
+  "user_request": "Tìm vé chương trình Đêm nhạc Jazz Mùa Thu rồi đặt giúp anh 2 vé nhé.",
+  "current_time": "2026-11-22T10:00:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "event_tickets": {
+      "events": [
+        {
+          "id": "event_jz_01",
+          "name": "Đêm nhạc Jazz Mùa Thu",
+          "category": "sự kiện",
+          "date": "2026-11-28",
+          "time": "20:00",
+          "venue": "Nhà hát Lớn",
+          "price": 400000,
+          "available": 30
+        }
+      ],
+      "bookings": []
+    },
+    "calendar": {
+      "events": []
+    },
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "event_tickets.search",
+      "arguments": {
+        "query": "Jazz Mùa Thu"
+      }
+    },
+    {
+      "name": "event_tickets.book",
+      "arguments": {
+        "event_id": "event_jz_01",
+        "quantity": 2
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "events": [
+        {
+          "id": "event_jz_01",
+          "name": "Đêm nhạc Jazz Mùa Thu",
+          "category": "sự kiện",
+          "date": "2026-11-28",
+          "time": "20:00",
+          "venue": "Nhà hát Lớn",
+          "price": 400000,
+          "available": 30
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "booking": {
+        "id": "tk_01",
+        "event_id": "event_jz_01",
+        "quantity": 2,
+        "total": 800000,
+        "status": "confirmed"
+      }
+    }
+  ],
+  "final_state": {
+    "event_tickets": {
+      "events": [
+        {
+          "id": "event_jz_01",
+          "name": "Đêm nhạc Jazz Mùa Thu",
+          "category": "sự kiện",
+          "date": "2026-11-28",
+          "time": "20:00",
+          "venue": "Nhà hát Lớn",
+          "price": 400000,
+          "available": 28
+        }
+      ],
+      "bookings": [
+        {
+          "id": "tk_01",
+          "event_id": "event_jz_01",
+          "quantity": 2,
+          "total": 800000,
+          "status": "confirmed"
+        }
+      ]
+    },
+    "calendar": {
+      "events": []
+    },
+    "ewallet": {}
+  },
+  "state_diff": {
+    "event_tickets": {
+      "before": {
+        "events": [
+          {
+            "id": "event_jz_01",
+            "name": "Đêm nhạc Jazz Mùa Thu",
+            "category": "sự kiện",
+            "date": "2026-11-28",
+            "time": "20:00",
+            "venue": "Nhà hát Lớn",
+            "price": 400000,
+            "available": 30
+          }
+        ],
+        "bookings": []
+      },
+      "after": {
+        "events": [
+          {
+            "id": "event_jz_01",
+            "name": "Đêm nhạc Jazz Mùa Thu",
+            "category": "sự kiện",
+            "date": "2026-11-28",
+            "time": "20:00",
+            "venue": "Nhà hát Lớn",
+            "price": 400000,
+            "available": 28
+          }
+        ],
+        "bookings": [
+          {
+            "id": "tk_01",
+            "event_id": "event_jz_01",
+            "quantity": 2,
+            "total": 800000,
+            "status": "confirmed"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "a806cc870a5021b12910fba6a069ca56f589a61ee5495c22cfe180928f41eee0",
+  "validation": {
+    "scenario_id": "sim_event_tr_01",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "event_tickets"
+    ],
+    "state_hash": "a806cc870a5021b12910fba6a069ca56f589a61ee5495c22cfe180928f41eee0",
+    "errors": []
+  }
+}

@@ -1,0 +1,229 @@
+{
+  "scenario_id": "sim_flights_val_01",
+  "split": "val",
+  "template_id": "tpl_flights_val_book",
+  "scenario_type": "multi_result_selection",
+  "primary_apps": [
+    "flights"
+  ],
+  "installed_apps": [
+    "flights",
+    "calendar",
+    "ewallet"
+  ],
+  "objective": "Execute flight workflow on fl_vn_v2.",
+  "expect_mutation": true,
+  "user_request": "Tìm chuyến bay từ Hà Nội đi Đà Lạt ngày 2026-11-30, chọn chuyến giá rẻ nhất rồi đặt 2 vé hạng phổ thông giúp chị.",
+  "current_time": "2026-11-23T08:00:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "flights": {
+      "flights": [
+        {
+          "id": "fl_exp_03",
+          "origin": "HAN",
+          "destination": "DLI",
+          "date": "2026-11-30",
+          "depart": "13:00",
+          "arrive": "15:00",
+          "airline": "Bamboo Airways",
+          "price": 1600000,
+          "flight_no": "QH202"
+        },
+        {
+          "id": "fl_vn_v2",
+          "origin": "HAN",
+          "destination": "DLI",
+          "date": "2026-11-30",
+          "depart": "08:30",
+          "arrive": "10:10",
+          "airline": "Vietnam Airlines",
+          "price": 1150000,
+          "flight_no": "VN123"
+        }
+      ],
+      "bookings": []
+    },
+    "calendar": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "flights.search",
+      "arguments": {
+        "origin": "HAN",
+        "destination": "DLI",
+        "date": "2026-11-30"
+      }
+    },
+    {
+      "name": "flights.book",
+      "arguments": {
+        "flight_id": "fl_vn_v2",
+        "passengers": 2,
+        "seat_class": "economy"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "flights": [
+        {
+          "id": "fl_exp_03",
+          "origin": "HAN",
+          "destination": "DLI",
+          "date": "2026-11-30",
+          "depart": "13:00",
+          "arrive": "15:00",
+          "airline": "Bamboo Airways",
+          "price": 1600000,
+          "flight_no": "QH202"
+        },
+        {
+          "id": "fl_vn_v2",
+          "origin": "HAN",
+          "destination": "DLI",
+          "date": "2026-11-30",
+          "depart": "08:30",
+          "arrive": "10:10",
+          "airline": "Vietnam Airlines",
+          "price": 1150000,
+          "flight_no": "VN123"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "booking": {
+        "id": "bk_01",
+        "flight_id": "fl_vn_v2",
+        "passengers": 2,
+        "seat_class": "economy",
+        "status": "confirmed"
+      }
+    }
+  ],
+  "final_state": {
+    "flights": {
+      "flights": [
+        {
+          "id": "fl_exp_03",
+          "origin": "HAN",
+          "destination": "DLI",
+          "date": "2026-11-30",
+          "depart": "13:00",
+          "arrive": "15:00",
+          "airline": "Bamboo Airways",
+          "price": 1600000,
+          "flight_no": "QH202"
+        },
+        {
+          "id": "fl_vn_v2",
+          "origin": "HAN",
+          "destination": "DLI",
+          "date": "2026-11-30",
+          "depart": "08:30",
+          "arrive": "10:10",
+          "airline": "Vietnam Airlines",
+          "price": 1150000,
+          "flight_no": "VN123"
+        }
+      ],
+      "bookings": [
+        {
+          "id": "bk_01",
+          "flight_id": "fl_vn_v2",
+          "passengers": 2,
+          "seat_class": "economy",
+          "status": "confirmed"
+        }
+      ]
+    },
+    "calendar": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "flights": {
+      "before": {
+        "flights": [
+          {
+            "id": "fl_exp_03",
+            "origin": "HAN",
+            "destination": "DLI",
+            "date": "2026-11-30",
+            "depart": "13:00",
+            "arrive": "15:00",
+            "airline": "Bamboo Airways",
+            "price": 1600000,
+            "flight_no": "QH202"
+          },
+          {
+            "id": "fl_vn_v2",
+            "origin": "HAN",
+            "destination": "DLI",
+            "date": "2026-11-30",
+            "depart": "08:30",
+            "arrive": "10:10",
+            "airline": "Vietnam Airlines",
+            "price": 1150000,
+            "flight_no": "VN123"
+          }
+        ],
+        "bookings": []
+      },
+      "after": {
+        "flights": [
+          {
+            "id": "fl_exp_03",
+            "origin": "HAN",
+            "destination": "DLI",
+            "date": "2026-11-30",
+            "depart": "13:00",
+            "arrive": "15:00",
+            "airline": "Bamboo Airways",
+            "price": 1600000,
+            "flight_no": "QH202"
+          },
+          {
+            "id": "fl_vn_v2",
+            "origin": "HAN",
+            "destination": "DLI",
+            "date": "2026-11-30",
+            "depart": "08:30",
+            "arrive": "10:10",
+            "airline": "Vietnam Airlines",
+            "price": 1150000,
+            "flight_no": "VN123"
+          }
+        ],
+        "bookings": [
+          {
+            "id": "bk_01",
+            "flight_id": "fl_vn_v2",
+            "passengers": 2,
+            "seat_class": "economy",
+            "status": "confirmed"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "16ed4c8a6bfbd2c24453594083ee70c73c0ebcd1fd91d02949a5e3dbbb012cbc",
+  "validation": {
+    "scenario_id": "sim_flights_val_01",
+    "scenario_type": "multi_result_selection",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "flights"
+    ],
+    "state_hash": "16ed4c8a6bfbd2c24453594083ee70c73c0ebcd1fd91d02949a5e3dbbb012cbc",
+    "errors": []
+  }
+}

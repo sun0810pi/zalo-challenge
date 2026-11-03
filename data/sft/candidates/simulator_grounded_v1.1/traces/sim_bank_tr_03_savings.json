@@ -1,0 +1,190 @@
+{
+  "scenario_id": "sim_bank_tr_03_savings",
+  "split": "train",
+  "template_id": "tpl_banking_train_savings",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "banking"
+  ],
+  "installed_apps": [
+    "banking",
+    "ewallet",
+    "sms"
+  ],
+  "objective": "Read banking account/beneficiary IDs and execute transfer/savings of 20000000.",
+  "expect_mutation": true,
+  "user_request": "Kiểm tra số dư tài khoản ngân hàng rồi mở sổ tiết kiệm kỳ hạn 6 tháng với số tiền 20 triệu đồng giúp anh.",
+  "serialized_user_prompt": "Kiểm tra số dư tài khoản ngân hàng rồi mở sổ tiết kiệm kỳ hạn 6 tháng với số tiền 20 triệu đồng giúp anh",
+  "current_time": "2026-11-23T10:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Đà Nẵng",
+  "user_profile": {
+    "name": "Lê Hoàng Nam",
+    "city": "Đà Nẵng",
+    "home_address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+    "work_address": "Khu Công nghệ thông tin tập trung, Liên Chiểu, Đà Nẵng"
+  },
+  "location": {
+    "lat": 16.0601,
+    "lng": 108.2122
+  },
+  "history": [],
+  "initial_state": {
+    "banking": {
+      "accounts": [
+        {
+          "id": "acc_main_03",
+          "name": "Tài khoản Thanh toán",
+          "balance": 50000000
+        }
+      ],
+      "beneficiaries": [
+        {
+          "id": "ben_00",
+          "name": "Người nhận",
+          "bank": "VCB",
+          "account_number": "0011223344"
+        }
+      ],
+      "transactions": [],
+      "savings": []
+    },
+    "ewallet": {},
+    "sms": {}
+  },
+  "tool_calls": [
+    {
+      "name": "banking.get_balance",
+      "arguments": {}
+    },
+    {
+      "name": "banking.open_savings",
+      "arguments": {
+        "from_account_id": "acc_main_03",
+        "amount": 20000000,
+        "term_months": 6
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "accounts": [
+        {
+          "id": "acc_main_03",
+          "name": "Tài khoản Thanh toán",
+          "balance": 50000000
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "savings": {
+        "id": "sav_01",
+        "account_id": "acc_main_03",
+        "amount": 20000000,
+        "term_months": 6,
+        "status": "active"
+      },
+      "balance": 30000000
+    }
+  ],
+  "final_state": {
+    "banking": {
+      "accounts": [
+        {
+          "id": "acc_main_03",
+          "name": "Tài khoản Thanh toán",
+          "balance": 30000000
+        }
+      ],
+      "beneficiaries": [
+        {
+          "id": "ben_00",
+          "name": "Người nhận",
+          "bank": "VCB",
+          "account_number": "0011223344"
+        }
+      ],
+      "transactions": [],
+      "savings": [
+        {
+          "id": "sav_01",
+          "account_id": "acc_main_03",
+          "amount": 20000000,
+          "term_months": 6,
+          "status": "active"
+        }
+      ]
+    },
+    "ewallet": {},
+    "sms": {}
+  },
+  "state_diff": {
+    "banking": {
+      "before": {
+        "accounts": [
+          {
+            "id": "acc_main_03",
+            "name": "Tài khoản Thanh toán",
+            "balance": 50000000
+          }
+        ],
+        "beneficiaries": [
+          {
+            "id": "ben_00",
+            "name": "Người nhận",
+            "bank": "VCB",
+            "account_number": "0011223344"
+          }
+        ],
+        "transactions": [],
+        "savings": []
+      },
+      "after": {
+        "accounts": [
+          {
+            "id": "acc_main_03",
+            "name": "Tài khoản Thanh toán",
+            "balance": 30000000
+          }
+        ],
+        "beneficiaries": [
+          {
+            "id": "ben_00",
+            "name": "Người nhận",
+            "bank": "VCB",
+            "account_number": "0011223344"
+          }
+        ],
+        "transactions": [],
+        "savings": [
+          {
+            "id": "sav_01",
+            "account_id": "acc_main_03",
+            "amount": 20000000,
+            "term_months": 6,
+            "status": "active"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "3a4062b2eda195c98dbddad5e5e687ae4fdd20460b25fc7574d50e322a895090",
+  "validation": {
+    "scenario_id": "sim_bank_tr_03_savings",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "banking"
+    ],
+    "state_hash": "3a4062b2eda195c98dbddad5e5e687ae4fdd20460b25fc7574d50e322a895090",
+    "errors": []
+  }
+}

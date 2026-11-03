@@ -1,0 +1,150 @@
+{
+  "scenario_id": "pilot_020_bill_ewallet_fallback_bank",
+  "split": "train",
+  "template_id": "tpl_bill_ewallet_fallback_bank",
+  "scenario_type": "arithmetic_condition",
+  "primary_apps": [
+    "bill_payment",
+    "ewallet"
+  ],
+  "installed_apps": [
+    "bill_payment",
+    "ewallet",
+    "banking",
+    "sms"
+  ],
+  "objective": "Check water bill (245,000) and ewallet balance (120,000); since wallet < bill, pay via source='bank'.",
+  "expect_mutation": true,
+  "user_request": "Kiểm tra hóa đơn tiền nước tháng này rồi thanh toán bằng ví điện tử, nếu ví không đủ tiền thì chuyển sang thanh toán qua ngân hàng nhé.",
+  "current_time": "2026-11-20T09:30:00+07:00",
+  "city": "TP.HCM",
+  "initial_state": {
+    "bill_payment": {
+      "bills": [
+        {
+          "id": "bill_wt_01",
+          "type": "water",
+          "amount": 245000,
+          "paid": false
+        }
+      ],
+      "autopays": []
+    },
+    "ewallet": {
+      "balance": 120000,
+      "transactions": []
+    },
+    "banking": {},
+    "sms": {}
+  },
+  "tool_calls": [
+    {
+      "name": "bill_payment.list_bills",
+      "arguments": {
+        "type": "water"
+      }
+    },
+    {
+      "name": "ewallet.get_balance",
+      "arguments": {}
+    },
+    {
+      "name": "bill_payment.pay",
+      "arguments": {
+        "bill_id": "bill_wt_01",
+        "source": "bank"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "bills": [
+        {
+          "id": "bill_wt_01",
+          "type": "water",
+          "amount": 245000,
+          "paid": false
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "balance": 120000
+    },
+    {
+      "ok": true,
+      "bill": {
+        "id": "bill_wt_01",
+        "type": "water",
+        "amount": 245000,
+        "paid": true,
+        "paid_with": "bank"
+      }
+    }
+  ],
+  "final_state": {
+    "bill_payment": {
+      "bills": [
+        {
+          "id": "bill_wt_01",
+          "type": "water",
+          "amount": 245000,
+          "paid": true,
+          "paid_with": "bank"
+        }
+      ],
+      "autopays": []
+    },
+    "ewallet": {
+      "balance": 120000,
+      "transactions": []
+    },
+    "banking": {},
+    "sms": {}
+  },
+  "state_diff": {
+    "bill_payment": {
+      "before": {
+        "bills": [
+          {
+            "id": "bill_wt_01",
+            "type": "water",
+            "amount": 245000,
+            "paid": false
+          }
+        ],
+        "autopays": []
+      },
+      "after": {
+        "bills": [
+          {
+            "id": "bill_wt_01",
+            "type": "water",
+            "amount": 245000,
+            "paid": true,
+            "paid_with": "bank"
+          }
+        ],
+        "autopays": []
+      }
+    }
+  },
+  "state_hash": "9ba08a334dc415f84c84f2f399af55c8704a67f1e157dcd71b0db636ab3f4779",
+  "validation": {
+    "scenario_id": "pilot_020_bill_ewallet_fallback_bank",
+    "scenario_type": "arithmetic_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "bill_payment"
+    ],
+    "state_hash": "9ba08a334dc415f84c84f2f399af55c8704a67f1e157dcd71b0db636ab3f4779",
+    "errors": []
+  }
+}

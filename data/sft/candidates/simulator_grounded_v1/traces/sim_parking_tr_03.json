@@ -1,0 +1,203 @@
+{
+  "scenario_id": "sim_parking_tr_03",
+  "split": "train",
+  "template_id": "tpl_parking_find_select_reserve_train",
+  "scenario_type": "multi_result_selection",
+  "primary_apps": [
+    "parking"
+  ],
+  "installed_apps": [
+    "parking",
+    "maps",
+    "ewallet"
+  ],
+  "objective": "Find parking near Bệnh viện Bạch Mai, skip full lot lot_full_03, reserve lot_avail_03.",
+  "expect_mutation": true,
+  "user_request": "Sáng nay đưa người nhà đi khám ở Bệnh viện Bạch Mai, tìm bãi đỗ xe gần đó còn chỗ và đặt 3 tiếng từ 07:30 giúp anh.",
+  "current_time": "2026-11-23T06:30:00+07:00",
+  "city": "Đà Nẵng",
+  "initial_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_full_03",
+          "name": "Bãi xe Bệnh viện Bạch Mai 1",
+          "address": "Số 10 Bệnh viện Bạch Mai",
+          "area": "Đống Đa",
+          "price_per_hour": 25000,
+          "available_spots": 0
+        },
+        {
+          "id": "lot_avail_03",
+          "name": "Bãi đỗ xe trung tâm Bệnh viện Bạch Mai",
+          "address": "Số 28 Bệnh viện Bạch Mai",
+          "area": "Đống Đa",
+          "price_per_hour": 30000,
+          "available_spots": 8
+        }
+      ],
+      "sessions": []
+    },
+    "maps": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "parking.find",
+      "arguments": {
+        "near": "Bệnh viện Bạch Mai"
+      }
+    },
+    {
+      "name": "parking.reserve",
+      "arguments": {
+        "lot_id": "lot_avail_03",
+        "from_time": "2026-11-23T07:30:00+07:00",
+        "hours": 3
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "lots": [
+        {
+          "id": "lot_full_03",
+          "name": "Bãi xe Bệnh viện Bạch Mai 1",
+          "address": "Số 10 Bệnh viện Bạch Mai",
+          "area": "Đống Đa",
+          "price_per_hour": 25000,
+          "available_spots": 0
+        },
+        {
+          "id": "lot_avail_03",
+          "name": "Bãi đỗ xe trung tâm Bệnh viện Bạch Mai",
+          "address": "Số 28 Bệnh viện Bạch Mai",
+          "area": "Đống Đa",
+          "price_per_hour": 30000,
+          "available_spots": 8
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "session": {
+        "id": "park_01",
+        "lot_id": "lot_avail_03",
+        "from_time": "2026-11-23T07:30:00+07:00",
+        "hours": 3,
+        "end_time": "2026-11-23T10:30:00+07:00",
+        "total": 90000,
+        "status": "reserved"
+      }
+    }
+  ],
+  "final_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_full_03",
+          "name": "Bãi xe Bệnh viện Bạch Mai 1",
+          "address": "Số 10 Bệnh viện Bạch Mai",
+          "area": "Đống Đa",
+          "price_per_hour": 25000,
+          "available_spots": 0
+        },
+        {
+          "id": "lot_avail_03",
+          "name": "Bãi đỗ xe trung tâm Bệnh viện Bạch Mai",
+          "address": "Số 28 Bệnh viện Bạch Mai",
+          "area": "Đống Đa",
+          "price_per_hour": 30000,
+          "available_spots": 7
+        }
+      ],
+      "sessions": [
+        {
+          "id": "park_01",
+          "lot_id": "lot_avail_03",
+          "from_time": "2026-11-23T07:30:00+07:00",
+          "hours": 3,
+          "end_time": "2026-11-23T10:30:00+07:00",
+          "total": 90000,
+          "status": "reserved"
+        }
+      ]
+    },
+    "maps": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "parking": {
+      "before": {
+        "lots": [
+          {
+            "id": "lot_full_03",
+            "name": "Bãi xe Bệnh viện Bạch Mai 1",
+            "address": "Số 10 Bệnh viện Bạch Mai",
+            "area": "Đống Đa",
+            "price_per_hour": 25000,
+            "available_spots": 0
+          },
+          {
+            "id": "lot_avail_03",
+            "name": "Bãi đỗ xe trung tâm Bệnh viện Bạch Mai",
+            "address": "Số 28 Bệnh viện Bạch Mai",
+            "area": "Đống Đa",
+            "price_per_hour": 30000,
+            "available_spots": 8
+          }
+        ],
+        "sessions": []
+      },
+      "after": {
+        "lots": [
+          {
+            "id": "lot_full_03",
+            "name": "Bãi xe Bệnh viện Bạch Mai 1",
+            "address": "Số 10 Bệnh viện Bạch Mai",
+            "area": "Đống Đa",
+            "price_per_hour": 25000,
+            "available_spots": 0
+          },
+          {
+            "id": "lot_avail_03",
+            "name": "Bãi đỗ xe trung tâm Bệnh viện Bạch Mai",
+            "address": "Số 28 Bệnh viện Bạch Mai",
+            "area": "Đống Đa",
+            "price_per_hour": 30000,
+            "available_spots": 7
+          }
+        ],
+        "sessions": [
+          {
+            "id": "park_01",
+            "lot_id": "lot_avail_03",
+            "from_time": "2026-11-23T07:30:00+07:00",
+            "hours": 3,
+            "end_time": "2026-11-23T10:30:00+07:00",
+            "total": 90000,
+            "status": "reserved"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "b07b9c267537bb7170b77afa92474e99555e10f290a732cb0c0904e0d3cb7ce5",
+  "validation": {
+    "scenario_id": "sim_parking_tr_03",
+    "scenario_type": "multi_result_selection",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "parking"
+    ],
+    "state_hash": "b07b9c267537bb7170b77afa92474e99555e10f290a732cb0c0904e0d3cb7ce5",
+    "errors": []
+  }
+}

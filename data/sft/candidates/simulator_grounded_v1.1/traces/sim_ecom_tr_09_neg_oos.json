@@ -1,0 +1,107 @@
+{
+  "scenario_id": "sim_ecom_tr_09_neg_oos",
+  "split": "train",
+  "template_id": "tpl_ecom_neg_oos_train",
+  "scenario_type": "negative_condition",
+  "primary_apps": [
+    "ecommerce"
+  ],
+  "installed_apps": [
+    "ecommerce",
+    "ewallet"
+  ],
+  "objective": "Search e-reader <= 2M; only match is out of stock (in_stock=False), so stop without adding to cart.",
+  "expect_mutation": false,
+  "user_request": "Tìm trên sàn xem có máy đọc sách nào giá dưới 2 triệu mà còn hàng không, nếu có thì thêm vào giỏ hàng, hết hàng hoặc không có thì thôi nhé.",
+  "serialized_user_prompt": "Tìm trên sàn xem có máy đọc sách nào giá dưới 2 triệu mà còn hàng không, nếu có thì thêm vào giỏ hàng, hết hàng hoặc không có thì thôi nhé",
+  "current_time": "2026-11-23T16:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Nguyễn Minh Quân",
+    "city": "Hà Nội",
+    "home_address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+    "work_address": "Tòa nhà Keangnam, Phạm Hùng, Nam Từ Liêm, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0245,
+    "lng": 105.8091
+  },
+  "history": [],
+  "initial_state": {
+    "ecommerce": {
+      "products": [
+        {
+          "id": "prod_knd_01",
+          "name": "Máy đọc sách Kindle Basic",
+          "price": 1950000,
+          "seller": "Kindle VN",
+          "category": "điện tử",
+          "in_stock": false
+        }
+      ],
+      "cart": [],
+      "orders": [],
+      "returns": []
+    },
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "ecommerce.search",
+      "arguments": {
+        "query": "máy đọc sách",
+        "max_price": 2000000
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "products": [
+        {
+          "id": "prod_knd_01",
+          "name": "Máy đọc sách Kindle Basic",
+          "price": 1950000,
+          "seller": "Kindle VN",
+          "category": "điện tử",
+          "in_stock": false
+        }
+      ]
+    }
+  ],
+  "final_state": {
+    "ecommerce": {
+      "products": [
+        {
+          "id": "prod_knd_01",
+          "name": "Máy đọc sách Kindle Basic",
+          "price": 1950000,
+          "seller": "Kindle VN",
+          "category": "điện tử",
+          "in_stock": false
+        }
+      ],
+      "cart": [],
+      "orders": [],
+      "returns": []
+    },
+    "ewallet": {}
+  },
+  "state_diff": {},
+  "state_hash": "521dd95998a2f8c5b78a40ede874e66f37628154abb5f5dab8a8b0c1e95de73f",
+  "validation": {
+    "scenario_id": "sim_ecom_tr_09_neg_oos",
+    "scenario_type": "negative_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "521dd95998a2f8c5b78a40ede874e66f37628154abb5f5dab8a8b0c1e95de73f",
+    "errors": []
+  }
+}

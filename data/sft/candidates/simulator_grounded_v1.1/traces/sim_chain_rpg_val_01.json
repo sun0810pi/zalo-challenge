@@ -1,0 +1,334 @@
+{
+  "scenario_id": "sim_chain_rpg_val_01",
+  "split": "val",
+  "template_id": "tpl_chain_recipes_pantry_grocery_val",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "recipes",
+    "pantry",
+    "grocery"
+  ],
+  "installed_apps": [
+    "recipes",
+    "pantry",
+    "grocery",
+    "notes"
+  ],
+  "objective": "Chain recipes.search -> pantry.list_items -> grocery for missing ingredient 'thăn bò'.",
+  "expect_mutation": true,
+  "user_request": "Tìm công thức bò lúc lắc cho 4 người, kiểm tra tủ bếp xem nguyên liệu nào đã hết (stock=0) thì tìm trên app đi chợ đặt mua 1 phần giao về địa chỉ nhà giúp chị.",
+  "serialized_user_prompt": "Tìm công thức bò lúc lắc cho 4 người, kiểm tra tủ bếp xem nguyên liệu nào đã hết (stock=0) thì tìm trên app đi chợ đặt mua 1 phần giao về địa chỉ nhà giúp chị",
+  "current_time": "2026-11-23T09:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Phạm Thanh Thảo",
+    "city": "Hà Nội",
+    "home_address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+    "work_address": "Tòa nhà Lotte Center, 54 Liễu Giai, Ba Đình, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0069,
+    "lng": 105.8027
+  },
+  "history": [],
+  "initial_state": {
+    "recipes": {
+      "recipes": [
+        {
+          "id": "rcp_bll_01",
+          "name": "Bò lúc lắc",
+          "servings": 4,
+          "ingredients": [
+            {
+              "name": "thăn bò",
+              "quantity": 1,
+              "unit": "phần"
+            },
+            {
+              "name": "hành tím",
+              "quantity": 3,
+              "unit": "củ"
+            }
+          ]
+        }
+      ],
+      "saved": []
+    },
+    "pantry": {
+      "items": [
+        {
+          "id": "pan_ok_01",
+          "name": "hành tím",
+          "stock": 10,
+          "unit": "củ"
+        },
+        {
+          "id": "pan_tb_01",
+          "name": "thăn bò",
+          "stock": 0,
+          "unit": "phần"
+        }
+      ]
+    },
+    "grocery": {
+      "products": [
+        {
+          "id": "gro_tb_01",
+          "name": "Thăn bò Úc tươi 500g",
+          "price": 195000,
+          "unit": "phần",
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": []
+    },
+    "notes": {}
+  },
+  "tool_calls": [
+    {
+      "name": "recipes.search",
+      "arguments": {
+        "query": "bò lúc lắc",
+        "servings": 4
+      }
+    },
+    {
+      "name": "pantry.list_items",
+      "arguments": {}
+    },
+    {
+      "name": "grocery.search",
+      "arguments": {
+        "query": "thăn bò"
+      }
+    },
+    {
+      "name": "grocery.add_to_cart",
+      "arguments": {
+        "product_id": "gro_tb_01",
+        "quantity": 1
+      }
+    },
+    {
+      "name": "grocery.checkout",
+      "arguments": {
+        "address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "recipes": [
+        {
+          "id": "rcp_bll_01",
+          "name": "Bò lúc lắc",
+          "servings": 4,
+          "ingredients": [
+            {
+              "name": "thăn bò",
+              "quantity": 1,
+              "unit": "phần"
+            },
+            {
+              "name": "hành tím",
+              "quantity": 3,
+              "unit": "củ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "items": [
+        {
+          "id": "pan_ok_01",
+          "name": "hành tím",
+          "stock": 10,
+          "unit": "củ"
+        },
+        {
+          "id": "pan_tb_01",
+          "name": "thăn bò",
+          "stock": 0,
+          "unit": "phần"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "products": [
+        {
+          "id": "gro_tb_01",
+          "name": "Thăn bò Úc tươi 500g",
+          "price": 195000,
+          "unit": "phần",
+          "in_stock": true
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "cart": [
+        {
+          "product_id": "gro_tb_01",
+          "name": "Thăn bò Úc tươi 500g",
+          "price": 195000,
+          "quantity": 1
+        }
+      ],
+      "cart_total": 195000
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "items": [
+          {
+            "product_id": "gro_tb_01",
+            "name": "Thăn bò Úc tươi 500g",
+            "price": 195000,
+            "quantity": 1
+          }
+        ],
+        "total": 195000,
+        "status": "placed",
+        "address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội"
+      }
+    }
+  ],
+  "final_state": {
+    "recipes": {
+      "recipes": [
+        {
+          "id": "rcp_bll_01",
+          "name": "Bò lúc lắc",
+          "servings": 4,
+          "ingredients": [
+            {
+              "name": "thăn bò",
+              "quantity": 1,
+              "unit": "phần"
+            },
+            {
+              "name": "hành tím",
+              "quantity": 3,
+              "unit": "củ"
+            }
+          ]
+        }
+      ],
+      "saved": []
+    },
+    "pantry": {
+      "items": [
+        {
+          "id": "pan_ok_01",
+          "name": "hành tím",
+          "stock": 10,
+          "unit": "củ"
+        },
+        {
+          "id": "pan_tb_01",
+          "name": "thăn bò",
+          "stock": 0,
+          "unit": "phần"
+        }
+      ]
+    },
+    "grocery": {
+      "products": [
+        {
+          "id": "gro_tb_01",
+          "name": "Thăn bò Úc tươi 500g",
+          "price": 195000,
+          "unit": "phần",
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": [
+        {
+          "id": "ord_01",
+          "items": [
+            {
+              "product_id": "gro_tb_01",
+              "name": "Thăn bò Úc tươi 500g",
+              "price": 195000,
+              "quantity": 1
+            }
+          ],
+          "total": 195000,
+          "status": "placed",
+          "address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội"
+        }
+      ]
+    },
+    "notes": {}
+  },
+  "state_diff": {
+    "grocery": {
+      "before": {
+        "products": [
+          {
+            "id": "gro_tb_01",
+            "name": "Thăn bò Úc tươi 500g",
+            "price": 195000,
+            "unit": "phần",
+            "in_stock": true
+          }
+        ],
+        "cart": [],
+        "orders": []
+      },
+      "after": {
+        "products": [
+          {
+            "id": "gro_tb_01",
+            "name": "Thăn bò Úc tươi 500g",
+            "price": 195000,
+            "unit": "phần",
+            "in_stock": true
+          }
+        ],
+        "cart": [],
+        "orders": [
+          {
+            "id": "ord_01",
+            "items": [
+              {
+                "product_id": "gro_tb_01",
+                "name": "Thăn bò Úc tươi 500g",
+                "price": 195000,
+                "quantity": 1
+              }
+            ],
+            "total": 195000,
+            "status": "placed",
+            "address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "238f42d11cd18541ee11035148cd7b7db94f880da2586eb26d0ead36a25a2629",
+  "validation": {
+    "scenario_id": "sim_chain_rpg_val_01",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "grocery"
+    ],
+    "state_hash": "238f42d11cd18541ee11035148cd7b7db94f880da2586eb26d0ead36a25a2629",
+    "errors": []
+  }
+}

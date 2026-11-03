@@ -1,0 +1,176 @@
+{
+  "scenario_id": "pilot_005_stocks_sell_keep",
+  "split": "train",
+  "template_id": "tpl_stocks_sell_keep",
+  "scenario_type": "arithmetic_condition",
+  "primary_apps": [
+    "stocks"
+  ],
+  "installed_apps": [
+    "stocks",
+    "banking"
+  ],
+  "objective": "Check portfolio (700 ZMX), keep 200 and sell 500 shares.",
+  "expect_mutation": true,
+  "user_request": "Bán bớt cổ phiếu ZMX trong danh mục của chị đi, chỉ giữ lại 200 cổ phiếu thôi, phần còn lại bán hết theo giá hiện tại.",
+  "serialized_user_prompt": "Bán bớt cổ phiếu ZMX trong danh mục của chị đi, chỉ giữ lại 200 cổ phiếu thôi, phần còn lại bán hết theo giá hiện tại",
+  "current_time": "2026-11-20T14:10:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Phạm Thanh Thảo",
+    "city": "Hà Nội",
+    "home_address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+    "work_address": "Tòa nhà Lotte Center, 54 Liễu Giai, Ba Đình, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0069,
+    "lng": 105.8027
+  },
+  "history": [],
+  "initial_state": {
+    "stocks": {
+      "holdings": [
+        {
+          "symbol": "ZMX",
+          "name": "CTCP Sữa Mộc Xanh",
+          "quantity": 700,
+          "avg_price": 55000,
+          "price": 61000
+        }
+      ],
+      "quotes": [],
+      "orders": [],
+      "alerts": []
+    },
+    "banking": {}
+  },
+  "tool_calls": [
+    {
+      "name": "stocks.get_portfolio",
+      "arguments": {}
+    },
+    {
+      "name": "stocks.place_order",
+      "arguments": {
+        "symbol": "ZMX",
+        "side": "sell",
+        "quantity": 500,
+        "price": 61000
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "holdings": [
+        {
+          "symbol": "ZMX",
+          "name": "CTCP Sữa Mộc Xanh",
+          "quantity": 700,
+          "avg_price": 55000,
+          "price": 61000
+        }
+      ],
+      "total_value": 42700000
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "symbol": "ZMX",
+        "side": "sell",
+        "quantity": 500,
+        "type": "limit",
+        "price": 61000,
+        "status": "placed"
+      }
+    }
+  ],
+  "final_state": {
+    "stocks": {
+      "holdings": [
+        {
+          "symbol": "ZMX",
+          "name": "CTCP Sữa Mộc Xanh",
+          "quantity": 700,
+          "avg_price": 55000,
+          "price": 61000
+        }
+      ],
+      "quotes": [],
+      "orders": [
+        {
+          "id": "ord_01",
+          "symbol": "ZMX",
+          "side": "sell",
+          "quantity": 500,
+          "type": "limit",
+          "price": 61000,
+          "status": "placed"
+        }
+      ],
+      "alerts": []
+    },
+    "banking": {}
+  },
+  "state_diff": {
+    "stocks": {
+      "before": {
+        "holdings": [
+          {
+            "symbol": "ZMX",
+            "name": "CTCP Sữa Mộc Xanh",
+            "quantity": 700,
+            "avg_price": 55000,
+            "price": 61000
+          }
+        ],
+        "quotes": [],
+        "orders": [],
+        "alerts": []
+      },
+      "after": {
+        "holdings": [
+          {
+            "symbol": "ZMX",
+            "name": "CTCP Sữa Mộc Xanh",
+            "quantity": 700,
+            "avg_price": 55000,
+            "price": 61000
+          }
+        ],
+        "quotes": [],
+        "orders": [
+          {
+            "id": "ord_01",
+            "symbol": "ZMX",
+            "side": "sell",
+            "quantity": 500,
+            "type": "limit",
+            "price": 61000,
+            "status": "placed"
+          }
+        ],
+        "alerts": []
+      }
+    }
+  },
+  "state_hash": "78dec7f879452f21aa540731180dae1c4f905030bfdd449a114ebb51be0ab93e",
+  "validation": {
+    "scenario_id": "pilot_005_stocks_sell_keep",
+    "scenario_type": "arithmetic_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "stocks"
+    ],
+    "state_hash": "78dec7f879452f21aa540731180dae1c4f905030bfdd449a114ebb51be0ab93e",
+    "errors": []
+  }
+}

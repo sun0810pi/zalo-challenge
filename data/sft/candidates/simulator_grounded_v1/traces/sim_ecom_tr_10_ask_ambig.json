@@ -1,0 +1,131 @@
+{
+  "scenario_id": "sim_ecom_tr_10_ask_ambig",
+  "split": "train",
+  "template_id": "tpl_ecom_ask_ambig_train",
+  "scenario_type": "missing_info",
+  "primary_apps": [
+    "ecommerce",
+    "sys"
+  ],
+  "installed_apps": [
+    "ecommerce",
+    "ewallet"
+  ],
+  "objective": "Search mechanical keyboards, find 2 distinct models, ask user to clarify product_id.",
+  "expect_mutation": false,
+  "user_request": "Mua giúp mình 1 chiếc bàn phím cơ trên ứng dụng thương mại điện tử nhé.",
+  "current_time": "2026-11-23T16:30:00+07:00",
+  "city": "TP.HCM",
+  "initial_state": {
+    "ecommerce": {
+      "products": [
+        {
+          "id": "prod_kb_11",
+          "name": "Bàn phím cơ Keychron K2",
+          "price": 1650000,
+          "seller": "Keychron",
+          "category": "phụ kiện",
+          "in_stock": true
+        },
+        {
+          "id": "prod_kb_12",
+          "name": "Bàn phím cơ Akko 3087",
+          "price": 1150000,
+          "seller": "Akko",
+          "category": "phụ kiện",
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": [],
+      "returns": []
+    },
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "ecommerce.search",
+      "arguments": {
+        "query": "bàn phím cơ"
+      }
+    },
+    {
+      "name": "sys.ask_missing_info",
+      "arguments": {
+        "tool_name": "ecommerce.add_to_cart",
+        "params": [
+          "product_id"
+        ]
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "products": [
+        {
+          "id": "prod_kb_11",
+          "name": "Bàn phím cơ Keychron K2",
+          "price": 1650000,
+          "seller": "Keychron",
+          "category": "phụ kiện",
+          "in_stock": true
+        },
+        {
+          "id": "prod_kb_12",
+          "name": "Bàn phím cơ Akko 3087",
+          "price": 1150000,
+          "seller": "Akko",
+          "category": "phụ kiện",
+          "in_stock": true
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "waiting_for_user": true
+    }
+  ],
+  "final_state": {
+    "ecommerce": {
+      "products": [
+        {
+          "id": "prod_kb_11",
+          "name": "Bàn phím cơ Keychron K2",
+          "price": 1650000,
+          "seller": "Keychron",
+          "category": "phụ kiện",
+          "in_stock": true
+        },
+        {
+          "id": "prod_kb_12",
+          "name": "Bàn phím cơ Akko 3087",
+          "price": 1150000,
+          "seller": "Akko",
+          "category": "phụ kiện",
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": [],
+      "returns": []
+    },
+    "ewallet": {}
+  },
+  "state_diff": {},
+  "state_hash": "c9e3d31eeb26f79b1c3923975637dc7b4072339b49390e4caba91036b426064e",
+  "validation": {
+    "scenario_id": "sim_ecom_tr_10_ask_ambig",
+    "scenario_type": "missing_info",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "c9e3d31eeb26f79b1c3923975637dc7b4072339b49390e4caba91036b426064e",
+    "errors": []
+  }
+}

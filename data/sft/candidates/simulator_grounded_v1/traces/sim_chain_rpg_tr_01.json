@@ -1,0 +1,321 @@
+{
+  "scenario_id": "sim_chain_rpg_tr_01",
+  "split": "train",
+  "template_id": "tpl_chain_recipes_pantry_grocery_train",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "recipes",
+    "pantry",
+    "grocery"
+  ],
+  "installed_apps": [
+    "recipes",
+    "pantry",
+    "grocery",
+    "notes"
+  ],
+  "objective": "Chain recipes.search -> pantry.list_items -> grocery for missing ingredient 'tôm sú'.",
+  "expect_mutation": true,
+  "user_request": "Tìm công thức nấu lẩu thái hải sản cho 4 người, kiểm tra tủ bếp xem nguyên liệu nào hết hàng (stock=0) thì tìm mua 1 phần trên app đi chợ và đặt giao về nhà.",
+  "current_time": "2026-11-23T09:00:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "recipes": {
+      "recipes": [
+        {
+          "id": "rcp_lt_01",
+          "name": "Lẩu thái hải sản",
+          "servings": 4,
+          "ingredients": [
+            {
+              "name": "tôm sú",
+              "quantity": 1,
+              "unit": "phần"
+            },
+            {
+              "name": "hành tím",
+              "quantity": 3,
+              "unit": "củ"
+            }
+          ]
+        }
+      ],
+      "saved": []
+    },
+    "pantry": {
+      "items": [
+        {
+          "id": "pan_ok_01",
+          "name": "hành tím",
+          "stock": 10,
+          "unit": "củ"
+        },
+        {
+          "id": "pan_tom_01",
+          "name": "tôm sú",
+          "stock": 0,
+          "unit": "phần"
+        }
+      ]
+    },
+    "grocery": {
+      "products": [
+        {
+          "id": "gro_tom_01",
+          "name": "Tôm sú tươi sống 500g",
+          "price": 165000,
+          "unit": "phần",
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": []
+    },
+    "notes": {}
+  },
+  "tool_calls": [
+    {
+      "name": "recipes.search",
+      "arguments": {
+        "query": "lẩu thái hải sản",
+        "servings": 4
+      }
+    },
+    {
+      "name": "pantry.list_items",
+      "arguments": {}
+    },
+    {
+      "name": "grocery.search",
+      "arguments": {
+        "query": "tôm sú"
+      }
+    },
+    {
+      "name": "grocery.add_to_cart",
+      "arguments": {
+        "product_id": "gro_tom_01",
+        "quantity": 1
+      }
+    },
+    {
+      "name": "grocery.checkout",
+      "arguments": {
+        "address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "recipes": [
+        {
+          "id": "rcp_lt_01",
+          "name": "Lẩu thái hải sản",
+          "servings": 4,
+          "ingredients": [
+            {
+              "name": "tôm sú",
+              "quantity": 1,
+              "unit": "phần"
+            },
+            {
+              "name": "hành tím",
+              "quantity": 3,
+              "unit": "củ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "items": [
+        {
+          "id": "pan_ok_01",
+          "name": "hành tím",
+          "stock": 10,
+          "unit": "củ"
+        },
+        {
+          "id": "pan_tom_01",
+          "name": "tôm sú",
+          "stock": 0,
+          "unit": "phần"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "products": [
+        {
+          "id": "gro_tom_01",
+          "name": "Tôm sú tươi sống 500g",
+          "price": 165000,
+          "unit": "phần",
+          "in_stock": true
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "cart": [
+        {
+          "product_id": "gro_tom_01",
+          "name": "Tôm sú tươi sống 500g",
+          "price": 165000,
+          "quantity": 1
+        }
+      ],
+      "cart_total": 165000
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "items": [
+          {
+            "product_id": "gro_tom_01",
+            "name": "Tôm sú tươi sống 500g",
+            "price": 165000,
+            "quantity": 1
+          }
+        ],
+        "total": 165000,
+        "status": "placed",
+        "address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội"
+      }
+    }
+  ],
+  "final_state": {
+    "recipes": {
+      "recipes": [
+        {
+          "id": "rcp_lt_01",
+          "name": "Lẩu thái hải sản",
+          "servings": 4,
+          "ingredients": [
+            {
+              "name": "tôm sú",
+              "quantity": 1,
+              "unit": "phần"
+            },
+            {
+              "name": "hành tím",
+              "quantity": 3,
+              "unit": "củ"
+            }
+          ]
+        }
+      ],
+      "saved": []
+    },
+    "pantry": {
+      "items": [
+        {
+          "id": "pan_ok_01",
+          "name": "hành tím",
+          "stock": 10,
+          "unit": "củ"
+        },
+        {
+          "id": "pan_tom_01",
+          "name": "tôm sú",
+          "stock": 0,
+          "unit": "phần"
+        }
+      ]
+    },
+    "grocery": {
+      "products": [
+        {
+          "id": "gro_tom_01",
+          "name": "Tôm sú tươi sống 500g",
+          "price": 165000,
+          "unit": "phần",
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": [
+        {
+          "id": "ord_01",
+          "items": [
+            {
+              "product_id": "gro_tom_01",
+              "name": "Tôm sú tươi sống 500g",
+              "price": 165000,
+              "quantity": 1
+            }
+          ],
+          "total": 165000,
+          "status": "placed",
+          "address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội"
+        }
+      ]
+    },
+    "notes": {}
+  },
+  "state_diff": {
+    "grocery": {
+      "before": {
+        "products": [
+          {
+            "id": "gro_tom_01",
+            "name": "Tôm sú tươi sống 500g",
+            "price": 165000,
+            "unit": "phần",
+            "in_stock": true
+          }
+        ],
+        "cart": [],
+        "orders": []
+      },
+      "after": {
+        "products": [
+          {
+            "id": "gro_tom_01",
+            "name": "Tôm sú tươi sống 500g",
+            "price": 165000,
+            "unit": "phần",
+            "in_stock": true
+          }
+        ],
+        "cart": [],
+        "orders": [
+          {
+            "id": "ord_01",
+            "items": [
+              {
+                "product_id": "gro_tom_01",
+                "name": "Tôm sú tươi sống 500g",
+                "price": 165000,
+                "quantity": 1
+              }
+            ],
+            "total": 165000,
+            "status": "placed",
+            "address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "95187df1fc45a0e21e111d37d89755219158042f4686db50748415b207f23199",
+  "validation": {
+    "scenario_id": "sim_chain_rpg_tr_01",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "grocery"
+    ],
+    "state_hash": "95187df1fc45a0e21e111d37d89755219158042f4686db50748415b207f23199",
+    "errors": []
+  }
+}

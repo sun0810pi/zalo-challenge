@@ -1,0 +1,150 @@
+{
+  "scenario_id": "sim_bill_tr_02_fallback_bank",
+  "split": "train",
+  "template_id": "tpl_bill_arith_train_bank",
+  "scenario_type": "arithmetic_condition",
+  "primary_apps": [
+    "bill_payment",
+    "ewallet"
+  ],
+  "installed_apps": [
+    "bill_payment",
+    "ewallet",
+    "banking",
+    "sms"
+  ],
+  "objective": "Check internet bill (280000) and wallet balance (150000) -> action=bank.",
+  "expect_mutation": true,
+  "user_request": "Xem hóa đơn tiền mạng internet và số dư ví điện tử, nếu ví đủ thì trả bằng ví, còn ví không đủ tiền thì thanh toán qua ngân hàng giúp anh.",
+  "current_time": "2026-11-23T09:00:00+07:00",
+  "city": "TP.HCM",
+  "initial_state": {
+    "bill_payment": {
+      "bills": [
+        {
+          "id": "bill_in_02",
+          "type": "internet",
+          "amount": 280000,
+          "paid": false
+        }
+      ],
+      "autopays": []
+    },
+    "ewallet": {
+      "balance": 150000,
+      "transactions": []
+    },
+    "banking": {},
+    "sms": {}
+  },
+  "tool_calls": [
+    {
+      "name": "bill_payment.list_bills",
+      "arguments": {
+        "type": "internet"
+      }
+    },
+    {
+      "name": "ewallet.get_balance",
+      "arguments": {}
+    },
+    {
+      "name": "bill_payment.pay",
+      "arguments": {
+        "bill_id": "bill_in_02",
+        "source": "bank"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "bills": [
+        {
+          "id": "bill_in_02",
+          "type": "internet",
+          "amount": 280000,
+          "paid": false
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "balance": 150000
+    },
+    {
+      "ok": true,
+      "bill": {
+        "id": "bill_in_02",
+        "type": "internet",
+        "amount": 280000,
+        "paid": true,
+        "paid_with": "bank"
+      }
+    }
+  ],
+  "final_state": {
+    "bill_payment": {
+      "bills": [
+        {
+          "id": "bill_in_02",
+          "type": "internet",
+          "amount": 280000,
+          "paid": true,
+          "paid_with": "bank"
+        }
+      ],
+      "autopays": []
+    },
+    "ewallet": {
+      "balance": 150000,
+      "transactions": []
+    },
+    "banking": {},
+    "sms": {}
+  },
+  "state_diff": {
+    "bill_payment": {
+      "before": {
+        "bills": [
+          {
+            "id": "bill_in_02",
+            "type": "internet",
+            "amount": 280000,
+            "paid": false
+          }
+        ],
+        "autopays": []
+      },
+      "after": {
+        "bills": [
+          {
+            "id": "bill_in_02",
+            "type": "internet",
+            "amount": 280000,
+            "paid": true,
+            "paid_with": "bank"
+          }
+        ],
+        "autopays": []
+      }
+    }
+  },
+  "state_hash": "b1575b0d75a5f506a92c94418ea8d6e134d0037cdbb81f067c53189b173d52c3",
+  "validation": {
+    "scenario_id": "sim_bill_tr_02_fallback_bank",
+    "scenario_type": "arithmetic_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "bill_payment"
+    ],
+    "state_hash": "b1575b0d75a5f506a92c94418ea8d6e134d0037cdbb81f067c53189b173d52c3",
+    "errors": []
+  }
+}

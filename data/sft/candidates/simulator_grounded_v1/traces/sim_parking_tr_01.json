@@ -1,0 +1,203 @@
+{
+  "scenario_id": "sim_parking_tr_01",
+  "split": "train",
+  "template_id": "tpl_parking_find_select_reserve_train",
+  "scenario_type": "multi_result_selection",
+  "primary_apps": [
+    "parking"
+  ],
+  "installed_apps": [
+    "parking",
+    "maps",
+    "ewallet"
+  ],
+  "objective": "Find parking near Mỹ Đình, skip full lot lot_full_01, reserve lot_avail_01.",
+  "expect_mutation": true,
+  "user_request": "Kiểm tra quanh khu Mỹ Đình xem bãi đỗ xe nào còn trống chỗ thì đặt trước 4 tiếng từ 9 giờ sáng nay giúp mình.",
+  "current_time": "2026-11-21T08:00:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_full_01",
+          "name": "Bãi xe Mỹ Đình 1",
+          "address": "Số 10 Mỹ Đình",
+          "area": "Nam Từ Liêm",
+          "price_per_hour": 20000,
+          "available_spots": 0
+        },
+        {
+          "id": "lot_avail_01",
+          "name": "Bãi đỗ xe trung tâm Mỹ Đình",
+          "address": "Số 28 Mỹ Đình",
+          "area": "Nam Từ Liêm",
+          "price_per_hour": 25000,
+          "available_spots": 6
+        }
+      ],
+      "sessions": []
+    },
+    "maps": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "parking.find",
+      "arguments": {
+        "near": "Mỹ Đình"
+      }
+    },
+    {
+      "name": "parking.reserve",
+      "arguments": {
+        "lot_id": "lot_avail_01",
+        "from_time": "2026-11-21T09:00:00+07:00",
+        "hours": 4
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "lots": [
+        {
+          "id": "lot_full_01",
+          "name": "Bãi xe Mỹ Đình 1",
+          "address": "Số 10 Mỹ Đình",
+          "area": "Nam Từ Liêm",
+          "price_per_hour": 20000,
+          "available_spots": 0
+        },
+        {
+          "id": "lot_avail_01",
+          "name": "Bãi đỗ xe trung tâm Mỹ Đình",
+          "address": "Số 28 Mỹ Đình",
+          "area": "Nam Từ Liêm",
+          "price_per_hour": 25000,
+          "available_spots": 6
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "session": {
+        "id": "park_01",
+        "lot_id": "lot_avail_01",
+        "from_time": "2026-11-21T09:00:00+07:00",
+        "hours": 4,
+        "end_time": "2026-11-21T13:00:00+07:00",
+        "total": 100000,
+        "status": "reserved"
+      }
+    }
+  ],
+  "final_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_full_01",
+          "name": "Bãi xe Mỹ Đình 1",
+          "address": "Số 10 Mỹ Đình",
+          "area": "Nam Từ Liêm",
+          "price_per_hour": 20000,
+          "available_spots": 0
+        },
+        {
+          "id": "lot_avail_01",
+          "name": "Bãi đỗ xe trung tâm Mỹ Đình",
+          "address": "Số 28 Mỹ Đình",
+          "area": "Nam Từ Liêm",
+          "price_per_hour": 25000,
+          "available_spots": 5
+        }
+      ],
+      "sessions": [
+        {
+          "id": "park_01",
+          "lot_id": "lot_avail_01",
+          "from_time": "2026-11-21T09:00:00+07:00",
+          "hours": 4,
+          "end_time": "2026-11-21T13:00:00+07:00",
+          "total": 100000,
+          "status": "reserved"
+        }
+      ]
+    },
+    "maps": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "parking": {
+      "before": {
+        "lots": [
+          {
+            "id": "lot_full_01",
+            "name": "Bãi xe Mỹ Đình 1",
+            "address": "Số 10 Mỹ Đình",
+            "area": "Nam Từ Liêm",
+            "price_per_hour": 20000,
+            "available_spots": 0
+          },
+          {
+            "id": "lot_avail_01",
+            "name": "Bãi đỗ xe trung tâm Mỹ Đình",
+            "address": "Số 28 Mỹ Đình",
+            "area": "Nam Từ Liêm",
+            "price_per_hour": 25000,
+            "available_spots": 6
+          }
+        ],
+        "sessions": []
+      },
+      "after": {
+        "lots": [
+          {
+            "id": "lot_full_01",
+            "name": "Bãi xe Mỹ Đình 1",
+            "address": "Số 10 Mỹ Đình",
+            "area": "Nam Từ Liêm",
+            "price_per_hour": 20000,
+            "available_spots": 0
+          },
+          {
+            "id": "lot_avail_01",
+            "name": "Bãi đỗ xe trung tâm Mỹ Đình",
+            "address": "Số 28 Mỹ Đình",
+            "area": "Nam Từ Liêm",
+            "price_per_hour": 25000,
+            "available_spots": 5
+          }
+        ],
+        "sessions": [
+          {
+            "id": "park_01",
+            "lot_id": "lot_avail_01",
+            "from_time": "2026-11-21T09:00:00+07:00",
+            "hours": 4,
+            "end_time": "2026-11-21T13:00:00+07:00",
+            "total": 100000,
+            "status": "reserved"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "cdd5093aaedcade246efd2ea529d27503afe5ebe049a7861349c7cfc6c7e5ec4",
+  "validation": {
+    "scenario_id": "sim_parking_tr_01",
+    "scenario_type": "multi_result_selection",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "parking"
+    ],
+    "state_hash": "cdd5093aaedcade246efd2ea529d27503afe5ebe049a7861349c7cfc6c7e5ec4",
+    "errors": []
+  }
+}

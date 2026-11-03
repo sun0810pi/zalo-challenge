@@ -1,0 +1,183 @@
+{
+  "scenario_id": "sim_event_tr_02",
+  "split": "train",
+  "template_id": "tpl_event_book_train_False",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "event_tickets"
+  ],
+  "installed_apps": [
+    "event_tickets",
+    "calendar",
+    "ewallet"
+  ],
+  "objective": "Search event Triển lãm Ánh sáng, book 4 tickets on event_tl_02.",
+  "expect_mutation": true,
+  "user_request": "Tra cứu sự kiện Triển lãm Ánh sáng Nghệ thuật và đặt mua 4 vé cho nhóm mình nha.",
+  "serialized_user_prompt": "Tra cứu sự kiện Triển lãm Ánh sáng Nghệ thuật và đặt mua 4 vé cho nhóm mình nha",
+  "current_time": "2026-11-22T10:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "TP.HCM",
+  "user_profile": {
+    "name": "Trần Thu Hà",
+    "city": "TP.HCM",
+    "home_address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM",
+    "work_address": "Tòa nhà Bitexco, số 2 Hải Triều, Quận 1, TP.HCM"
+  },
+  "location": {
+    "lat": 10.7769,
+    "lng": 106.7009
+  },
+  "history": [],
+  "initial_state": {
+    "event_tickets": {
+      "events": [
+        {
+          "id": "event_tl_02",
+          "name": "Triển lãm Ánh sáng Nghệ thuật",
+          "category": "sự kiện",
+          "date": "2026-11-29",
+          "time": "09:00",
+          "venue": "Bảo tàng Mỹ thuật",
+          "price": 150000,
+          "available": 30
+        }
+      ],
+      "bookings": []
+    },
+    "calendar": {
+      "events": []
+    },
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "event_tickets.search",
+      "arguments": {
+        "query": "Triển lãm Ánh sáng"
+      }
+    },
+    {
+      "name": "event_tickets.book",
+      "arguments": {
+        "event_id": "event_tl_02",
+        "quantity": 4
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "events": [
+        {
+          "id": "event_tl_02",
+          "name": "Triển lãm Ánh sáng Nghệ thuật",
+          "category": "sự kiện",
+          "date": "2026-11-29",
+          "time": "09:00",
+          "venue": "Bảo tàng Mỹ thuật",
+          "price": 150000,
+          "available": 30
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "booking": {
+        "id": "tk_01",
+        "event_id": "event_tl_02",
+        "quantity": 4,
+        "total": 600000,
+        "status": "confirmed"
+      }
+    }
+  ],
+  "final_state": {
+    "event_tickets": {
+      "events": [
+        {
+          "id": "event_tl_02",
+          "name": "Triển lãm Ánh sáng Nghệ thuật",
+          "category": "sự kiện",
+          "date": "2026-11-29",
+          "time": "09:00",
+          "venue": "Bảo tàng Mỹ thuật",
+          "price": 150000,
+          "available": 26
+        }
+      ],
+      "bookings": [
+        {
+          "id": "tk_01",
+          "event_id": "event_tl_02",
+          "quantity": 4,
+          "total": 600000,
+          "status": "confirmed"
+        }
+      ]
+    },
+    "calendar": {
+      "events": []
+    },
+    "ewallet": {}
+  },
+  "state_diff": {
+    "event_tickets": {
+      "before": {
+        "events": [
+          {
+            "id": "event_tl_02",
+            "name": "Triển lãm Ánh sáng Nghệ thuật",
+            "category": "sự kiện",
+            "date": "2026-11-29",
+            "time": "09:00",
+            "venue": "Bảo tàng Mỹ thuật",
+            "price": 150000,
+            "available": 30
+          }
+        ],
+        "bookings": []
+      },
+      "after": {
+        "events": [
+          {
+            "id": "event_tl_02",
+            "name": "Triển lãm Ánh sáng Nghệ thuật",
+            "category": "sự kiện",
+            "date": "2026-11-29",
+            "time": "09:00",
+            "venue": "Bảo tàng Mỹ thuật",
+            "price": 150000,
+            "available": 26
+          }
+        ],
+        "bookings": [
+          {
+            "id": "tk_01",
+            "event_id": "event_tl_02",
+            "quantity": 4,
+            "total": 600000,
+            "status": "confirmed"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "223e95f360e709c0669aea02794b625f9b823d5045738731572cb31266acb511",
+  "validation": {
+    "scenario_id": "sim_event_tr_02",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "event_tickets"
+    ],
+    "state_hash": "223e95f360e709c0669aea02794b625f9b823d5045738731572cb31266acb511",
+    "errors": []
+  }
+}

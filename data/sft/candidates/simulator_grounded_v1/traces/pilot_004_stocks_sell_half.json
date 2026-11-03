@@ -1,0 +1,201 @@
+{
+  "scenario_id": "pilot_004_stocks_sell_half",
+  "split": "train",
+  "template_id": "tpl_stocks_sell_half",
+  "scenario_type": "arithmetic_condition",
+  "primary_apps": [
+    "stocks"
+  ],
+  "installed_apps": [
+    "stocks",
+    "banking",
+    "ewallet"
+  ],
+  "objective": "Inspect portfolio, compute half of 800 HPG shares (400), and place sell order.",
+  "expect_mutation": true,
+  "user_request": "Kiểm tra danh mục đầu tư xem mình đang giữ bao nhiêu cổ phiếu HPG rồi đặt lệnh bán một nửa số đó theo giá thị trường hiện tại nhé.",
+  "current_time": "2026-11-20T13:45:00+07:00",
+  "city": "Đà Nẵng",
+  "initial_state": {
+    "stocks": {
+      "holdings": [
+        {
+          "symbol": "HPG",
+          "name": "Tập đoàn Hòa Phát",
+          "quantity": 800,
+          "avg_price": 26500,
+          "price": 28900
+        },
+        {
+          "symbol": "VNM",
+          "name": "Vinamilk",
+          "quantity": 300,
+          "avg_price": 66000,
+          "price": 67500
+        }
+      ],
+      "quotes": [],
+      "orders": [],
+      "alerts": []
+    },
+    "banking": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "stocks.get_portfolio",
+      "arguments": {}
+    },
+    {
+      "name": "stocks.place_order",
+      "arguments": {
+        "symbol": "HPG",
+        "side": "sell",
+        "quantity": 400,
+        "price": 28900
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "holdings": [
+        {
+          "symbol": "HPG",
+          "name": "Tập đoàn Hòa Phát",
+          "quantity": 800,
+          "avg_price": 26500,
+          "price": 28900
+        },
+        {
+          "symbol": "VNM",
+          "name": "Vinamilk",
+          "quantity": 300,
+          "avg_price": 66000,
+          "price": 67500
+        }
+      ],
+      "total_value": 43370000
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "symbol": "HPG",
+        "side": "sell",
+        "quantity": 400,
+        "type": "limit",
+        "price": 28900,
+        "status": "placed"
+      }
+    }
+  ],
+  "final_state": {
+    "stocks": {
+      "holdings": [
+        {
+          "symbol": "HPG",
+          "name": "Tập đoàn Hòa Phát",
+          "quantity": 800,
+          "avg_price": 26500,
+          "price": 28900
+        },
+        {
+          "symbol": "VNM",
+          "name": "Vinamilk",
+          "quantity": 300,
+          "avg_price": 66000,
+          "price": 67500
+        }
+      ],
+      "quotes": [],
+      "orders": [
+        {
+          "id": "ord_01",
+          "symbol": "HPG",
+          "side": "sell",
+          "quantity": 400,
+          "type": "limit",
+          "price": 28900,
+          "status": "placed"
+        }
+      ],
+      "alerts": []
+    },
+    "banking": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "stocks": {
+      "before": {
+        "holdings": [
+          {
+            "symbol": "HPG",
+            "name": "Tập đoàn Hòa Phát",
+            "quantity": 800,
+            "avg_price": 26500,
+            "price": 28900
+          },
+          {
+            "symbol": "VNM",
+            "name": "Vinamilk",
+            "quantity": 300,
+            "avg_price": 66000,
+            "price": 67500
+          }
+        ],
+        "quotes": [],
+        "orders": [],
+        "alerts": []
+      },
+      "after": {
+        "holdings": [
+          {
+            "symbol": "HPG",
+            "name": "Tập đoàn Hòa Phát",
+            "quantity": 800,
+            "avg_price": 26500,
+            "price": 28900
+          },
+          {
+            "symbol": "VNM",
+            "name": "Vinamilk",
+            "quantity": 300,
+            "avg_price": 66000,
+            "price": 67500
+          }
+        ],
+        "quotes": [],
+        "orders": [
+          {
+            "id": "ord_01",
+            "symbol": "HPG",
+            "side": "sell",
+            "quantity": 400,
+            "type": "limit",
+            "price": 28900,
+            "status": "placed"
+          }
+        ],
+        "alerts": []
+      }
+    }
+  },
+  "state_hash": "bbb860314e0a00a461681c34e5f5483f796a7161823b06fbb0cebd773ef3a09d",
+  "validation": {
+    "scenario_id": "pilot_004_stocks_sell_half",
+    "scenario_type": "arithmetic_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "stocks"
+    ],
+    "state_hash": "bbb860314e0a00a461681c34e5f5483f796a7161823b06fbb0cebd773ef3a09d",
+    "errors": []
+  }
+}

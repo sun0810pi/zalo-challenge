@@ -26,7 +26,17 @@ def main():
     ap.add_argument("--asr-model", default="deepdml/faster-whisper-large-v3-turbo-ct2")
     ap.add_argument("--asr-lora-path", default=None, help="Đường dẫn tới Whisper LoRA adapter")
     ap.add_argument("--gpu-memory-utilization", type=float, default=0.68, help="Tỷ lệ VRAM cấp cho vLLM (mặc định 0.68)")
-    ap.add_argument("--preprocessor", default="a", choices=["a", "b"], help="Tiền xử lý ngôn ngữ: a (Fuzzy Context Aligner, 0-param) hoặc b (Neural Restorer < 0.5B)")
+    ap.add_argument(
+        "--preprocessor",
+        default="a",
+        choices=["a", "b", "safe"],
+        help="Tiền xử lý ngôn ngữ: a (Fuzzy Context Aligner mặc định), b (Neural Restorer < 0.5B), hoặc safe (SafeContextPreprocessor chống nuốt từ)",
+    )
+    ap.add_argument(
+        "--use-asr-fallback",
+        action="store_true",
+        help="Tùy chọn: Bật cơ chế dự phòng Qwen3-ASR-0.6B khi Whisper có độ không chắc chắn cao ở các slot quan trọng",
+    )
     ap.add_argument("--ignore-asr-cache", action="store_true", help="Bỏ qua cache ASR, ép transcriber chạy lại toàn bộ audio với model/LoRA mới")
     ap.add_argument("--use-gt-asr", action="store_true", help="Dùng audio_text có sẵn (chỉ dùng khi test nhanh LLM trên tập train)")
     ap.add_argument("--ids-file", default=None, help="File JSON chứa danh sách ID cần chạy (VD: data/sft/val_ids.json)")
@@ -100,11 +110,21 @@ def main():
         gpu_memory_utilization=args.gpu_memory_utilization,
     )
 
-    preprocessor = (
-        ContextLanguagePreprocessorB(model_name="Qwen/Qwen2.5-0.5B-Instruct")
-        if args.preprocessor == "b"
-        else ContextLanguagePreprocessorA()
-    )
+    if args.preprocessor == "b":
+        preprocessor = ContextLanguagePreprocessorB(model_name="Qwen/Qwen2.5-0.5B-Instruct")
+    elif args.preprocessor == "safe" or args.use_asr_fallback:
+        from src.asr_fallback import SafeContextPreprocessor
+
+        _safe_prep = SafeContextPreprocessor(sim_threshold=0.80)
+
+        class _SafePreprocessorAdapter:
+            def preprocess(self, raw_asr_text: str, sample: dict) -> str:
+                cleaned, _ = _safe_prep.preprocess_with_evidence(raw_asr_text, sample)
+                return cleaned
+
+        preprocessor = _SafePreprocessorAdapter()
+    else:
+        preprocessor = ContextLanguagePreprocessorA()
     router = SemanticToolRouter(top_k_recommended=4)
 
     agent = LifeMateAgent(

@@ -1,0 +1,100 @@
+{
+  "scenario_id": "sim_pantry_tr_04_neg_stock",
+  "split": "train",
+  "template_id": "tpl_pantry_consume_train_False",
+  "scenario_type": "negative_condition",
+  "primary_apps": [
+    "pantry"
+  ],
+  "installed_apps": [
+    "pantry",
+    "grocery",
+    "recipes"
+  ],
+  "objective": "List pantry items; if stock (1) >= 3, consume 3.",
+  "expect_mutation": false,
+  "user_request": "Kiểm tra trong tủ bếp xem còn đủ 3 khay thịt bò không, nếu đủ thì trừ 3 khay để nấu lẩu, không đủ thì thôi để mình đi mua thêm.",
+  "current_time": "2026-11-22T11:00:00+07:00",
+  "city": "Đà Nẵng",
+  "initial_state": {
+    "pantry": {
+      "items": [
+        {
+          "id": "pan_beef_04",
+          "name": "thịt bò",
+          "stock": 1,
+          "unit": "khay"
+        },
+        {
+          "id": "pan_salt_99",
+          "name": "muối biển",
+          "stock": 2,
+          "unit": "gói"
+        }
+      ]
+    },
+    "grocery": {},
+    "recipes": {}
+  },
+  "tool_calls": [
+    {
+      "name": "pantry.list_items",
+      "arguments": {}
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "items": [
+        {
+          "id": "pan_beef_04",
+          "name": "thịt bò",
+          "stock": 1,
+          "unit": "khay"
+        },
+        {
+          "id": "pan_salt_99",
+          "name": "muối biển",
+          "stock": 2,
+          "unit": "gói"
+        }
+      ]
+    }
+  ],
+  "final_state": {
+    "pantry": {
+      "items": [
+        {
+          "id": "pan_beef_04",
+          "name": "thịt bò",
+          "stock": 1,
+          "unit": "khay"
+        },
+        {
+          "id": "pan_salt_99",
+          "name": "muối biển",
+          "stock": 2,
+          "unit": "gói"
+        }
+      ]
+    },
+    "grocery": {},
+    "recipes": {}
+  },
+  "state_diff": {},
+  "state_hash": "68f6ef7dc8593a580d7c78d6d18be5954ea309cb2f67833e4ed2408fa3c9ea24",
+  "validation": {
+    "scenario_id": "sim_pantry_tr_04_neg_stock",
+    "scenario_type": "negative_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "68f6ef7dc8593a580d7c78d6d18be5954ea309cb2f67833e4ed2408fa3c9ea24",
+    "errors": []
+  }
+}

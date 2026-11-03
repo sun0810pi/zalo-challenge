@@ -1,0 +1,127 @@
+{
+  "scenario_id": "sim_weather_tr_02_norain_stop",
+  "split": "train",
+  "template_id": "tpl_weather_cond_train_False",
+  "scenario_type": "negative_condition",
+  "primary_apps": [
+    "weather",
+    "calendar"
+  ],
+  "installed_apps": [
+    "weather",
+    "calendar",
+    "reminders"
+  ],
+  "objective": "Check weather on 2026-11-24 (rain=False) and conditionally update/cancel calendar event.",
+  "expect_mutation": false,
+  "user_request": "Xem dự báo thời tiết ngày mai 2026-11-24, nếu có mưa thì lùi lịch 'Đánh cầu lông ngoài trời' sang 17:00 ngày kia, còn không mưa thì giữ nguyên nhé.",
+  "current_time": "2026-11-23T18:00:00+07:00",
+  "city": "TP.HCM",
+  "initial_state": {
+    "weather": {
+      "current": [
+        {
+          "location": "TP.HCM",
+          "condition": "mát mẻ",
+          "temp": 25,
+          "rain": false
+        }
+      ],
+      "forecast": [
+        {
+          "location": "TP.HCM",
+          "date": "2026-11-24",
+          "condition": "nắng ráo",
+          "temp_min": 22,
+          "temp_max": 29,
+          "rain": false
+        }
+      ]
+    },
+    "calendar": {
+      "events": [
+        {
+          "id": "evt_ten_02",
+          "title": "Đánh cầu lông ngoài trời",
+          "start": "2026-11-24T06:30:00+07:00",
+          "end": "2026-11-24T08:00:00+07:00",
+          "status": "confirmed"
+        }
+      ]
+    },
+    "reminders": {}
+  },
+  "tool_calls": [
+    {
+      "name": "weather.get_forecast",
+      "arguments": {
+        "date": "2026-11-24"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "forecast": [
+        {
+          "location": "TP.HCM",
+          "date": "2026-11-24",
+          "condition": "nắng ráo",
+          "temp_min": 22,
+          "temp_max": 29,
+          "rain": false
+        }
+      ]
+    }
+  ],
+  "final_state": {
+    "weather": {
+      "current": [
+        {
+          "location": "TP.HCM",
+          "condition": "mát mẻ",
+          "temp": 25,
+          "rain": false
+        }
+      ],
+      "forecast": [
+        {
+          "location": "TP.HCM",
+          "date": "2026-11-24",
+          "condition": "nắng ráo",
+          "temp_min": 22,
+          "temp_max": 29,
+          "rain": false
+        }
+      ]
+    },
+    "calendar": {
+      "events": [
+        {
+          "id": "evt_ten_02",
+          "title": "Đánh cầu lông ngoài trời",
+          "start": "2026-11-24T06:30:00+07:00",
+          "end": "2026-11-24T08:00:00+07:00",
+          "status": "confirmed"
+        }
+      ]
+    },
+    "reminders": {}
+  },
+  "state_diff": {},
+  "state_hash": "88c46f1389a6fa27372a5d0d9e24de0f82b2daa22e4520908a037198fc1747ab",
+  "validation": {
+    "scenario_id": "sim_weather_tr_02_norain_stop",
+    "scenario_type": "negative_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "88c46f1389a6fa27372a5d0d9e24de0f82b2daa22e4520908a037198fc1747ab",
+    "errors": []
+  }
+}

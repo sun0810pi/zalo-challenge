@@ -1,0 +1,244 @@
+{
+  "scenario_id": "sim_tb_tr_07_cal",
+  "split": "train",
+  "template_id": "tpl_tb_book_calendar_train",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "train_bus_tickets",
+    "calendar"
+  ],
+  "installed_apps": [
+    "train_bus_tickets",
+    "calendar",
+    "reminders"
+  ],
+  "objective": "Search & book trip_cal_02, then create calendar event using the trip's actual date and depart time.",
+  "expect_mutation": true,
+  "user_request": "Đặt giúp mình 1 vé xe khách từ TP.HCM đi Cần Thơ ngày 2026-11-27 và ghi vào lịch cá nhân theo giờ xe chạy.",
+  "serialized_user_prompt": "Đặt giúp mình 1 vé xe khách từ TP.HCM đi Cần Thơ ngày 2026-11-27 và ghi vào lịch cá nhân theo giờ xe chạy.",
+  "current_time": "2026-11-21T10:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "TP.HCM",
+  "user_profile": {
+    "name": "Trần Thu Hà",
+    "city": "TP.HCM",
+    "home_address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM",
+    "work_address": "Tòa nhà Bitexco, số 2 Hải Triều, Quận 1, TP.HCM"
+  },
+  "location": {
+    "lat": 10.7769,
+    "lng": 106.7009
+  },
+  "history": [],
+  "initial_state": {
+    "train_bus_tickets": {
+      "trips": [
+        {
+          "id": "trip_cal_02",
+          "type": "bus",
+          "operator": "Tàu Chất Lượng Cao",
+          "origin": "TP.HCM",
+          "destination": "Cần Thơ",
+          "date": "2026-11-27",
+          "depart": "08:30",
+          "arrive": "11:30",
+          "price": 220000,
+          "seats_left": 12
+        }
+      ],
+      "bookings": []
+    },
+    "calendar": {
+      "events": []
+    },
+    "reminders": {}
+  },
+  "tool_calls": [
+    {
+      "name": "train_bus_tickets.search",
+      "arguments": {
+        "origin": "TP.HCM",
+        "destination": "Cần Thơ",
+        "date": "2026-11-27",
+        "type": "bus"
+      }
+    },
+    {
+      "name": "train_bus_tickets.book",
+      "arguments": {
+        "trip_id": "trip_cal_02",
+        "seats": 1
+      }
+    },
+    {
+      "name": "calendar.create_event",
+      "arguments": {
+        "title": "Chuyến bus TP.HCM - Cần Thơ",
+        "start": "2026-11-27T08:30:00+07:00",
+        "location": "TP.HCM"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "trips": [
+        {
+          "id": "trip_cal_02",
+          "type": "bus",
+          "operator": "Tàu Chất Lượng Cao",
+          "origin": "TP.HCM",
+          "destination": "Cần Thơ",
+          "date": "2026-11-27",
+          "depart": "08:30",
+          "arrive": "11:30",
+          "price": 220000,
+          "seats_left": 12
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "booking": {
+        "id": "tk_01",
+        "trip_id": "trip_cal_02",
+        "seats": 1,
+        "total": 220000,
+        "status": "confirmed"
+      }
+    },
+    {
+      "ok": true,
+      "id": "evt_01",
+      "item": {
+        "id": "evt_01",
+        "status": "confirmed",
+        "title": "Chuyến bus TP.HCM - Cần Thơ",
+        "start": "2026-11-27T08:30:00+07:00",
+        "end": "2026-11-27T09:30:00+07:00",
+        "location": "TP.HCM"
+      }
+    }
+  ],
+  "final_state": {
+    "train_bus_tickets": {
+      "trips": [
+        {
+          "id": "trip_cal_02",
+          "type": "bus",
+          "operator": "Tàu Chất Lượng Cao",
+          "origin": "TP.HCM",
+          "destination": "Cần Thơ",
+          "date": "2026-11-27",
+          "depart": "08:30",
+          "arrive": "11:30",
+          "price": 220000,
+          "seats_left": 11
+        }
+      ],
+      "bookings": [
+        {
+          "id": "tk_01",
+          "trip_id": "trip_cal_02",
+          "seats": 1,
+          "total": 220000,
+          "status": "confirmed"
+        }
+      ]
+    },
+    "calendar": {
+      "events": [
+        {
+          "id": "evt_01",
+          "status": "confirmed",
+          "title": "Chuyến bus TP.HCM - Cần Thơ",
+          "start": "2026-11-27T08:30:00+07:00",
+          "end": "2026-11-27T09:30:00+07:00",
+          "location": "TP.HCM"
+        }
+      ]
+    },
+    "reminders": {}
+  },
+  "state_diff": {
+    "train_bus_tickets": {
+      "before": {
+        "trips": [
+          {
+            "id": "trip_cal_02",
+            "type": "bus",
+            "operator": "Tàu Chất Lượng Cao",
+            "origin": "TP.HCM",
+            "destination": "Cần Thơ",
+            "date": "2026-11-27",
+            "depart": "08:30",
+            "arrive": "11:30",
+            "price": 220000,
+            "seats_left": 12
+          }
+        ],
+        "bookings": []
+      },
+      "after": {
+        "trips": [
+          {
+            "id": "trip_cal_02",
+            "type": "bus",
+            "operator": "Tàu Chất Lượng Cao",
+            "origin": "TP.HCM",
+            "destination": "Cần Thơ",
+            "date": "2026-11-27",
+            "depart": "08:30",
+            "arrive": "11:30",
+            "price": 220000,
+            "seats_left": 11
+          }
+        ],
+        "bookings": [
+          {
+            "id": "tk_01",
+            "trip_id": "trip_cal_02",
+            "seats": 1,
+            "total": 220000,
+            "status": "confirmed"
+          }
+        ]
+      }
+    },
+    "calendar": {
+      "before": {
+        "events": []
+      },
+      "after": {
+        "events": [
+          {
+            "id": "evt_01",
+            "status": "confirmed",
+            "title": "Chuyến bus TP.HCM - Cần Thơ",
+            "start": "2026-11-27T08:30:00+07:00",
+            "end": "2026-11-27T09:30:00+07:00",
+            "location": "TP.HCM"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "53b56fe8de5c8762e621fb2abbc847c848d3dd0378e6fec8745a2144073c1ad5",
+  "validation": {
+    "scenario_id": "sim_tb_tr_07_cal",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "calendar",
+      "train_bus_tickets"
+    ],
+    "state_hash": "53b56fe8de5c8762e621fb2abbc847c848d3dd0378e6fec8745a2144073c1ad5",
+    "errors": []
+  }
+}

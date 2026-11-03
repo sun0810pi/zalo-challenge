@@ -1,0 +1,108 @@
+{
+  "scenario_id": "sim_event_tr_07_neg_price",
+  "split": "train",
+  "template_id": "tpl_event_neg_price_train",
+  "scenario_type": "negative_condition",
+  "primary_apps": [
+    "event_tickets"
+  ],
+  "installed_apps": [
+    "event_tickets",
+    "ewallet"
+  ],
+  "objective": "Check Rock Storm ticket price (650,000 > 400,000) and stop without booking.",
+  "expect_mutation": false,
+  "user_request": "Kiểm tra vé đêm nhạc Rock Storm xem giá vé có dưới 400 nghìn một vé không, nếu dưới thì đặt 2 vé, còn đắt hơn thì thôi không đặt nhé.",
+  "serialized_user_prompt": "Kiểm tra vé đêm nhạc Rock Storm xem giá vé có dưới 400 nghìn một vé không, nếu dưới thì đặt 2 vé, còn đắt hơn thì thôi không đặt nhé",
+  "current_time": "2026-11-22T12:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "TP.HCM",
+  "user_profile": {
+    "name": "Trần Thu Hà",
+    "city": "TP.HCM",
+    "home_address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM",
+    "work_address": "Tòa nhà Bitexco, số 2 Hải Triều, Quận 1, TP.HCM"
+  },
+  "location": {
+    "lat": 10.7769,
+    "lng": 106.7009
+  },
+  "history": [],
+  "initial_state": {
+    "event_tickets": {
+      "events": [
+        {
+          "id": "event_rk_01",
+          "name": "Đêm nhạc Rock Storm 2026",
+          "category": "ca nhạc",
+          "date": "2026-12-10",
+          "time": "19:30",
+          "venue": "SVĐ Phú Thọ",
+          "price": 650000,
+          "available": 50
+        }
+      ],
+      "bookings": []
+    },
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "event_tickets.search",
+      "arguments": {
+        "query": "Rock Storm"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "events": [
+        {
+          "id": "event_rk_01",
+          "name": "Đêm nhạc Rock Storm 2026",
+          "category": "ca nhạc",
+          "date": "2026-12-10",
+          "time": "19:30",
+          "venue": "SVĐ Phú Thọ",
+          "price": 650000,
+          "available": 50
+        }
+      ]
+    }
+  ],
+  "final_state": {
+    "event_tickets": {
+      "events": [
+        {
+          "id": "event_rk_01",
+          "name": "Đêm nhạc Rock Storm 2026",
+          "category": "ca nhạc",
+          "date": "2026-12-10",
+          "time": "19:30",
+          "venue": "SVĐ Phú Thọ",
+          "price": 650000,
+          "available": 50
+        }
+      ],
+      "bookings": []
+    },
+    "ewallet": {}
+  },
+  "state_diff": {},
+  "state_hash": "4a73146c1dd7cafa01f6890421e4d537ec8bcbb93b6eced97e4c72c271a5bded",
+  "validation": {
+    "scenario_id": "sim_event_tr_07_neg_price",
+    "scenario_type": "negative_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "4a73146c1dd7cafa01f6890421e4d537ec8bcbb93b6eced97e4c72c271a5bded",
+    "errors": []
+  }
+}

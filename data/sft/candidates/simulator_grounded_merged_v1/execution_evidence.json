@@ -1,0 +1,2230 @@
+{
+  "candidate_dir": "data/sft/candidates/simulator_grounded_v1.1",
+  "train_samples": 112,
+  "val_samples": 28,
+  "total_samples": 140,
+  "traces_located": 140,
+  "missing_traces": [],
+  "total_tool_calls_verified": 307,
+  "exact_session_call_response_matches": 307,
+  "validate_failures": [],
+  "raw_call_mismatches": [],
+  "final_state_mismatches": [],
+  "state_hash_mismatches": [],
+  "per_sample_evidence": [
+    {
+      "id": "pilot_001_parking_reserve_select",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_001_parking_reserve_select.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "parking.find",
+        "parking.reserve"
+      ],
+      "state_hash": "7f0ef7691970facd3d9c27aafc06155ee9d65fdcded89bcf9f666d6d0accfc43",
+      "changed_apps": [
+        "parking"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_002_parking_end_active",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_002_parking_end_active.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "parking.list_sessions",
+        "parking.end_session"
+      ],
+      "state_hash": "dc7e8791a2ed1cf17ff2c0cc3b6e81c94a6710a44423b3eecef8668e2d1e0f48",
+      "changed_apps": [
+        "parking"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_003_stocks_cond_buy_met",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_003_stocks_cond_buy_met.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "stocks.get_quote",
+        "stocks.place_order"
+      ],
+      "state_hash": "4e55c8148136247bb73cc49059fdb41780d5af14ff289e1c3386da02e7f44bc0",
+      "changed_apps": [
+        "stocks"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_004_stocks_sell_half",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_004_stocks_sell_half.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "stocks.get_portfolio",
+        "stocks.place_order"
+      ],
+      "state_hash": "bbb860314e0a00a461681c34e5f5483f796a7161823b06fbb0cebd773ef3a09d",
+      "changed_apps": [
+        "stocks"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_005_stocks_sell_keep",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_005_stocks_sell_keep.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "stocks.get_portfolio",
+        "stocks.place_order"
+      ],
+      "state_hash": "78dec7f879452f21aa540731180dae1c4f905030bfdd449a114ebb51be0ab93e",
+      "changed_apps": [
+        "stocks"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_006_train_bus_book_seats",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_006_train_bus_book_seats.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "train_bus_tickets.search",
+        "train_bus_tickets.book"
+      ],
+      "state_hash": "7e5a4179234025088d69a65d2d36a50acecb14b6cd4c710ea222598d953596d8",
+      "changed_apps": [
+        "train_bus_tickets"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_007_train_bus_cancel",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_007_train_bus_cancel.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "train_bus_tickets.my_bookings",
+        "train_bus_tickets.cancel"
+      ],
+      "state_hash": "8eac1ea25f817691fecf21a997be42803b38b51a5da2a2fc0b5a4313af14ecaa",
+      "changed_apps": [
+        "train_bus_tickets"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_008_ecommerce_buy_instock",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_008_ecommerce_buy_instock.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "ecommerce.search",
+        "ecommerce.add_to_cart",
+        "ecommerce.checkout"
+      ],
+      "state_hash": "f962627ff07f47512d571d23c71ba694ca0062285c8529cab77f4583e5320d4c",
+      "changed_apps": [
+        "ecommerce"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_009_ecommerce_return_delivered",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_009_ecommerce_return_delivered.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "ecommerce.order_status",
+        "ecommerce.request_return"
+      ],
+      "state_hash": "524417e597824bd338619508272291aca3fe8f59890481ca6000e8387fbabcdc",
+      "changed_apps": [
+        "ecommerce"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_011_grocery_buy_checkout",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_011_grocery_buy_checkout.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "grocery.search",
+        "grocery.add_to_cart",
+        "grocery.checkout"
+      ],
+      "state_hash": "97149c2783851db8417c8274750d98e1bdd8ef2b03874c0f44143469134a13b9",
+      "changed_apps": [
+        "grocery"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_012_grocery_ambiguous_ask",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_012_grocery_ambiguous_ask.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "grocery.search",
+        "sys.ask_missing_info"
+      ],
+      "state_hash": "dd673d74b39b49fed5e4fe5c953631901987fe29b16f1311cece59ed31337258",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_013_chain_recipes_pantry_grocery",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_013_chain_recipes_pantry_grocery.json",
+      "tool_calls_count": 5,
+      "tool_names": [
+        "recipes.search",
+        "pantry.list_items",
+        "grocery.search",
+        "grocery.add_to_cart",
+        "grocery.checkout"
+      ],
+      "state_hash": "c68acbf472bbe59aab864d73e96bd27083f7d90f2a5abe0755b85ff9d43a89e7",
+      "changed_apps": [
+        "grocery"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_014_pantry_consume",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_014_pantry_consume.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "pantry.list_items",
+        "pantry.consume"
+      ],
+      "state_hash": "2291dfda3635836457c9887f1ec9c5eb68ff4895df101b59a4f190e13a89cb81",
+      "changed_apps": [
+        "pantry"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_015_recipes_search_save",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_015_recipes_search_save.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "recipes.search",
+        "recipes.save"
+      ],
+      "state_hash": "d091ef3bcde6ab99b576b9c3909aa31d676efc6e8f45ebe4cebe0b372f978884",
+      "changed_apps": [
+        "recipes"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_016_event_tickets_book",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_016_event_tickets_book.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "event_tickets.search",
+        "event_tickets.book"
+      ],
+      "state_hash": "f0bc384fd8d1719617ca1a3056d728aebcff79fe2fa9c10e136230cd9f537978",
+      "changed_apps": [
+        "event_tickets"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_017_public_transit_topup",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_017_public_transit_topup.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "public_transit.find_routes",
+        "public_transit.topup_card"
+      ],
+      "state_hash": "481ec6c122cd153199e6ce2fa6e5840e09ccb5552af70f1250762718dd7c8853",
+      "changed_apps": [
+        "public_transit"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_018_translator_chat_ott",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_018_translator_chat_ott.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "translator.translate",
+        "chat_ott.list_chats",
+        "chat_ott.send_message"
+      ],
+      "state_hash": "d908f605daa8baa1a33a215c0264a2c8622910bf6453acb256b9bcbf2c99728a",
+      "changed_apps": [
+        "chat_ott"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_019_habit_tracker_log",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_019_habit_tracker_log.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "habit_tracker.list_habits",
+        "habit_tracker.log"
+      ],
+      "state_hash": "bbc3c787ad023008f21d5b7531ff3f33e5e169211195ef336351510823992bce",
+      "changed_apps": [
+        "habit_tracker"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_020_bill_ewallet_fallback_bank",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_020_bill_ewallet_fallback_bank.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "bill_payment.list_bills",
+        "ewallet.get_balance",
+        "bill_payment.pay"
+      ],
+      "state_hash": "9ba08a334dc415f84c84f2f399af55c8704a67f1e157dcd71b0db636ab3f4779",
+      "changed_apps": [
+        "bill_payment"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_021_smarthome_selective_fan",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_021_smarthome_selective_fan.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "smart_home.get_status",
+        "smart_home.fan_set"
+      ],
+      "state_hash": "27839c1dfcf3750da266805395fc58f19a5fb1998ed2284bc1bc239a640c9f11",
+      "changed_apps": [
+        "smart_home"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_022_weather_neg_condition_stop",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_022_weather_neg_condition_stop.json",
+      "tool_calls_count": 1,
+      "tool_names": [
+        "weather.get_forecast"
+      ],
+      "state_hash": "bf7c997dbc32291969b4de499f135026a3e2db6e3ae3c73063dd65cbf1d1d9f7",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_023_stocks_neg_condition_stop",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_023_stocks_neg_condition_stop.json",
+      "tool_calls_count": 1,
+      "tool_names": [
+        "stocks.get_quote"
+      ],
+      "state_hash": "a4cf905125870257bfc79a6e90f8d62c4539daa9c78862bfbc466a21f3a44d48",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_024_self_cancellation_stop",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_024_self_cancellation_stop.json",
+      "tool_calls_count": 0,
+      "tool_names": [],
+      "state_hash": "d20a88e8786b40ab8a3156f31c61cbef4807b8b4e2dbea1284811d6d2415f70c",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_parking_tr_01",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_parking_tr_01.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "parking.find",
+        "parking.reserve"
+      ],
+      "state_hash": "cdd5093aaedcade246efd2ea529d27503afe5ebe049a7861349c7cfc6c7e5ec4",
+      "changed_apps": [
+        "parking"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_parking_tr_02",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_parking_tr_02.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "parking.find",
+        "parking.reserve"
+      ],
+      "state_hash": "db915f57154234d7481669466990f53ebac17f3a71359dcbd5d2ce7be050d197",
+      "changed_apps": [
+        "parking"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_parking_tr_03",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_parking_tr_03.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "parking.find",
+        "parking.reserve"
+      ],
+      "state_hash": "b07b9c267537bb7170b77afa92474e99555e10f290a732cb0c0904e0d3cb7ce5",
+      "changed_apps": [
+        "parking"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_parking_tr_05_neg_full",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_parking_tr_05_neg_full.json",
+      "tool_calls_count": 1,
+      "tool_names": [
+        "parking.find"
+      ],
+      "state_hash": "53a08fa9875f0527ddbe39d587a037225ca16a6f8d68b03af25e2ae697fc0d50",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_parking_tr_06_ask_time",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_parking_tr_06_ask_time.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "parking.find",
+        "sys.ask_missing_info"
+      ],
+      "state_hash": "dee77e4cf936102f2c04ff59e3615901f58ef6492a5f376034a2ccc9d694f631",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_parking_tr_07_end",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_parking_tr_07_end.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "parking.list_sessions",
+        "parking.end_session"
+      ],
+      "state_hash": "4c0ebf9a4c9f56ec834b9f2024531f92339f0615d9e002de3bfee76752d4f58f",
+      "changed_apps": [
+        "parking"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_parking_tr_08_end",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_parking_tr_08_end.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "parking.list_sessions",
+        "parking.end_session"
+      ],
+      "state_hash": "f169b478316c2bfe5a43185e6f5d6c157ebde82b913f06bd73219db3ed9775f3",
+      "changed_apps": [
+        "parking"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_stocks_tr_01_buy",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_stocks_tr_01_buy.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "stocks.get_quote",
+        "stocks.place_order"
+      ],
+      "state_hash": "e7d095b0de214a93463c0bdaeeacdb3d553eb784fcef130e0cbf54859a8191bf",
+      "changed_apps": [
+        "stocks"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_stocks_tr_02_buy",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_stocks_tr_02_buy.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "stocks.get_quote",
+        "stocks.place_order"
+      ],
+      "state_hash": "a27410c6c9a13a89e2598c1ca804c2c4917861505dfb646a727f4596812cc065",
+      "changed_apps": [
+        "stocks"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_stocks_tr_04_half",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_stocks_tr_04_half.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "stocks.get_portfolio",
+        "stocks.place_order"
+      ],
+      "state_hash": "ae8482654dafcf1e385bab7a71621b1494a119933af88c20bc0b14a04f19de79",
+      "changed_apps": [
+        "stocks"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_stocks_tr_06_keep",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_stocks_tr_06_keep.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "stocks.get_portfolio",
+        "stocks.place_order"
+      ],
+      "state_hash": "63bf70600765562d01718f04f53ef2dbf7215295242a542293165338bbf77f73",
+      "changed_apps": [
+        "stocks"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_stocks_tr_07_keep",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_stocks_tr_07_keep.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "stocks.get_portfolio",
+        "stocks.place_order"
+      ],
+      "state_hash": "9296ad0ab9f9a007d39fcebc2be708f13ba83a13e948d4d3ca6b14f9c96dab02",
+      "changed_apps": [
+        "stocks"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_stocks_tr_08_alert",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_stocks_tr_08_alert.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "stocks.get_quote",
+        "stocks.set_price_alert"
+      ],
+      "state_hash": "3cef439b2c2950b53f46beed40ca8c59fbad7c27a2ec77a9300824d08b6e552c",
+      "changed_apps": [
+        "stocks"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_stocks_tr_09_alert",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_stocks_tr_09_alert.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "stocks.get_quote",
+        "stocks.set_price_alert"
+      ],
+      "state_hash": "ca043ac3f873485c9ccf8dde056ac8d1586ab20bd95d3af7084a3cdbcfdde265",
+      "changed_apps": [
+        "stocks"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_stocks_tr_10_neg_cond",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_stocks_tr_10_neg_cond.json",
+      "tool_calls_count": 1,
+      "tool_names": [
+        "stocks.get_quote"
+      ],
+      "state_hash": "88f6c52fa1bc1a89bd35450ba071878b4facdb8e1ac5442c1f4a73500fe41b8d",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_tb_tr_01_book",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_tb_tr_01_book.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "train_bus_tickets.search",
+        "train_bus_tickets.book"
+      ],
+      "state_hash": "bf8a0e38dee447c7b2645c7cc260bc7f90f5f083fc39c8b240deb768c3697e06",
+      "changed_apps": [
+        "train_bus_tickets"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_tb_tr_02_book",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_tb_tr_02_book.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "train_bus_tickets.search",
+        "train_bus_tickets.book"
+      ],
+      "state_hash": "c47eed1edd7f14ea853652bc855f0a965f5971115ad7d48a0fa803207dddfb2e",
+      "changed_apps": [
+        "train_bus_tickets"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_tb_tr_03_book",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_tb_tr_03_book.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "train_bus_tickets.search",
+        "train_bus_tickets.book"
+      ],
+      "state_hash": "fdf3727d4c69845abb128fb7b81c174adf1141c60a3532db89f2e5b9b45b98d9",
+      "changed_apps": [
+        "train_bus_tickets"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_tb_tr_05_cal",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_tb_tr_05_cal.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "train_bus_tickets.search",
+        "train_bus_tickets.book",
+        "calendar.create_event"
+      ],
+      "state_hash": "ca87725485bc9eed8d0a9fb40a6b4f7c3b1105144724817edb7e2eb1e71642bf",
+      "changed_apps": [
+        "train_bus_tickets",
+        "calendar"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_tb_tr_07_cal",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_tb_tr_07_cal.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "train_bus_tickets.search",
+        "train_bus_tickets.book",
+        "calendar.create_event"
+      ],
+      "state_hash": "53b56fe8de5c8762e621fb2abbc847c848d3dd0378e6fec8745a2144073c1ad5",
+      "changed_apps": [
+        "train_bus_tickets",
+        "calendar"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_tb_tr_08_cancel",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_tb_tr_08_cancel.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "train_bus_tickets.my_bookings",
+        "train_bus_tickets.cancel"
+      ],
+      "state_hash": "29127a68b4e0e0abee48161a04fa7676a878758b469b175ec16e163735a410f9",
+      "changed_apps": [
+        "train_bus_tickets"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_tb_tr_09_cancel",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_tb_tr_09_cancel.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "train_bus_tickets.my_bookings",
+        "train_bus_tickets.cancel"
+      ],
+      "state_hash": "2ef5ce682d6c64d5df865a525ed79a2a6527063a672f63d54b930b1f90315070",
+      "changed_apps": [
+        "train_bus_tickets"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_ecom_tr_01_buy",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_ecom_tr_01_buy.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "ecommerce.search",
+        "ecommerce.add_to_cart",
+        "ecommerce.checkout"
+      ],
+      "state_hash": "455e850fa6f9337e66d0d35260428b517c6ecb3f6522509fb0fef3e960d3c94b",
+      "changed_apps": [
+        "ecommerce"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_ecom_tr_02_buy",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_ecom_tr_02_buy.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "ecommerce.search",
+        "ecommerce.add_to_cart",
+        "ecommerce.checkout"
+      ],
+      "state_hash": "a2214d8e38e69bcbdcbaa23a3ad9e802126599b5eed287f60884c36ad394ac04",
+      "changed_apps": [
+        "ecommerce"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_ecom_tr_03_buy",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_ecom_tr_03_buy.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "ecommerce.search",
+        "ecommerce.add_to_cart",
+        "ecommerce.checkout"
+      ],
+      "state_hash": "98c974d194ea394d3bc2dac774e08977cf22d8cfe6e31f59d0cffb72bb583b1e",
+      "changed_apps": [
+        "ecommerce"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_ecom_tr_05_return",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_ecom_tr_05_return.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "ecommerce.order_status",
+        "ecommerce.request_return"
+      ],
+      "state_hash": "695053b0fc047464254ec5e4db47f49ac66db21bdbb6631a27265bac458aff47",
+      "changed_apps": [
+        "ecommerce"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_ecom_tr_06_return",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_ecom_tr_06_return.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "ecommerce.order_status",
+        "ecommerce.request_return"
+      ],
+      "state_hash": "424e3829a4b57c3d6787b2f92bb9c26491bfc5431d56c3b8d393168a79ec286a",
+      "changed_apps": [
+        "ecommerce"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_ecom_tr_07_cancel",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_ecom_tr_07_cancel.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "ecommerce.order_status",
+        "ecommerce.cancel_order"
+      ],
+      "state_hash": "77a72922e6a445f8af2846b23a55cb6447cb49d3bb85e5f4b2f61bb7f4982a89",
+      "changed_apps": [
+        "ecommerce"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_ecom_tr_09_neg_oos",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_ecom_tr_09_neg_oos.json",
+      "tool_calls_count": 1,
+      "tool_names": [
+        "ecommerce.search"
+      ],
+      "state_hash": "521dd95998a2f8c5b78a40ede874e66f37628154abb5f5dab8a8b0c1e95de73f",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_ecom_tr_10_ask_ambig",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_ecom_tr_10_ask_ambig.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "ecommerce.search",
+        "sys.ask_missing_info"
+      ],
+      "state_hash": "c9e3d31eeb26f79b1c3923975637dc7b4072339b49390e4caba91036b426064e",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_grocery_tr_01",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_grocery_tr_01.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "grocery.search",
+        "grocery.add_to_cart",
+        "grocery.checkout"
+      ],
+      "state_hash": "494804bf15d62ad6e85d715975ce62b949433f6155296ca6716f729a59ec313b",
+      "changed_apps": [
+        "grocery"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_grocery_tr_02",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_grocery_tr_02.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "grocery.search",
+        "grocery.add_to_cart",
+        "grocery.checkout"
+      ],
+      "state_hash": "77a46a1d6ffb05ecca5d2b04cf123c9a414314134724f5ebdb7e5b5f6503269f",
+      "changed_apps": [
+        "grocery"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_grocery_tr_03",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_grocery_tr_03.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "grocery.search",
+        "grocery.add_to_cart",
+        "grocery.checkout"
+      ],
+      "state_hash": "1c3f0932f63d35e3de8d5bf49600b8a02c92b065dd671e1187707193d96e3308",
+      "changed_apps": [
+        "grocery"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_pantry_tr_01",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_pantry_tr_01.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "pantry.list_items",
+        "pantry.consume"
+      ],
+      "state_hash": "5f13dd848e1f74c8d171c341d367268b4bff48be1d8d48224634ca8c0293f429",
+      "changed_apps": [
+        "pantry"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_pantry_tr_02",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_pantry_tr_02.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "pantry.list_items",
+        "pantry.consume"
+      ],
+      "state_hash": "3161425c347b69d540cbb098d05ca6f3998af3f9a2cc4a9aa6d1bdb5885b335c",
+      "changed_apps": [
+        "pantry"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_pantry_tr_04_neg_stock",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_pantry_tr_04_neg_stock.json",
+      "tool_calls_count": 1,
+      "tool_names": [
+        "pantry.list_items"
+      ],
+      "state_hash": "68f6ef7dc8593a580d7c78d6d18be5954ea309cb2f67833e4ed2408fa3c9ea24",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_recipes_tr_01",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_recipes_tr_01.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "recipes.search",
+        "recipes.get",
+        "recipes.save"
+      ],
+      "state_hash": "4ccb01b89e16d61f15a06724de9ddcb59c7b657fd91869ffd567d1965d5f16d2",
+      "changed_apps": [
+        "recipes"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_recipes_tr_02",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_recipes_tr_02.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "recipes.search",
+        "recipes.get",
+        "recipes.save"
+      ],
+      "state_hash": "a7f74e80de751c0df2198381fc95f31eca2b8ac600a8bb8b500e5c37f29ae6a1",
+      "changed_apps": [
+        "recipes"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_recipes_tr_03",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_recipes_tr_03.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "recipes.search",
+        "recipes.save"
+      ],
+      "state_hash": "df55f185395068dbd585fb08ba9417ec72505f8c1b84c15acf3ed4bc80839b02",
+      "changed_apps": [
+        "recipes"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_chain_rpg_tr_01",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_chain_rpg_tr_01.json",
+      "tool_calls_count": 5,
+      "tool_names": [
+        "recipes.search",
+        "pantry.list_items",
+        "grocery.search",
+        "grocery.add_to_cart",
+        "grocery.checkout"
+      ],
+      "state_hash": "95187df1fc45a0e21e111d37d89755219158042f4686db50748415b207f23199",
+      "changed_apps": [
+        "grocery"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_chain_rpg_tr_02",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_chain_rpg_tr_02.json",
+      "tool_calls_count": 5,
+      "tool_names": [
+        "recipes.search",
+        "pantry.list_items",
+        "grocery.search",
+        "grocery.add_to_cart",
+        "grocery.checkout"
+      ],
+      "state_hash": "3f429cdb81e1b1746cd14370d83f0c4df6fb9081ec9aa6a3a433576753a6327d",
+      "changed_apps": [
+        "grocery"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_chain_rpg_tr_04",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_chain_rpg_tr_04.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "recipes.search",
+        "pantry.list_items",
+        "shopping_list.add"
+      ],
+      "state_hash": "6200961ae88c1493d50c81b6948a5879b03b62299a756e4b2af5e10735c5ca41",
+      "changed_apps": [
+        "shopping_list"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_event_tr_01",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_event_tr_01.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "event_tickets.search",
+        "event_tickets.book"
+      ],
+      "state_hash": "a806cc870a5021b12910fba6a069ca56f589a61ee5495c22cfe180928f41eee0",
+      "changed_apps": [
+        "event_tickets"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_event_tr_02",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_event_tr_02.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "event_tickets.search",
+        "event_tickets.book"
+      ],
+      "state_hash": "223e95f360e709c0669aea02794b625f9b823d5045738731572cb31266acb511",
+      "changed_apps": [
+        "event_tickets"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_event_tr_03",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_event_tr_03.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "event_tickets.search",
+        "event_tickets.book",
+        "calendar.create_event"
+      ],
+      "state_hash": "e1839b4dc7583ccb8550c19442010ac696d3d8af4bdf888307a111a9862cb5d8",
+      "changed_apps": [
+        "event_tickets",
+        "calendar"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_event_tr_04",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_event_tr_04.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "event_tickets.search",
+        "event_tickets.book",
+        "calendar.create_event"
+      ],
+      "state_hash": "8e06854edcff08a3c64fdcb5f728974141f51ef2aa5f6e85c83899d8ad2fd811",
+      "changed_apps": [
+        "event_tickets",
+        "calendar"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_event_tr_06_select_avail",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_event_tr_06_select_avail.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "event_tickets.search",
+        "event_tickets.book"
+      ],
+      "state_hash": "7ce00238f56089ef888b3c8514a0a68d74a0c34474ba9ee34894c570e168410f",
+      "changed_apps": [
+        "event_tickets"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_event_tr_07_neg_price",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_event_tr_07_neg_price.json",
+      "tool_calls_count": 1,
+      "tool_names": [
+        "event_tickets.search"
+      ],
+      "state_hash": "4a73146c1dd7cafa01f6890421e4d537ec8bcbb93b6eced97e4c72c271a5bded",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_event_tr_08_ask_qty",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_event_tr_08_ask_qty.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "event_tickets.search",
+        "sys.ask_missing_info"
+      ],
+      "state_hash": "344ce33f2f5181717fed8964521ad28f4563442168f7cc397aa0bdb0e4e1658d",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_transit_tr_01",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_transit_tr_01.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "public_transit.find_routes",
+        "public_transit.next_departures",
+        "public_transit.topup_card"
+      ],
+      "state_hash": "9535fdaf985c60e7fd7b00cdae387f63caaf8db36a27b88188aa71596f329dc1",
+      "changed_apps": [
+        "public_transit"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_transit_tr_02",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_transit_tr_02.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "public_transit.find_routes",
+        "public_transit.next_departures",
+        "public_transit.topup_card"
+      ],
+      "state_hash": "e7c03bb96fef9af923e7a181f94898abd05f5a672b5bbf4963c4c39eba341697",
+      "changed_apps": [
+        "public_transit"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_transit_tr_03",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_transit_tr_03.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "public_transit.find_routes",
+        "public_transit.topup_card"
+      ],
+      "state_hash": "c5a90ebcebed348bad025e62880ac185cff401ab540c3d950f090b803684d696",
+      "changed_apps": [
+        "public_transit"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_transit_tr_05_read_only",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_transit_tr_05_read_only.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "public_transit.find_routes",
+        "public_transit.next_departures"
+      ],
+      "state_hash": "09ee16c0e8af49e99c017b83a7eb0b0dc44e2ad3f457ed9145baf9e5ec4aa7a1",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_transit_tr_06_ask_amount",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_transit_tr_06_ask_amount.json",
+      "tool_calls_count": 1,
+      "tool_names": [
+        "sys.ask_missing_info"
+      ],
+      "state_hash": "1f3b6f57b3071a89d6f02ee57b2bb28fb6b94dc52e1b899893f7f4b1d64d288d",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_trans_tr_01_chat",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_trans_tr_01_chat.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "translator.translate",
+        "chat_ott.list_chats",
+        "chat_ott.send_message"
+      ],
+      "state_hash": "e945671666afb481ff485072589653a2ea919ff06ce9ba779d668c16e6a96fca",
+      "changed_apps": [
+        "chat_ott"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_trans_tr_03_sms",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_trans_tr_03_sms.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "translator.translate",
+        "contacts.search",
+        "sms.send"
+      ],
+      "state_hash": "a0b68e4a7f352164f4ecfc22908990d93806b926ec068c89a49a36d862b7ff3a",
+      "changed_apps": [
+        "sms"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_trans_tr_04_sms",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_trans_tr_04_sms.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "translator.translate",
+        "contacts.search",
+        "sms.send"
+      ],
+      "state_hash": "eb0e510195ad4048243f5b20f078132d26634d137a96ddc485f7136a64c8363c",
+      "changed_apps": [
+        "sms"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_trans_tr_05_email",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_trans_tr_05_email.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "translator.translate",
+        "email.send"
+      ],
+      "state_hash": "dad169e2953ecbd545474706326a91468dd1adec792d6bf94925303bbbc7d4be",
+      "changed_apps": [
+        "email"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_trans_tr_06_notes",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_trans_tr_06_notes.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "translator.translate",
+        "notes.create"
+      ],
+      "state_hash": "591529b61f99e04ed77e3ecb6ed1cf76a08aa8c2ee9981ece7b3cbe2063fa582",
+      "changed_apps": [
+        "notes"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_habit_tr_01",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_habit_tr_01.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "habit_tracker.list_habits",
+        "habit_tracker.log"
+      ],
+      "state_hash": "f25de55d049585f8943c9ef89dac5f61f36480f9f3268df31753f3194428c740",
+      "changed_apps": [
+        "habit_tracker"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_habit_tr_02",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_habit_tr_02.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "habit_tracker.list_habits",
+        "habit_tracker.log"
+      ],
+      "state_hash": "c7ea44690b0504a44c95450d99336c6b1fc18a92a8163b407b3edc930fbe9d02",
+      "changed_apps": [
+        "habit_tracker"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_habit_tr_03",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_habit_tr_03.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "habit_tracker.list_habits",
+        "habit_tracker.log"
+      ],
+      "state_hash": "aff619cea3d62a682511f0f61d67838bf9a63f26e2dbc12d31ce2d86ec28b01d",
+      "changed_apps": [
+        "habit_tracker"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_habit_tr_05",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_habit_tr_05.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "habit_tracker.list_habits",
+        "habit_tracker.log"
+      ],
+      "state_hash": "3b9cc2778a949bb9f16479383c7e85897adecd6925b32c5f3e85d125ea8d87d3",
+      "changed_apps": [
+        "habit_tracker"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_habit_tr_06_already_logged",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_habit_tr_06_already_logged.json",
+      "tool_calls_count": 1,
+      "tool_names": [
+        "habit_tracker.list_habits"
+      ],
+      "state_hash": "a4d28abe3081ffb20ed2df2c2bbcee2e758e6c28700268d702831a953a401b9f",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_bill_tr_01_wallet_ok",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_bill_tr_01_wallet_ok.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "bill_payment.list_bills",
+        "ewallet.get_balance",
+        "bill_payment.pay"
+      ],
+      "state_hash": "02a14fb7deb93131e82ee4c639c087d7744c6e969112246f4d94f2d8fdf790e8",
+      "changed_apps": [
+        "bill_payment",
+        "ewallet"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_bill_tr_02_fallback_bank",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_bill_tr_02_fallback_bank.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "bill_payment.list_bills",
+        "ewallet.get_balance",
+        "bill_payment.pay"
+      ],
+      "state_hash": "b1575b0d75a5f506a92c94418ea8d6e134d0037cdbb81f067c53189b173d52c3",
+      "changed_apps": [
+        "bill_payment"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_bill_tr_03_insufficient_stop",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_bill_tr_03_insufficient_stop.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "bill_payment.list_bills",
+        "ewallet.get_balance"
+      ],
+      "state_hash": "460d7330299deac7a1b26b331948ee2648ca107541452855569f2478f0f269cc",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_food_tr_01",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_food_tr_01.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "food_delivery.list_restaurants",
+        "food_delivery.get_menu",
+        "food_delivery.place_order"
+      ],
+      "state_hash": "d7de718f693274ea7995f0569b6a344f25c1a0a41e07dd8381c4e73c0e8de852",
+      "changed_apps": [
+        "food_delivery"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_food_tr_02",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_food_tr_02.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "food_delivery.list_restaurants",
+        "food_delivery.get_menu",
+        "food_delivery.place_order"
+      ],
+      "state_hash": "2df4b1470e73e38c3eefbed540011acddbd9349fa283089ddb0e6e57e89d035b",
+      "changed_apps": [
+        "food_delivery"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_food_tr_03",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_food_tr_03.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "food_delivery.list_restaurants",
+        "food_delivery.get_menu",
+        "food_delivery.place_order"
+      ],
+      "state_hash": "383a8c5be92e85ca0ae8748d94012915fadb7446943eee0f9d345f93a180f9fd",
+      "changed_apps": [
+        "food_delivery"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_flights_tr_01",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_flights_tr_01.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "flights.search",
+        "flights.book"
+      ],
+      "state_hash": "5860c1eadadcba39ed58bfc24ae4cf90b2c4f85634a7e4407376c264ecdd86b6",
+      "changed_apps": [
+        "flights"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_flights_tr_02",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_flights_tr_02.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "flights.search",
+        "flights.book"
+      ],
+      "state_hash": "e45f329496a96bf0e13d018f7064e5da832543522a12d18193fff5d87e527350",
+      "changed_apps": [
+        "flights"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_flights_tr_03_checkin",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_flights_tr_03_checkin.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "flights.my_bookings",
+        "flights.check_in"
+      ],
+      "state_hash": "e25ef72c38da2970f5fa045d233e5f6fe3e75a38e0342aac2d07e5ac17c6704c",
+      "changed_apps": [
+        "flights"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_bank_tr_01",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_bank_tr_01.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "banking.get_balance",
+        "banking.list_beneficiaries",
+        "banking.transfer"
+      ],
+      "state_hash": "782f01e04f85bea836427685e9568cc3c3e1237e16647eacd7257aaa8444ab86",
+      "changed_apps": [
+        "banking"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_bank_tr_02",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_bank_tr_02.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "banking.get_balance",
+        "banking.list_beneficiaries",
+        "banking.transfer"
+      ],
+      "state_hash": "cac999ec0221ea19aa51746c4f3e96cd1d6cfea2fab3750d130e2ad518677a91",
+      "changed_apps": [
+        "banking"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_bank_tr_03_savings",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_bank_tr_03_savings.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "banking.get_balance",
+        "banking.open_savings"
+      ],
+      "state_hash": "3a4062b2eda195c98dbddad5e5e687ae4fdd20460b25fc7574d50e322a895090",
+      "changed_apps": [
+        "banking"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_sh_tr_01_light",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_sh_tr_01_light.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "smart_home.get_status",
+        "smart_home.light_set"
+      ],
+      "state_hash": "47cfe4bc62eea0862b8622ee58da17741c20f61e8883751da0683587301eb7f8",
+      "changed_apps": [
+        "smart_home"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_sh_tr_02_climate",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_sh_tr_02_climate.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "smart_home.get_status",
+        "smart_home.climate_set"
+      ],
+      "state_hash": "f5182a824918afed8d7732ba4b435e6abfc46278225c1f219f598353d3f7b4a7",
+      "changed_apps": [
+        "smart_home"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_sh_tr_03_scene",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_sh_tr_03_scene.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "smart_home.get_status",
+        "smart_home.scene_run"
+      ],
+      "state_hash": "ae9f654e93102e8e54d1aa896946b4dff326bcf0884736d7de0346688f2511ec",
+      "changed_apps": [
+        "smart_home"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_sh_tr_04_multi_fan",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_sh_tr_04_multi_fan.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "smart_home.get_status",
+        "smart_home.fan_set",
+        "smart_home.fan_set"
+      ],
+      "state_hash": "ed4a87e1fb8587dad639be17bfb770b3abf6b1e86f72a78aa97ba83eed2aa175",
+      "changed_apps": [
+        "smart_home"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_weather_tr_01_rain_resched",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_weather_tr_01_rain_resched.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "weather.get_forecast",
+        "calendar.list_events",
+        "calendar.update_event"
+      ],
+      "state_hash": "dfd991548190a80dfd107798859c498650fcfe42a8af6f074cef5ae639fb2e84",
+      "changed_apps": [
+        "calendar"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_weather_tr_02_norain_stop",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_weather_tr_02_norain_stop.json",
+      "tool_calls_count": 1,
+      "tool_names": [
+        "weather.get_forecast"
+      ],
+      "state_hash": "88c46f1389a6fa27372a5d0d9e24de0f82b2daa22e4520908a037198fc1747ab",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_weather_tr_03_rain_cancel",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_weather_tr_03_rain_cancel.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "weather.get_forecast",
+        "calendar.list_events",
+        "calendar.cancel_event"
+      ],
+      "state_hash": "4ad4828b5400a7cdc57ae2692acf9706cbf15eb29bedce95c986a2a7647908c6",
+      "changed_apps": [
+        "calendar"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_cancel_tr_01_ecom",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_cancel_tr_01_ecom.json",
+      "tool_calls_count": 0,
+      "tool_names": [],
+      "state_hash": "8f94bed821ba1d04e5a24764b568830b37ed445f0f77de469f2fc78da4f2a8fb",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_cancel_tr_02_stocks",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_cancel_tr_02_stocks.json",
+      "tool_calls_count": 0,
+      "tool_names": [],
+      "state_hash": "717f558383b57fd9a27d83002d272bd34959a04bb409f6c0aa24c53a32ed4e58",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_cancel_tr_03_parking",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_cancel_tr_03_parking.json",
+      "tool_calls_count": 0,
+      "tool_names": [],
+      "state_hash": "dcd22a6cc49921a97fab7379d90847df94f648829924989191ac077a1125d65d",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_cancel_tr_04_grocery",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_cancel_tr_04_grocery.json",
+      "tool_calls_count": 0,
+      "tool_names": [],
+      "state_hash": "89a70461a844a7122a1039500ed0c331a7e6f54d35780006c05ca7380844c80e",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_cancel_tr_05_event",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_cancel_tr_05_event.json",
+      "tool_calls_count": 0,
+      "tool_names": [],
+      "state_hash": "b160a2c992e2215ba5080eda5abcb95934484ac4eea642358166f8981ebf8a22",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_cancel_tr_06_transit",
+      "split": "train",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_cancel_tr_06_transit.json",
+      "tool_calls_count": 0,
+      "tool_names": [],
+      "state_hash": "3fbeab2827966eeab19893e972b73ff4f8e2c850115e68da4028526fbf7071e1",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "pilot_010_ecommerce_cancel_shipping",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/pilot_010_ecommerce_cancel_shipping.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "ecommerce.order_status",
+        "ecommerce.cancel_order"
+      ],
+      "state_hash": "56943e75ca9e5d80cfe232e21a2ceb38d4a96a489af068af8b05342df277c773",
+      "changed_apps": [
+        "ecommerce"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_parking_val_01_end",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_parking_val_01_end.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "parking.list_sessions",
+        "parking.end_session"
+      ],
+      "state_hash": "81fd1f46db3b79c7f581548b0c32b54bcd10377e52bf6cbdc6da69adbed1e898",
+      "changed_apps": [
+        "parking"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_parking_val_02_reserve",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_parking_val_02_reserve.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "parking.find",
+        "parking.reserve"
+      ],
+      "state_hash": "8fd77dcc69d5464914c6e18096a61c09c5884a0eb43190947b696ee50e778d9b",
+      "changed_apps": [
+        "parking"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_stocks_val_01_buy",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_stocks_val_01_buy.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "stocks.get_quote",
+        "stocks.place_order"
+      ],
+      "state_hash": "4d920d4797d511565ff556896972e829ccad6019d1bb3e4986a8fb5240bd2472",
+      "changed_apps": [
+        "stocks"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_stocks_val_02_half",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_stocks_val_02_half.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "stocks.get_portfolio",
+        "stocks.place_order"
+      ],
+      "state_hash": "6e1357785e469029106e8da00b70f9eb208ed3fd300333550135deece6271a52",
+      "changed_apps": [
+        "stocks"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_stocks_val_03_alert",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_stocks_val_03_alert.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "stocks.get_quote",
+        "stocks.set_price_alert"
+      ],
+      "state_hash": "395affc78b1afe2cf82e4f60e8164ec530d0d334c2f34352975ac44c212108f5",
+      "changed_apps": [
+        "stocks"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_tb_val_01_book",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_tb_val_01_book.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "train_bus_tickets.search",
+        "train_bus_tickets.book"
+      ],
+      "state_hash": "aee10eb0f0e37cdc85b86ab75d5b7c23ca909f830022b68a24a0b74d954ce351",
+      "changed_apps": [
+        "train_bus_tickets"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_tb_val_02_cal",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_tb_val_02_cal.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "train_bus_tickets.search",
+        "train_bus_tickets.book",
+        "calendar.create_event"
+      ],
+      "state_hash": "0e9c80b3b46454517443003c8a6534f7db6829740aea233fd05a87038af4d819",
+      "changed_apps": [
+        "train_bus_tickets",
+        "calendar"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_tb_val_03_cancel",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_tb_val_03_cancel.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "train_bus_tickets.my_bookings",
+        "train_bus_tickets.cancel"
+      ],
+      "state_hash": "5dcd9fd0e84ec75fedd0d2bc7fbe389eaff7f018c58a8a1f210a041698769b65",
+      "changed_apps": [
+        "train_bus_tickets"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_tb_val_04_ask_date",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_tb_val_04_ask_date.json",
+      "tool_calls_count": 1,
+      "tool_names": [
+        "sys.ask_missing_info"
+      ],
+      "state_hash": "745af595f8d9e572a6c935fa7373e10d365bde37f18bcb67f06f7d188f7020ee",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_ecom_val_01_buy",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_ecom_val_01_buy.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "ecommerce.search",
+        "ecommerce.add_to_cart",
+        "ecommerce.checkout"
+      ],
+      "state_hash": "d3fb9f71af0c868190eee0f93ea0971aa534e5d8aefc507e10dbb2aecd17d845",
+      "changed_apps": [
+        "ecommerce"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_ecom_val_02_return",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_ecom_val_02_return.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "ecommerce.order_status",
+        "ecommerce.request_return"
+      ],
+      "state_hash": "8c7dceb6f48516261ffc675c79c4d03171e847cefe89235af35e092440ee5bbb",
+      "changed_apps": [
+        "ecommerce"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_grocery_val_01",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_grocery_val_01.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "grocery.search",
+        "grocery.add_to_cart",
+        "grocery.checkout"
+      ],
+      "state_hash": "7ac30b334fb06dc668070f6447b095ddda97d7672fdec8d66da0db69a0678ff7",
+      "changed_apps": [
+        "grocery"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_pantry_val_01",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_pantry_val_01.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "pantry.list_items",
+        "pantry.consume"
+      ],
+      "state_hash": "36e2a102b4a1082add661d05276e3c21d6be69c04b29306b198d51644607b739",
+      "changed_apps": [
+        "pantry"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_recipes_val_01",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_recipes_val_01.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "recipes.search",
+        "recipes.get",
+        "recipes.save"
+      ],
+      "state_hash": "8ec5bfa89d71ebe86bcf92974e680f5165638586f5f6c2bbafb488ef27284175",
+      "changed_apps": [
+        "recipes"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_chain_rpg_val_01",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_chain_rpg_val_01.json",
+      "tool_calls_count": 5,
+      "tool_names": [
+        "recipes.search",
+        "pantry.list_items",
+        "grocery.search",
+        "grocery.add_to_cart",
+        "grocery.checkout"
+      ],
+      "state_hash": "238f42d11cd18541ee11035148cd7b7db94f880da2586eb26d0ead36a25a2629",
+      "changed_apps": [
+        "grocery"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_event_val_02",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_event_val_02.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "event_tickets.search",
+        "event_tickets.book",
+        "calendar.create_event"
+      ],
+      "state_hash": "73a9f8a79f64a8018f8f49d973656086ead8a2c872510e8624bb205e1bc1db67",
+      "changed_apps": [
+        "event_tickets",
+        "calendar"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_transit_val_01",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_transit_val_01.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "public_transit.find_routes",
+        "public_transit.next_departures",
+        "public_transit.topup_card"
+      ],
+      "state_hash": "c50942c668453ff27096e5222ee76ea07ad13c1c7a6dc565240a76d650771187",
+      "changed_apps": [
+        "public_transit"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_trans_val_01_chat",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_trans_val_01_chat.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "translator.translate",
+        "chat_ott.list_chats",
+        "chat_ott.send_message"
+      ],
+      "state_hash": "ddf225f40f9d3b4646576eb1ea0934cba0a39a5d45b04be48c4b902f616210e9",
+      "changed_apps": [
+        "chat_ott"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_habit_val_01",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_habit_val_01.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "habit_tracker.list_habits",
+        "habit_tracker.log"
+      ],
+      "state_hash": "953f3f38931a1a59351a15aaceb40eac1c8104244f15ffd6ab2de4baa5fc7afe",
+      "changed_apps": [
+        "habit_tracker"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_habit_val_02",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_habit_val_02.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "habit_tracker.list_habits",
+        "habit_tracker.log"
+      ],
+      "state_hash": "79fcc65861baa92aa1d1c771bfcb3bcebb8c8664b7d3f5fa80feb8056be80098",
+      "changed_apps": [
+        "habit_tracker"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_bill_val_01_fallback_bank",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_bill_val_01_fallback_bank.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "bill_payment.list_bills",
+        "ewallet.get_balance",
+        "bill_payment.pay"
+      ],
+      "state_hash": "796110ee606df3d024bde107d8e241da5ed4a87414073a71f8a2209c14acd4ae",
+      "changed_apps": [
+        "bill_payment"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_bill_val_02_insufficient_stop",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_bill_val_02_insufficient_stop.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "bill_payment.list_bills",
+        "ewallet.get_balance"
+      ],
+      "state_hash": "62790086b6938c9477194c60e156fe692529068312d7ba941f218fa3f757822a",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_food_val_01",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_food_val_01.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "food_delivery.list_restaurants",
+        "food_delivery.get_menu",
+        "food_delivery.place_order"
+      ],
+      "state_hash": "41178cc89eb68ae472669395fb6b190dc88916bac52b37a0f3b6b5c61995a54b",
+      "changed_apps": [
+        "food_delivery"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_flights_val_01",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_flights_val_01.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "flights.search",
+        "flights.book"
+      ],
+      "state_hash": "16ed4c8a6bfbd2c24453594083ee70c73c0ebcd1fd91d02949a5e3dbbb012cbc",
+      "changed_apps": [
+        "flights"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_bank_val_01",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_bank_val_01.json",
+      "tool_calls_count": 3,
+      "tool_names": [
+        "banking.get_balance",
+        "banking.list_beneficiaries",
+        "banking.transfer"
+      ],
+      "state_hash": "516f9d9605053819d11c3193241d5a5495414d85fc259c002a05ee699260d48d",
+      "changed_apps": [
+        "banking"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_sh_val_01_scene",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_sh_val_01_scene.json",
+      "tool_calls_count": 2,
+      "tool_names": [
+        "smart_home.get_status",
+        "smart_home.scene_run"
+      ],
+      "state_hash": "3dba504e143614919141af6eb1b56cb9421f59614fdb5d84813d25a00a375de2",
+      "changed_apps": [
+        "smart_home"
+      ],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    },
+    {
+      "id": "sim_cancel_val_01_flights",
+      "split": "val",
+      "trace_file": "data/sft/candidates/simulator_grounded_v1.1/traces/sim_cancel_val_01_flights.json",
+      "tool_calls_count": 0,
+      "tool_names": [],
+      "state_hash": "d5a3d50cf72a8ac6ca6a38e8ab71fad6a6ecc8852378faa774e6dcf5db68deb2",
+      "changed_apps": [],
+      "session_call_exact_match": true,
+      "state_replay_exact_match": true
+    }
+  ]
+}

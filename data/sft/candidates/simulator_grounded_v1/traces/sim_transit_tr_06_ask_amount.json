@@ -1,0 +1,70 @@
+{
+  "scenario_id": "sim_transit_tr_06_ask_amount",
+  "split": "train",
+  "template_id": "tpl_transit_ask_amount_train",
+  "scenario_type": "missing_info",
+  "primary_apps": [
+    "public_transit",
+    "sys"
+  ],
+  "installed_apps": [
+    "public_transit",
+    "ewallet"
+  ],
+  "objective": "Ask user for missing required parameter amount for public_transit.topup_card.",
+  "expect_mutation": false,
+  "user_request": "Nạp thêm tiền vào thẻ xe buýt công cộng giúp anh với.",
+  "current_time": "2026-11-22T09:00:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "public_transit": {
+      "card_balance": 5000,
+      "routes": [],
+      "departures": [],
+      "topups": []
+    },
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "sys.ask_missing_info",
+      "arguments": {
+        "tool_name": "public_transit.topup_card",
+        "params": [
+          "amount"
+        ]
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "waiting_for_user": true
+    }
+  ],
+  "final_state": {
+    "public_transit": {
+      "card_balance": 5000,
+      "routes": [],
+      "departures": [],
+      "topups": []
+    },
+    "ewallet": {}
+  },
+  "state_diff": {},
+  "state_hash": "1f3b6f57b3071a89d6f02ee57b2bb28fb6b94dc52e1b899893f7f4b1d64d288d",
+  "validation": {
+    "scenario_id": "sim_transit_tr_06_ask_amount",
+    "scenario_type": "missing_info",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "1f3b6f57b3071a89d6f02ee57b2bb28fb6b94dc52e1b899893f7f4b1d64d288d",
+    "errors": []
+  }
+}

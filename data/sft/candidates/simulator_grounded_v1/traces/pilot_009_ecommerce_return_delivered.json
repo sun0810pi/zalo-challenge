@@ -1,0 +1,259 @@
+{
+  "scenario_id": "pilot_009_ecommerce_return_delivered",
+  "split": "train",
+  "template_id": "tpl_ecommerce_return_delivered",
+  "scenario_type": "multi_result_selection",
+  "primary_apps": [
+    "ecommerce"
+  ],
+  "installed_apps": [
+    "ecommerce",
+    "sms"
+  ],
+  "objective": "Check ecommerce orders, identify delivered order ord_ec_01, and request return with reason='damaged'.",
+  "expect_mutation": true,
+  "user_request": "Kiểm tra các đơn hàng trên sàn mua sắm, đơn bàn phím cơ nào đã giao mà bị hỏng thì tạo yêu cầu trả hàng giúp chị.",
+  "current_time": "2026-11-20T15:00:00+07:00",
+  "city": "TP.HCM",
+  "initial_state": {
+    "ecommerce": {
+      "products": [],
+      "cart": [],
+      "orders": [
+        {
+          "id": "ord_ec_01",
+          "items": [
+            {
+              "product_id": "prod_kb_01",
+              "name": "Bàn phím cơ Akko 3068",
+              "price": 890000,
+              "quantity": 1
+            }
+          ],
+          "total": 890000,
+          "status": "delivered"
+        },
+        {
+          "id": "ord_ec_02",
+          "items": [
+            {
+              "product_id": "prod_ms_01",
+              "name": "Chuột không dây Logitech",
+              "price": 320000,
+              "quantity": 1
+            }
+          ],
+          "total": 320000,
+          "status": "shipping"
+        }
+      ],
+      "returns": []
+    },
+    "sms": {}
+  },
+  "tool_calls": [
+    {
+      "name": "ecommerce.order_status",
+      "arguments": {}
+    },
+    {
+      "name": "ecommerce.request_return",
+      "arguments": {
+        "order_id": "ord_ec_01",
+        "reason": "damaged"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "orders": [
+        {
+          "id": "ord_ec_01",
+          "items": [
+            {
+              "product_id": "prod_kb_01",
+              "name": "Bàn phím cơ Akko 3068",
+              "price": 890000,
+              "quantity": 1
+            }
+          ],
+          "total": 890000,
+          "status": "delivered"
+        },
+        {
+          "id": "ord_ec_02",
+          "items": [
+            {
+              "product_id": "prod_ms_01",
+              "name": "Chuột không dây Logitech",
+              "price": 320000,
+              "quantity": 1
+            }
+          ],
+          "total": 320000,
+          "status": "shipping"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "return": {
+        "id": "ret_01",
+        "status": "requested",
+        "order_id": "ord_ec_01",
+        "reason": "damaged"
+      },
+      "order": {
+        "id": "ord_ec_01",
+        "items": [
+          {
+            "product_id": "prod_kb_01",
+            "name": "Bàn phím cơ Akko 3068",
+            "price": 890000,
+            "quantity": 1
+          }
+        ],
+        "total": 890000,
+        "status": "return_requested"
+      }
+    }
+  ],
+  "final_state": {
+    "ecommerce": {
+      "products": [],
+      "cart": [],
+      "orders": [
+        {
+          "id": "ord_ec_01",
+          "items": [
+            {
+              "product_id": "prod_kb_01",
+              "name": "Bàn phím cơ Akko 3068",
+              "price": 890000,
+              "quantity": 1
+            }
+          ],
+          "total": 890000,
+          "status": "return_requested"
+        },
+        {
+          "id": "ord_ec_02",
+          "items": [
+            {
+              "product_id": "prod_ms_01",
+              "name": "Chuột không dây Logitech",
+              "price": 320000,
+              "quantity": 1
+            }
+          ],
+          "total": 320000,
+          "status": "shipping"
+        }
+      ],
+      "returns": [
+        {
+          "id": "ret_01",
+          "status": "requested",
+          "order_id": "ord_ec_01",
+          "reason": "damaged"
+        }
+      ]
+    },
+    "sms": {}
+  },
+  "state_diff": {
+    "ecommerce": {
+      "before": {
+        "products": [],
+        "cart": [],
+        "orders": [
+          {
+            "id": "ord_ec_01",
+            "items": [
+              {
+                "product_id": "prod_kb_01",
+                "name": "Bàn phím cơ Akko 3068",
+                "price": 890000,
+                "quantity": 1
+              }
+            ],
+            "total": 890000,
+            "status": "delivered"
+          },
+          {
+            "id": "ord_ec_02",
+            "items": [
+              {
+                "product_id": "prod_ms_01",
+                "name": "Chuột không dây Logitech",
+                "price": 320000,
+                "quantity": 1
+              }
+            ],
+            "total": 320000,
+            "status": "shipping"
+          }
+        ],
+        "returns": []
+      },
+      "after": {
+        "products": [],
+        "cart": [],
+        "orders": [
+          {
+            "id": "ord_ec_01",
+            "items": [
+              {
+                "product_id": "prod_kb_01",
+                "name": "Bàn phím cơ Akko 3068",
+                "price": 890000,
+                "quantity": 1
+              }
+            ],
+            "total": 890000,
+            "status": "return_requested"
+          },
+          {
+            "id": "ord_ec_02",
+            "items": [
+              {
+                "product_id": "prod_ms_01",
+                "name": "Chuột không dây Logitech",
+                "price": 320000,
+                "quantity": 1
+              }
+            ],
+            "total": 320000,
+            "status": "shipping"
+          }
+        ],
+        "returns": [
+          {
+            "id": "ret_01",
+            "status": "requested",
+            "order_id": "ord_ec_01",
+            "reason": "damaged"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "524417e597824bd338619508272291aca3fe8f59890481ca6000e8387fbabcdc",
+  "validation": {
+    "scenario_id": "pilot_009_ecommerce_return_delivered",
+    "scenario_type": "multi_result_selection",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "ecommerce"
+    ],
+    "state_hash": "524417e597824bd338619508272291aca3fe8f59890481ca6000e8387fbabcdc",
+    "errors": []
+  }
+}

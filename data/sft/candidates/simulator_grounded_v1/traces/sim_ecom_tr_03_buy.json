@@ -1,0 +1,258 @@
+{
+  "scenario_id": "sim_ecom_tr_03_buy",
+  "split": "train",
+  "template_id": "tpl_ecom_search_add_checkout_train",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "ecommerce"
+  ],
+  "installed_apps": [
+    "ecommerce",
+    "ewallet",
+    "banking"
+  ],
+  "objective": "Search balo laptop <= 500000, select in_stock prod_bl_02, add 1 to cart, checkout.",
+  "expect_mutation": true,
+  "user_request": "Kiếm trên ứng dụng mua sắm mẫu balo laptop giá không quá 500 nghìn còn hàng, thêm 1 cái vào giỏ và thanh toán qua ngân hàng giao về nhà.",
+  "current_time": "2026-11-22T14:20:00+07:00",
+  "city": "Đà Nẵng",
+  "initial_state": {
+    "ecommerce": {
+      "products": [
+        {
+          "id": "prod_oos_02",
+          "name": "Balo laptop Bản Cũ",
+          "price": 400000,
+          "seller": "Shop A",
+          "category": "gia dụng",
+          "rating": 4.2,
+          "in_stock": false
+        },
+        {
+          "id": "prod_bl_02",
+          "name": "Balo laptop chống nước Mikkor",
+          "price": 430000,
+          "seller": "Official Store",
+          "category": "gia dụng",
+          "rating": 4.9,
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": [],
+      "returns": []
+    },
+    "ewallet": {},
+    "banking": {}
+  },
+  "tool_calls": [
+    {
+      "name": "ecommerce.search",
+      "arguments": {
+        "query": "balo laptop",
+        "max_price": 500000
+      }
+    },
+    {
+      "name": "ecommerce.add_to_cart",
+      "arguments": {
+        "product_id": "prod_bl_02",
+        "quantity": 1
+      }
+    },
+    {
+      "name": "ecommerce.checkout",
+      "arguments": {
+        "address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+        "payment": "bank"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "products": [
+        {
+          "id": "prod_oos_02",
+          "name": "Balo laptop Bản Cũ",
+          "price": 400000,
+          "seller": "Shop A",
+          "category": "gia dụng",
+          "rating": 4.2,
+          "in_stock": false
+        },
+        {
+          "id": "prod_bl_02",
+          "name": "Balo laptop chống nước Mikkor",
+          "price": 430000,
+          "seller": "Official Store",
+          "category": "gia dụng",
+          "rating": 4.9,
+          "in_stock": true
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "cart": [
+        {
+          "product_id": "prod_bl_02",
+          "name": "Balo laptop chống nước Mikkor",
+          "price": 430000,
+          "quantity": 1
+        }
+      ],
+      "cart_total": 430000
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "items": [
+          {
+            "product_id": "prod_bl_02",
+            "name": "Balo laptop chống nước Mikkor",
+            "price": 430000,
+            "quantity": 1
+          }
+        ],
+        "total": 430000,
+        "status": "placed",
+        "address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+        "payment": "bank"
+      }
+    }
+  ],
+  "final_state": {
+    "ecommerce": {
+      "products": [
+        {
+          "id": "prod_oos_02",
+          "name": "Balo laptop Bản Cũ",
+          "price": 400000,
+          "seller": "Shop A",
+          "category": "gia dụng",
+          "rating": 4.2,
+          "in_stock": false
+        },
+        {
+          "id": "prod_bl_02",
+          "name": "Balo laptop chống nước Mikkor",
+          "price": 430000,
+          "seller": "Official Store",
+          "category": "gia dụng",
+          "rating": 4.9,
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": [
+        {
+          "id": "ord_01",
+          "items": [
+            {
+              "product_id": "prod_bl_02",
+              "name": "Balo laptop chống nước Mikkor",
+              "price": 430000,
+              "quantity": 1
+            }
+          ],
+          "total": 430000,
+          "status": "placed",
+          "address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+          "payment": "bank"
+        }
+      ],
+      "returns": []
+    },
+    "ewallet": {},
+    "banking": {}
+  },
+  "state_diff": {
+    "ecommerce": {
+      "before": {
+        "products": [
+          {
+            "id": "prod_oos_02",
+            "name": "Balo laptop Bản Cũ",
+            "price": 400000,
+            "seller": "Shop A",
+            "category": "gia dụng",
+            "rating": 4.2,
+            "in_stock": false
+          },
+          {
+            "id": "prod_bl_02",
+            "name": "Balo laptop chống nước Mikkor",
+            "price": 430000,
+            "seller": "Official Store",
+            "category": "gia dụng",
+            "rating": 4.9,
+            "in_stock": true
+          }
+        ],
+        "cart": [],
+        "orders": [],
+        "returns": []
+      },
+      "after": {
+        "products": [
+          {
+            "id": "prod_oos_02",
+            "name": "Balo laptop Bản Cũ",
+            "price": 400000,
+            "seller": "Shop A",
+            "category": "gia dụng",
+            "rating": 4.2,
+            "in_stock": false
+          },
+          {
+            "id": "prod_bl_02",
+            "name": "Balo laptop chống nước Mikkor",
+            "price": 430000,
+            "seller": "Official Store",
+            "category": "gia dụng",
+            "rating": 4.9,
+            "in_stock": true
+          }
+        ],
+        "cart": [],
+        "orders": [
+          {
+            "id": "ord_01",
+            "items": [
+              {
+                "product_id": "prod_bl_02",
+                "name": "Balo laptop chống nước Mikkor",
+                "price": 430000,
+                "quantity": 1
+              }
+            ],
+            "total": 430000,
+            "status": "placed",
+            "address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+            "payment": "bank"
+          }
+        ],
+        "returns": []
+      }
+    }
+  },
+  "state_hash": "98c974d194ea394d3bc2dac774e08977cf22d8cfe6e31f59d0cffb72bb583b1e",
+  "validation": {
+    "scenario_id": "sim_ecom_tr_03_buy",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "ecommerce"
+    ],
+    "state_hash": "98c974d194ea394d3bc2dac774e08977cf22d8cfe6e31f59d0cffb72bb583b1e",
+    "errors": []
+  }
+}

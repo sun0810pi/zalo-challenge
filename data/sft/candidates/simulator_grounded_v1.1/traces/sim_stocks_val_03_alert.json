@@ -1,0 +1,163 @@
+{
+  "scenario_id": "sim_stocks_val_03_alert",
+  "split": "val",
+  "template_id": "tpl_stocks_alert_val",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "stocks"
+  ],
+  "installed_apps": [
+    "stocks",
+    "reminders"
+  ],
+  "objective": "Check quote for MWG and set price alert above 55000.",
+  "expect_mutation": true,
+  "user_request": "Tra giá cổ phiếu MWG và bật cảnh báo khi giá vượt mốc 55000 đồng giúp mình.",
+  "serialized_user_prompt": "Tra giá cổ phiếu MWG và bật cảnh báo khi giá vượt mốc 55000 đồng giúp mình",
+  "current_time": "2026-11-23T11:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Đà Nẵng",
+  "user_profile": {
+    "name": "Lê Hoàng Nam",
+    "city": "Đà Nẵng",
+    "home_address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+    "work_address": "Khu Công nghệ thông tin tập trung, Liên Chiểu, Đà Nẵng"
+  },
+  "location": {
+    "lat": 16.0601,
+    "lng": 108.2122
+  },
+  "history": [],
+  "initial_state": {
+    "stocks": {
+      "quotes": [
+        {
+          "symbol": "MWG",
+          "name": "Thế Giới Di Động",
+          "price": 52000,
+          "change_pct": 0.4
+        }
+      ],
+      "holdings": [],
+      "orders": [],
+      "alerts": []
+    },
+    "reminders": {}
+  },
+  "tool_calls": [
+    {
+      "name": "stocks.get_quote",
+      "arguments": {
+        "symbol": "MWG"
+      }
+    },
+    {
+      "name": "stocks.set_price_alert",
+      "arguments": {
+        "symbol": "MWG",
+        "price": 55000,
+        "direction": "above"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "quote": {
+        "symbol": "MWG",
+        "name": "Thế Giới Di Động",
+        "price": 52000,
+        "change_pct": 0.4
+      }
+    },
+    {
+      "ok": true,
+      "alert": {
+        "id": "alert_01",
+        "symbol": "MWG",
+        "price": 55000,
+        "direction": "above",
+        "active": true
+      }
+    }
+  ],
+  "final_state": {
+    "stocks": {
+      "quotes": [
+        {
+          "symbol": "MWG",
+          "name": "Thế Giới Di Động",
+          "price": 52000,
+          "change_pct": 0.4
+        }
+      ],
+      "holdings": [],
+      "orders": [],
+      "alerts": [
+        {
+          "id": "alert_01",
+          "symbol": "MWG",
+          "price": 55000,
+          "direction": "above",
+          "active": true
+        }
+      ]
+    },
+    "reminders": {}
+  },
+  "state_diff": {
+    "stocks": {
+      "before": {
+        "quotes": [
+          {
+            "symbol": "MWG",
+            "name": "Thế Giới Di Động",
+            "price": 52000,
+            "change_pct": 0.4
+          }
+        ],
+        "holdings": [],
+        "orders": [],
+        "alerts": []
+      },
+      "after": {
+        "quotes": [
+          {
+            "symbol": "MWG",
+            "name": "Thế Giới Di Động",
+            "price": 52000,
+            "change_pct": 0.4
+          }
+        ],
+        "holdings": [],
+        "orders": [],
+        "alerts": [
+          {
+            "id": "alert_01",
+            "symbol": "MWG",
+            "price": 55000,
+            "direction": "above",
+            "active": true
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "395affc78b1afe2cf82e4f60e8164ec530d0d334c2f34352975ac44c212108f5",
+  "validation": {
+    "scenario_id": "sim_stocks_val_03_alert",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "stocks"
+    ],
+    "state_hash": "395affc78b1afe2cf82e4f60e8164ec530d0d334c2f34352975ac44c212108f5",
+    "errors": []
+  }
+}

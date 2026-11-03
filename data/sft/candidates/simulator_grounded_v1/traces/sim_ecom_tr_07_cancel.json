@@ -1,0 +1,238 @@
+{
+  "scenario_id": "sim_ecom_tr_07_cancel",
+  "split": "train",
+  "template_id": "tpl_ecom_cancel_train",
+  "scenario_type": "multi_result_selection",
+  "primary_apps": [
+    "ecommerce"
+  ],
+  "installed_apps": [
+    "ecommerce",
+    "ewallet"
+  ],
+  "objective": "Inspect ecommerce orders and perform cancel on ord_ec_c1.",
+  "expect_mutation": true,
+  "user_request": "Kiểm tra các đơn hàng trên sàn, đơn mua quạt tích điện mini đang chờ lấy hàng thì hủy đơn giúp anh.",
+  "current_time": "2026-11-23T15:00:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "ecommerce": {
+      "products": [],
+      "cart": [],
+      "orders": [
+        {
+          "id": "ord_old_deliv",
+          "items": [
+            {
+              "product_id": "p_0",
+              "name": "Cáp sạc Type-C",
+              "price": 90000,
+              "quantity": 1
+            }
+          ],
+          "total": 90000,
+          "status": "delivered"
+        },
+        {
+          "id": "ord_ec_c1",
+          "items": [
+            {
+              "product_id": "p_1",
+              "name": "Quạt tích điện mini",
+              "price": 260000,
+              "quantity": 1
+            }
+          ],
+          "total": 260000,
+          "status": "shipping"
+        }
+      ],
+      "returns": []
+    },
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "ecommerce.order_status",
+      "arguments": {}
+    },
+    {
+      "name": "ecommerce.cancel_order",
+      "arguments": {
+        "order_id": "ord_ec_c1"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "orders": [
+        {
+          "id": "ord_old_deliv",
+          "items": [
+            {
+              "product_id": "p_0",
+              "name": "Cáp sạc Type-C",
+              "price": 90000,
+              "quantity": 1
+            }
+          ],
+          "total": 90000,
+          "status": "delivered"
+        },
+        {
+          "id": "ord_ec_c1",
+          "items": [
+            {
+              "product_id": "p_1",
+              "name": "Quạt tích điện mini",
+              "price": 260000,
+              "quantity": 1
+            }
+          ],
+          "total": 260000,
+          "status": "shipping"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_ec_c1",
+        "items": [
+          {
+            "product_id": "p_1",
+            "name": "Quạt tích điện mini",
+            "price": 260000,
+            "quantity": 1
+          }
+        ],
+        "total": 260000,
+        "status": "cancelled"
+      }
+    }
+  ],
+  "final_state": {
+    "ecommerce": {
+      "products": [],
+      "cart": [],
+      "orders": [
+        {
+          "id": "ord_old_deliv",
+          "items": [
+            {
+              "product_id": "p_0",
+              "name": "Cáp sạc Type-C",
+              "price": 90000,
+              "quantity": 1
+            }
+          ],
+          "total": 90000,
+          "status": "delivered"
+        },
+        {
+          "id": "ord_ec_c1",
+          "items": [
+            {
+              "product_id": "p_1",
+              "name": "Quạt tích điện mini",
+              "price": 260000,
+              "quantity": 1
+            }
+          ],
+          "total": 260000,
+          "status": "cancelled"
+        }
+      ],
+      "returns": []
+    },
+    "ewallet": {}
+  },
+  "state_diff": {
+    "ecommerce": {
+      "before": {
+        "products": [],
+        "cart": [],
+        "orders": [
+          {
+            "id": "ord_old_deliv",
+            "items": [
+              {
+                "product_id": "p_0",
+                "name": "Cáp sạc Type-C",
+                "price": 90000,
+                "quantity": 1
+              }
+            ],
+            "total": 90000,
+            "status": "delivered"
+          },
+          {
+            "id": "ord_ec_c1",
+            "items": [
+              {
+                "product_id": "p_1",
+                "name": "Quạt tích điện mini",
+                "price": 260000,
+                "quantity": 1
+              }
+            ],
+            "total": 260000,
+            "status": "shipping"
+          }
+        ],
+        "returns": []
+      },
+      "after": {
+        "products": [],
+        "cart": [],
+        "orders": [
+          {
+            "id": "ord_old_deliv",
+            "items": [
+              {
+                "product_id": "p_0",
+                "name": "Cáp sạc Type-C",
+                "price": 90000,
+                "quantity": 1
+              }
+            ],
+            "total": 90000,
+            "status": "delivered"
+          },
+          {
+            "id": "ord_ec_c1",
+            "items": [
+              {
+                "product_id": "p_1",
+                "name": "Quạt tích điện mini",
+                "price": 260000,
+                "quantity": 1
+              }
+            ],
+            "total": 260000,
+            "status": "cancelled"
+          }
+        ],
+        "returns": []
+      }
+    }
+  },
+  "state_hash": "77a72922e6a445f8af2846b23a55cb6447cb49d3bb85e5f4b2f61bb7f4982a89",
+  "validation": {
+    "scenario_id": "sim_ecom_tr_07_cancel",
+    "scenario_type": "multi_result_selection",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "ecommerce"
+    ],
+    "state_hash": "77a72922e6a445f8af2846b23a55cb6447cb49d3bb85e5f4b2f61bb7f4982a89",
+    "errors": []
+  }
+}

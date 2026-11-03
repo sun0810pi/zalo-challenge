@@ -1,0 +1,179 @@
+{
+  "scenario_id": "pilot_016_event_tickets_book",
+  "split": "train",
+  "template_id": "tpl_event_tickets_book",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "event_tickets"
+  ],
+  "installed_apps": [
+    "event_tickets",
+    "calendar",
+    "ewallet"
+  ],
+  "objective": "Search event Sài Gòn Cười and book 3 tickets using event_id event_sgc_01.",
+  "expect_mutation": true,
+  "user_request": "Tìm vé đêm hài kịch Sài Gòn Cười rồi đặt cho gia đình mình 3 vé nhé.",
+  "serialized_user_prompt": "Tìm vé đêm hài kịch Sài Gòn Cười rồi đặt cho gia đình mình 3 vé nhé",
+  "current_time": "2026-11-20T12:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "TP.HCM",
+  "user_profile": {
+    "name": "Trần Thu Hà",
+    "city": "TP.HCM",
+    "home_address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM",
+    "work_address": "Tòa nhà Bitexco, số 2 Hải Triều, Quận 1, TP.HCM"
+  },
+  "location": {
+    "lat": 10.7769,
+    "lng": 106.7009
+  },
+  "history": [],
+  "initial_state": {
+    "event_tickets": {
+      "events": [
+        {
+          "id": "event_sgc_01",
+          "name": "Đêm hài kịch Sài Gòn Cười",
+          "category": "hài kịch",
+          "date": "2026-11-28",
+          "time": "20:00",
+          "venue": "Nhà hát Bến Thành",
+          "price": 350000,
+          "available": 25
+        }
+      ],
+      "bookings": []
+    },
+    "calendar": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "event_tickets.search",
+      "arguments": {
+        "query": "Sài Gòn Cười"
+      }
+    },
+    {
+      "name": "event_tickets.book",
+      "arguments": {
+        "event_id": "event_sgc_01",
+        "quantity": 3
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "events": [
+        {
+          "id": "event_sgc_01",
+          "name": "Đêm hài kịch Sài Gòn Cười",
+          "category": "hài kịch",
+          "date": "2026-11-28",
+          "time": "20:00",
+          "venue": "Nhà hát Bến Thành",
+          "price": 350000,
+          "available": 25
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "booking": {
+        "id": "tk_01",
+        "event_id": "event_sgc_01",
+        "quantity": 3,
+        "total": 1050000,
+        "status": "confirmed"
+      }
+    }
+  ],
+  "final_state": {
+    "event_tickets": {
+      "events": [
+        {
+          "id": "event_sgc_01",
+          "name": "Đêm hài kịch Sài Gòn Cười",
+          "category": "hài kịch",
+          "date": "2026-11-28",
+          "time": "20:00",
+          "venue": "Nhà hát Bến Thành",
+          "price": 350000,
+          "available": 22
+        }
+      ],
+      "bookings": [
+        {
+          "id": "tk_01",
+          "event_id": "event_sgc_01",
+          "quantity": 3,
+          "total": 1050000,
+          "status": "confirmed"
+        }
+      ]
+    },
+    "calendar": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "event_tickets": {
+      "before": {
+        "events": [
+          {
+            "id": "event_sgc_01",
+            "name": "Đêm hài kịch Sài Gòn Cười",
+            "category": "hài kịch",
+            "date": "2026-11-28",
+            "time": "20:00",
+            "venue": "Nhà hát Bến Thành",
+            "price": 350000,
+            "available": 25
+          }
+        ],
+        "bookings": []
+      },
+      "after": {
+        "events": [
+          {
+            "id": "event_sgc_01",
+            "name": "Đêm hài kịch Sài Gòn Cười",
+            "category": "hài kịch",
+            "date": "2026-11-28",
+            "time": "20:00",
+            "venue": "Nhà hát Bến Thành",
+            "price": 350000,
+            "available": 22
+          }
+        ],
+        "bookings": [
+          {
+            "id": "tk_01",
+            "event_id": "event_sgc_01",
+            "quantity": 3,
+            "total": 1050000,
+            "status": "confirmed"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "f0bc384fd8d1719617ca1a3056d728aebcff79fe2fa9c10e136230cd9f537978",
+  "validation": {
+    "scenario_id": "pilot_016_event_tickets_book",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "event_tickets"
+    ],
+    "state_hash": "f0bc384fd8d1719617ca1a3056d728aebcff79fe2fa9c10e136230cd9f537978",
+    "errors": []
+  }
+}

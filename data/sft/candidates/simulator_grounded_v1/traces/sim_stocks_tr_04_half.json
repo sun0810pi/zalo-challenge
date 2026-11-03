@@ -1,0 +1,163 @@
+{
+  "scenario_id": "sim_stocks_tr_04_half",
+  "split": "train",
+  "template_id": "tpl_stocks_arith_half_train",
+  "scenario_type": "arithmetic_condition",
+  "primary_apps": [
+    "stocks"
+  ],
+  "installed_apps": [
+    "stocks",
+    "banking"
+  ],
+  "objective": "Read portfolio for VIC (held=1000) and place arithmetic sell order.",
+  "expect_mutation": true,
+  "user_request": "Xem trong danh mục mình có bao nhiêu cổ phiếu VIC rồi đặt bán một nửa số lượng đang nắm giữ theo giá hiện tại nhé.",
+  "current_time": "2026-11-23T14:00:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "stocks": {
+      "holdings": [
+        {
+          "symbol": "VIC",
+          "name": "Tập đoàn Vingroup",
+          "quantity": 1000,
+          "avg_price": 41000,
+          "price": 42500
+        }
+      ],
+      "quotes": [],
+      "orders": [],
+      "alerts": []
+    },
+    "banking": {}
+  },
+  "tool_calls": [
+    {
+      "name": "stocks.get_portfolio",
+      "arguments": {}
+    },
+    {
+      "name": "stocks.place_order",
+      "arguments": {
+        "symbol": "VIC",
+        "side": "sell",
+        "quantity": 500,
+        "price": 42500
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "holdings": [
+        {
+          "symbol": "VIC",
+          "name": "Tập đoàn Vingroup",
+          "quantity": 1000,
+          "avg_price": 41000,
+          "price": 42500
+        }
+      ],
+      "total_value": 42500000
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "symbol": "VIC",
+        "side": "sell",
+        "quantity": 500,
+        "type": "limit",
+        "price": 42500,
+        "status": "placed"
+      }
+    }
+  ],
+  "final_state": {
+    "stocks": {
+      "holdings": [
+        {
+          "symbol": "VIC",
+          "name": "Tập đoàn Vingroup",
+          "quantity": 1000,
+          "avg_price": 41000,
+          "price": 42500
+        }
+      ],
+      "quotes": [],
+      "orders": [
+        {
+          "id": "ord_01",
+          "symbol": "VIC",
+          "side": "sell",
+          "quantity": 500,
+          "type": "limit",
+          "price": 42500,
+          "status": "placed"
+        }
+      ],
+      "alerts": []
+    },
+    "banking": {}
+  },
+  "state_diff": {
+    "stocks": {
+      "before": {
+        "holdings": [
+          {
+            "symbol": "VIC",
+            "name": "Tập đoàn Vingroup",
+            "quantity": 1000,
+            "avg_price": 41000,
+            "price": 42500
+          }
+        ],
+        "quotes": [],
+        "orders": [],
+        "alerts": []
+      },
+      "after": {
+        "holdings": [
+          {
+            "symbol": "VIC",
+            "name": "Tập đoàn Vingroup",
+            "quantity": 1000,
+            "avg_price": 41000,
+            "price": 42500
+          }
+        ],
+        "quotes": [],
+        "orders": [
+          {
+            "id": "ord_01",
+            "symbol": "VIC",
+            "side": "sell",
+            "quantity": 500,
+            "type": "limit",
+            "price": 42500,
+            "status": "placed"
+          }
+        ],
+        "alerts": []
+      }
+    }
+  },
+  "state_hash": "ae8482654dafcf1e385bab7a71621b1494a119933af88c20bc0b14a04f19de79",
+  "validation": {
+    "scenario_id": "sim_stocks_tr_04_half",
+    "scenario_type": "arithmetic_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "stocks"
+    ],
+    "state_hash": "ae8482654dafcf1e385bab7a71621b1494a119933af88c20bc0b14a04f19de79",
+    "errors": []
+  }
+}

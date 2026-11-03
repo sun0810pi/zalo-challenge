@@ -1,0 +1,207 @@
+{
+  "scenario_id": "pilot_018_translator_chat_ott",
+  "split": "train",
+  "template_id": "tpl_translator_chat_ott",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "translator",
+    "chat_ott"
+  ],
+  "installed_apps": [
+    "translator",
+    "chat_ott",
+    "sms",
+    "contacts"
+  ],
+  "objective": "Translate sentence to English, list OTT chats to find Lan's chat_id, and send the exact translated text.",
+  "expect_mutation": true,
+  "user_request": "Dịch câu 'Tôi bị dị ứng hải sản' sang tiếng Anh rồi gửi tin nhắn qua ứng dụng chat cho Lan giúp mình nhé.",
+  "serialized_user_prompt": "Dịch câu 'Tôi bị dị ứng hải sản' sang tiếng Anh rồi gửi tin nhắn qua ứng dụng chat cho Lan giúp mình nhé",
+  "current_time": "2026-11-20T18:10:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "TP.HCM",
+  "user_profile": {
+    "name": "Trần Thu Hà",
+    "city": "TP.HCM",
+    "home_address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM",
+    "work_address": "Tòa nhà Bitexco, số 2 Hải Triều, Quận 1, TP.HCM"
+  },
+  "location": {
+    "lat": 10.7769,
+    "lng": 106.7009
+  },
+  "history": [],
+  "initial_state": {
+    "translator": {
+      "dictionary": [
+        {
+          "text": "Tôi bị dị ứng hải sản",
+          "to_lang": "en",
+          "translation": "I am allergic to seafood"
+        }
+      ]
+    },
+    "chat_ott": {
+      "chats": [
+        {
+          "id": "chat_tu_01",
+          "name": "Anh Tuấn",
+          "type": "direct",
+          "messages": []
+        },
+        {
+          "id": "chat_lan_02",
+          "name": "Lan Nguyễn",
+          "type": "direct",
+          "messages": []
+        }
+      ]
+    },
+    "sms": {},
+    "contacts": {}
+  },
+  "tool_calls": [
+    {
+      "name": "translator.translate",
+      "arguments": {
+        "text": "Tôi bị dị ứng hải sản",
+        "to_lang": "en"
+      }
+    },
+    {
+      "name": "chat_ott.list_chats",
+      "arguments": {}
+    },
+    {
+      "name": "chat_ott.send_message",
+      "arguments": {
+        "chat_id": "chat_lan_02",
+        "content": "I am allergic to seafood"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "text": "Tôi bị dị ứng hải sản",
+      "from_lang": null,
+      "to_lang": "en",
+      "translation": "I am allergic to seafood",
+      "translated": "I am allergic to seafood"
+    },
+    {
+      "ok": true,
+      "chats": [
+        {
+          "id": "chat_tu_01",
+          "name": "Anh Tuấn",
+          "type": "direct"
+        },
+        {
+          "id": "chat_lan_02",
+          "name": "Lan Nguyễn",
+          "type": "direct"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "message": {
+        "from": "me",
+        "content": "I am allergic to seafood"
+      }
+    }
+  ],
+  "final_state": {
+    "translator": {
+      "dictionary": [
+        {
+          "text": "Tôi bị dị ứng hải sản",
+          "to_lang": "en",
+          "translation": "I am allergic to seafood"
+        }
+      ]
+    },
+    "chat_ott": {
+      "chats": [
+        {
+          "id": "chat_tu_01",
+          "name": "Anh Tuấn",
+          "type": "direct",
+          "messages": []
+        },
+        {
+          "id": "chat_lan_02",
+          "name": "Lan Nguyễn",
+          "type": "direct",
+          "messages": [
+            {
+              "from": "me",
+              "content": "I am allergic to seafood"
+            }
+          ]
+        }
+      ]
+    },
+    "sms": {},
+    "contacts": {}
+  },
+  "state_diff": {
+    "chat_ott": {
+      "before": {
+        "chats": [
+          {
+            "id": "chat_tu_01",
+            "name": "Anh Tuấn",
+            "type": "direct",
+            "messages": []
+          },
+          {
+            "id": "chat_lan_02",
+            "name": "Lan Nguyễn",
+            "type": "direct",
+            "messages": []
+          }
+        ]
+      },
+      "after": {
+        "chats": [
+          {
+            "id": "chat_tu_01",
+            "name": "Anh Tuấn",
+            "type": "direct",
+            "messages": []
+          },
+          {
+            "id": "chat_lan_02",
+            "name": "Lan Nguyễn",
+            "type": "direct",
+            "messages": [
+              {
+                "from": "me",
+                "content": "I am allergic to seafood"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "d908f605daa8baa1a33a215c0264a2c8622910bf6453acb256b9bcbf2c99728a",
+  "validation": {
+    "scenario_id": "pilot_018_translator_chat_ott",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "chat_ott"
+    ],
+    "state_hash": "d908f605daa8baa1a33a215c0264a2c8622910bf6453acb256b9bcbf2c99728a",
+    "errors": []
+  }
+}

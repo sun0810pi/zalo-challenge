@@ -1,0 +1,173 @@
+{
+  "scenario_id": "pilot_010_ecommerce_cancel_shipping",
+  "split": "val",
+  "template_id": "tpl_ecommerce_cancel_shipping",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "ecommerce"
+  ],
+  "installed_apps": [
+    "ecommerce",
+    "ewallet"
+  ],
+  "objective": "Check order status and cancel shipping order ord_ec_09.",
+  "expect_mutation": true,
+  "user_request": "Xem đơn hàng đang vận chuyển trên sàn thương mại điện tử rồi hủy đơn đó giúp mình nhé.",
+  "current_time": "2026-11-20T11:20:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "ecommerce": {
+      "products": [],
+      "cart": [],
+      "orders": [
+        {
+          "id": "ord_ec_09",
+          "items": [
+            {
+              "product_id": "prod_09",
+              "name": "Đèn bàn học chống cận",
+              "price": 280000,
+              "quantity": 1
+            }
+          ],
+          "total": 280000,
+          "status": "shipping"
+        }
+      ],
+      "returns": []
+    },
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "ecommerce.order_status",
+      "arguments": {}
+    },
+    {
+      "name": "ecommerce.cancel_order",
+      "arguments": {
+        "order_id": "ord_ec_09"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "orders": [
+        {
+          "id": "ord_ec_09",
+          "items": [
+            {
+              "product_id": "prod_09",
+              "name": "Đèn bàn học chống cận",
+              "price": 280000,
+              "quantity": 1
+            }
+          ],
+          "total": 280000,
+          "status": "shipping"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_ec_09",
+        "items": [
+          {
+            "product_id": "prod_09",
+            "name": "Đèn bàn học chống cận",
+            "price": 280000,
+            "quantity": 1
+          }
+        ],
+        "total": 280000,
+        "status": "cancelled"
+      }
+    }
+  ],
+  "final_state": {
+    "ecommerce": {
+      "products": [],
+      "cart": [],
+      "orders": [
+        {
+          "id": "ord_ec_09",
+          "items": [
+            {
+              "product_id": "prod_09",
+              "name": "Đèn bàn học chống cận",
+              "price": 280000,
+              "quantity": 1
+            }
+          ],
+          "total": 280000,
+          "status": "cancelled"
+        }
+      ],
+      "returns": []
+    },
+    "ewallet": {}
+  },
+  "state_diff": {
+    "ecommerce": {
+      "before": {
+        "products": [],
+        "cart": [],
+        "orders": [
+          {
+            "id": "ord_ec_09",
+            "items": [
+              {
+                "product_id": "prod_09",
+                "name": "Đèn bàn học chống cận",
+                "price": 280000,
+                "quantity": 1
+              }
+            ],
+            "total": 280000,
+            "status": "shipping"
+          }
+        ],
+        "returns": []
+      },
+      "after": {
+        "products": [],
+        "cart": [],
+        "orders": [
+          {
+            "id": "ord_ec_09",
+            "items": [
+              {
+                "product_id": "prod_09",
+                "name": "Đèn bàn học chống cận",
+                "price": 280000,
+                "quantity": 1
+              }
+            ],
+            "total": 280000,
+            "status": "cancelled"
+          }
+        ],
+        "returns": []
+      }
+    }
+  },
+  "state_hash": "56943e75ca9e5d80cfe232e21a2ceb38d4a96a489af068af8b05342df277c773",
+  "validation": {
+    "scenario_id": "pilot_010_ecommerce_cancel_shipping",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "ecommerce"
+    ],
+    "state_hash": "56943e75ca9e5d80cfe232e21a2ceb38d4a96a489af068af8b05342df277c773",
+    "errors": []
+  }
+}

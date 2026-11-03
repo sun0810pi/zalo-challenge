@@ -1,0 +1,166 @@
+{
+  "scenario_id": "sim_trans_tr_03_sms",
+  "split": "train",
+  "template_id": "tpl_translator_sms_train",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "translator",
+    "contacts",
+    "sms"
+  ],
+  "installed_apps": [
+    "translator",
+    "sms",
+    "contacts"
+  ],
+  "objective": "Translate text to en and forward result to sms.",
+  "expect_mutation": true,
+  "user_request": "Dịch câu 'Tôi đang đợi ở sảnh tòa nhà, bạn xuống nhé' sang tiếng Anh rồi gửi tin nhắn SMS cho David trong danh bạ giúp anh.",
+  "current_time": "2026-11-23T09:30:00+07:00",
+  "city": "TP.HCM",
+  "initial_state": {
+    "translator": {
+      "dictionary": [
+        {
+          "text": "Tôi đang đợi ở sảnh tòa nhà, bạn xuống nhé",
+          "to_lang": "en",
+          "translation": "I am waiting in the building lobby, please come down"
+        }
+      ]
+    },
+    "sms": {
+      "messages": []
+    },
+    "contacts": {
+      "contacts": [
+        {
+          "id": "ct_target_01",
+          "name": "David",
+          "phone": "0909123456",
+          "relation": "đối tác"
+        }
+      ]
+    }
+  },
+  "tool_calls": [
+    {
+      "name": "translator.translate",
+      "arguments": {
+        "text": "Tôi đang đợi ở sảnh tòa nhà, bạn xuống nhé",
+        "to_lang": "en"
+      }
+    },
+    {
+      "name": "contacts.search",
+      "arguments": {
+        "query": "David"
+      }
+    },
+    {
+      "name": "sms.send",
+      "arguments": {
+        "contact_id": "ct_target_01",
+        "phone_number": "0909123456",
+        "content": "I am waiting in the building lobby, please come down"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "text": "Tôi đang đợi ở sảnh tòa nhà, bạn xuống nhé",
+      "from_lang": null,
+      "to_lang": "en",
+      "translation": "I am waiting in the building lobby, please come down",
+      "translated": "I am waiting in the building lobby, please come down"
+    },
+    {
+      "ok": true,
+      "contacts": [
+        {
+          "id": "ct_target_01",
+          "name": "David",
+          "phone": "0909123456",
+          "relation": "đối tác"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "message": {
+        "id": "msg_01",
+        "contact_id": "ct_target_01",
+        "phone_number": "0909123456",
+        "direction": "outgoing",
+        "content": "I am waiting in the building lobby, please come down"
+      }
+    }
+  ],
+  "final_state": {
+    "translator": {
+      "dictionary": [
+        {
+          "text": "Tôi đang đợi ở sảnh tòa nhà, bạn xuống nhé",
+          "to_lang": "en",
+          "translation": "I am waiting in the building lobby, please come down"
+        }
+      ]
+    },
+    "sms": {
+      "messages": [
+        {
+          "id": "msg_01",
+          "contact_id": "ct_target_01",
+          "phone_number": "0909123456",
+          "direction": "outgoing",
+          "content": "I am waiting in the building lobby, please come down"
+        }
+      ]
+    },
+    "contacts": {
+      "contacts": [
+        {
+          "id": "ct_target_01",
+          "name": "David",
+          "phone": "0909123456",
+          "relation": "đối tác"
+        }
+      ]
+    }
+  },
+  "state_diff": {
+    "sms": {
+      "before": {
+        "messages": []
+      },
+      "after": {
+        "messages": [
+          {
+            "id": "msg_01",
+            "contact_id": "ct_target_01",
+            "phone_number": "0909123456",
+            "direction": "outgoing",
+            "content": "I am waiting in the building lobby, please come down"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "a0b68e4a7f352164f4ecfc22908990d93806b926ec068c89a49a36d862b7ff3a",
+  "validation": {
+    "scenario_id": "sim_trans_tr_03_sms",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "sms"
+    ],
+    "state_hash": "a0b68e4a7f352164f4ecfc22908990d93806b926ec068c89a49a36d862b7ff3a",
+    "errors": []
+  }
+}

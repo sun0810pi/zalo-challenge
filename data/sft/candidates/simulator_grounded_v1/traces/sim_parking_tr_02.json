@@ -1,0 +1,203 @@
+{
+  "scenario_id": "sim_parking_tr_02",
+  "split": "train",
+  "template_id": "tpl_parking_find_select_reserve_train",
+  "scenario_type": "multi_result_selection",
+  "primary_apps": [
+    "parking"
+  ],
+  "installed_apps": [
+    "parking",
+    "maps",
+    "ewallet"
+  ],
+  "objective": "Find parking near Hồ Gươm, skip full lot lot_full_02, reserve lot_avail_02.",
+  "expect_mutation": true,
+  "user_request": "Tối nay mình lên phố đi bộ, tìm bãi xe gần Hồ Gươm còn chỗ rồi đặt giữ chỗ 2 tiếng lúc 19 giờ tối nay nhé.",
+  "current_time": "2026-11-22T18:00:00+07:00",
+  "city": "TP.HCM",
+  "initial_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_full_02",
+          "name": "Bãi xe Hồ Gươm 1",
+          "address": "Số 10 Hồ Gươm",
+          "area": "Hoàn Kiếm",
+          "price_per_hour": 35000,
+          "available_spots": 0
+        },
+        {
+          "id": "lot_avail_02",
+          "name": "Bãi đỗ xe trung tâm Hồ Gươm",
+          "address": "Số 28 Hồ Gươm",
+          "area": "Hoàn Kiếm",
+          "price_per_hour": 40000,
+          "available_spots": 7
+        }
+      ],
+      "sessions": []
+    },
+    "maps": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "parking.find",
+      "arguments": {
+        "near": "Hồ Gươm"
+      }
+    },
+    {
+      "name": "parking.reserve",
+      "arguments": {
+        "lot_id": "lot_avail_02",
+        "from_time": "2026-11-22T19:00:00+07:00",
+        "hours": 2
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "lots": [
+        {
+          "id": "lot_full_02",
+          "name": "Bãi xe Hồ Gươm 1",
+          "address": "Số 10 Hồ Gươm",
+          "area": "Hoàn Kiếm",
+          "price_per_hour": 35000,
+          "available_spots": 0
+        },
+        {
+          "id": "lot_avail_02",
+          "name": "Bãi đỗ xe trung tâm Hồ Gươm",
+          "address": "Số 28 Hồ Gươm",
+          "area": "Hoàn Kiếm",
+          "price_per_hour": 40000,
+          "available_spots": 7
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "session": {
+        "id": "park_01",
+        "lot_id": "lot_avail_02",
+        "from_time": "2026-11-22T19:00:00+07:00",
+        "hours": 2,
+        "end_time": "2026-11-22T21:00:00+07:00",
+        "total": 80000,
+        "status": "reserved"
+      }
+    }
+  ],
+  "final_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_full_02",
+          "name": "Bãi xe Hồ Gươm 1",
+          "address": "Số 10 Hồ Gươm",
+          "area": "Hoàn Kiếm",
+          "price_per_hour": 35000,
+          "available_spots": 0
+        },
+        {
+          "id": "lot_avail_02",
+          "name": "Bãi đỗ xe trung tâm Hồ Gươm",
+          "address": "Số 28 Hồ Gươm",
+          "area": "Hoàn Kiếm",
+          "price_per_hour": 40000,
+          "available_spots": 6
+        }
+      ],
+      "sessions": [
+        {
+          "id": "park_01",
+          "lot_id": "lot_avail_02",
+          "from_time": "2026-11-22T19:00:00+07:00",
+          "hours": 2,
+          "end_time": "2026-11-22T21:00:00+07:00",
+          "total": 80000,
+          "status": "reserved"
+        }
+      ]
+    },
+    "maps": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "parking": {
+      "before": {
+        "lots": [
+          {
+            "id": "lot_full_02",
+            "name": "Bãi xe Hồ Gươm 1",
+            "address": "Số 10 Hồ Gươm",
+            "area": "Hoàn Kiếm",
+            "price_per_hour": 35000,
+            "available_spots": 0
+          },
+          {
+            "id": "lot_avail_02",
+            "name": "Bãi đỗ xe trung tâm Hồ Gươm",
+            "address": "Số 28 Hồ Gươm",
+            "area": "Hoàn Kiếm",
+            "price_per_hour": 40000,
+            "available_spots": 7
+          }
+        ],
+        "sessions": []
+      },
+      "after": {
+        "lots": [
+          {
+            "id": "lot_full_02",
+            "name": "Bãi xe Hồ Gươm 1",
+            "address": "Số 10 Hồ Gươm",
+            "area": "Hoàn Kiếm",
+            "price_per_hour": 35000,
+            "available_spots": 0
+          },
+          {
+            "id": "lot_avail_02",
+            "name": "Bãi đỗ xe trung tâm Hồ Gươm",
+            "address": "Số 28 Hồ Gươm",
+            "area": "Hoàn Kiếm",
+            "price_per_hour": 40000,
+            "available_spots": 6
+          }
+        ],
+        "sessions": [
+          {
+            "id": "park_01",
+            "lot_id": "lot_avail_02",
+            "from_time": "2026-11-22T19:00:00+07:00",
+            "hours": 2,
+            "end_time": "2026-11-22T21:00:00+07:00",
+            "total": 80000,
+            "status": "reserved"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "db915f57154234d7481669466990f53ebac17f3a71359dcbd5d2ce7be050d197",
+  "validation": {
+    "scenario_id": "sim_parking_tr_02",
+    "scenario_type": "multi_result_selection",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "parking"
+    ],
+    "state_hash": "db915f57154234d7481669466990f53ebac17f3a71359dcbd5d2ce7be050d197",
+    "errors": []
+  }
+}

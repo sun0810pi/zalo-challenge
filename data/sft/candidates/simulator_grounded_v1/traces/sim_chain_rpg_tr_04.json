@@ -1,0 +1,221 @@
+{
+  "scenario_id": "sim_chain_rpg_tr_04",
+  "split": "train",
+  "template_id": "tpl_chain_recipes_pantry_shopping_list_train",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "recipes",
+    "pantry",
+    "shopping_list"
+  ],
+  "installed_apps": [
+    "recipes",
+    "pantry",
+    "shopping_list",
+    "notes"
+  ],
+  "objective": "Chain recipes.search -> pantry.list_items -> shopping_list for missing ingredient 'thịt gà'.",
+  "expect_mutation": true,
+  "user_request": "Tìm công thức gà kho gừng cho 4 người, kiểm tra trong tủ bếp xem nguyên liệu nào đã hết (stock=0) thì thêm tên nguyên liệu đó với số lượng 1 vào danh sách mua sắm giúp anh.",
+  "current_time": "2026-11-23T09:00:00+07:00",
+  "city": "Đà Nẵng",
+  "initial_state": {
+    "recipes": {
+      "recipes": [
+        {
+          "id": "rcp_gkg_04",
+          "name": "Gà kho gừng",
+          "servings": 4,
+          "ingredients": [
+            {
+              "name": "thịt gà",
+              "quantity": 1,
+              "unit": "phần"
+            },
+            {
+              "name": "hành tím",
+              "quantity": 3,
+              "unit": "củ"
+            }
+          ]
+        }
+      ],
+      "saved": []
+    },
+    "pantry": {
+      "items": [
+        {
+          "id": "pan_ok_01",
+          "name": "hành tím",
+          "stock": 10,
+          "unit": "củ"
+        },
+        {
+          "id": "pan_ga_04",
+          "name": "thịt gà",
+          "stock": 0,
+          "unit": "phần"
+        }
+      ]
+    },
+    "shopping_list": {
+      "items": []
+    },
+    "notes": {}
+  },
+  "tool_calls": [
+    {
+      "name": "recipes.search",
+      "arguments": {
+        "query": "gà kho gừng",
+        "servings": 4
+      }
+    },
+    {
+      "name": "pantry.list_items",
+      "arguments": {}
+    },
+    {
+      "name": "shopping_list.add",
+      "arguments": {
+        "name": "thịt gà",
+        "quantity": 1
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "recipes": [
+        {
+          "id": "rcp_gkg_04",
+          "name": "Gà kho gừng",
+          "servings": 4,
+          "ingredients": [
+            {
+              "name": "thịt gà",
+              "quantity": 1,
+              "unit": "phần"
+            },
+            {
+              "name": "hành tím",
+              "quantity": 3,
+              "unit": "củ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "items": [
+        {
+          "id": "pan_ok_01",
+          "name": "hành tím",
+          "stock": 10,
+          "unit": "củ"
+        },
+        {
+          "id": "pan_ga_04",
+          "name": "thịt gà",
+          "stock": 0,
+          "unit": "phần"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "item": {
+        "id": "item_01",
+        "checked": false,
+        "name": "thịt gà",
+        "quantity": 1
+      }
+    }
+  ],
+  "final_state": {
+    "recipes": {
+      "recipes": [
+        {
+          "id": "rcp_gkg_04",
+          "name": "Gà kho gừng",
+          "servings": 4,
+          "ingredients": [
+            {
+              "name": "thịt gà",
+              "quantity": 1,
+              "unit": "phần"
+            },
+            {
+              "name": "hành tím",
+              "quantity": 3,
+              "unit": "củ"
+            }
+          ]
+        }
+      ],
+      "saved": []
+    },
+    "pantry": {
+      "items": [
+        {
+          "id": "pan_ok_01",
+          "name": "hành tím",
+          "stock": 10,
+          "unit": "củ"
+        },
+        {
+          "id": "pan_ga_04",
+          "name": "thịt gà",
+          "stock": 0,
+          "unit": "phần"
+        }
+      ]
+    },
+    "shopping_list": {
+      "items": [
+        {
+          "id": "item_01",
+          "checked": false,
+          "name": "thịt gà",
+          "quantity": 1
+        }
+      ]
+    },
+    "notes": {}
+  },
+  "state_diff": {
+    "shopping_list": {
+      "before": {
+        "items": []
+      },
+      "after": {
+        "items": [
+          {
+            "id": "item_01",
+            "checked": false,
+            "name": "thịt gà",
+            "quantity": 1
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "6200961ae88c1493d50c81b6948a5879b03b62299a756e4b2af5e10735c5ca41",
+  "validation": {
+    "scenario_id": "sim_chain_rpg_tr_04",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "shopping_list"
+    ],
+    "state_hash": "6200961ae88c1493d50c81b6948a5879b03b62299a756e4b2af5e10735c5ca41",
+    "errors": []
+  }
+}

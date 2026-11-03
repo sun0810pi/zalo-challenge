@@ -1,0 +1,134 @@
+{
+  "scenario_id": "sim_trans_tr_06_notes",
+  "split": "train",
+  "template_id": "tpl_translator_notes_train",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "translator",
+    "notes"
+  ],
+  "installed_apps": [
+    "translator",
+    "notes"
+  ],
+  "objective": "Translate text to en and forward result to notes.",
+  "expect_mutation": true,
+  "user_request": "Dịch câu 'Không sử dụng đường tinh luyện và thực phẩm chiên rán' sang tiếng Anh rồi tạo ghi chú mới tiêu đề 'Chế độ ăn tiếng Anh' lưu nội dung vừa dịch lại.",
+  "serialized_user_prompt": "Dịch câu 'Không sử dụng đường tinh luyện và thực phẩm chiên rán' sang tiếng Anh rồi tạo ghi chú mới tiêu đề 'Chế độ ăn tiếng Anh' lưu nội dung vừa dịch lại",
+  "current_time": "2026-11-23T09:30:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "TP.HCM",
+  "user_profile": {
+    "name": "Võ Quốc Bảo",
+    "city": "TP.HCM",
+    "home_address": "215 Điện Biên Phủ, Bình Thạnh, TP.HCM",
+    "work_address": "Khu đô thị Sala, Thủ Đức, TP.HCM"
+  },
+  "location": {
+    "lat": 10.8015,
+    "lng": 106.7114
+  },
+  "history": [],
+  "initial_state": {
+    "translator": {
+      "dictionary": [
+        {
+          "text": "Không sử dụng đường tinh luyện và thực phẩm chiên rán",
+          "to_lang": "en",
+          "translation": "Do not use refined sugar and fried foods"
+        }
+      ]
+    },
+    "notes": {
+      "notes": []
+    }
+  },
+  "tool_calls": [
+    {
+      "name": "translator.translate",
+      "arguments": {
+        "text": "Không sử dụng đường tinh luyện và thực phẩm chiên rán",
+        "to_lang": "en"
+      }
+    },
+    {
+      "name": "notes.create",
+      "arguments": {
+        "title": "Chế độ ăn tiếng Anh",
+        "content": "Do not use refined sugar and fried foods"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "text": "Không sử dụng đường tinh luyện và thực phẩm chiên rán",
+      "from_lang": null,
+      "to_lang": "en",
+      "translation": "Do not use refined sugar and fried foods",
+      "translated": "Do not use refined sugar and fried foods"
+    },
+    {
+      "ok": true,
+      "id": "note_01",
+      "item": {
+        "id": "note_01",
+        "title": "Chế độ ăn tiếng Anh",
+        "content": "Do not use refined sugar and fried foods"
+      }
+    }
+  ],
+  "final_state": {
+    "translator": {
+      "dictionary": [
+        {
+          "text": "Không sử dụng đường tinh luyện và thực phẩm chiên rán",
+          "to_lang": "en",
+          "translation": "Do not use refined sugar and fried foods"
+        }
+      ]
+    },
+    "notes": {
+      "notes": [
+        {
+          "id": "note_01",
+          "title": "Chế độ ăn tiếng Anh",
+          "content": "Do not use refined sugar and fried foods"
+        }
+      ]
+    }
+  },
+  "state_diff": {
+    "notes": {
+      "before": {
+        "notes": []
+      },
+      "after": {
+        "notes": [
+          {
+            "id": "note_01",
+            "title": "Chế độ ăn tiếng Anh",
+            "content": "Do not use refined sugar and fried foods"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "591529b61f99e04ed77e3ecb6ed1cf76a08aa8c2ee9981ece7b3cbe2063fa582",
+  "validation": {
+    "scenario_id": "sim_trans_tr_06_notes",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "notes"
+    ],
+    "state_hash": "591529b61f99e04ed77e3ecb6ed1cf76a08aa8c2ee9981ece7b3cbe2063fa582",
+    "errors": []
+  }
+}

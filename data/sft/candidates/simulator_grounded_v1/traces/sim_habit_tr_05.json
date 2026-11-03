@@ -1,0 +1,169 @@
+{
+  "scenario_id": "sim_habit_tr_05",
+  "split": "train",
+  "template_id": "tpl_habit_log_train",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "habit_tracker"
+  ],
+  "installed_apps": [
+    "habit_tracker",
+    "reminders",
+    "calendar"
+  ],
+  "objective": "List habits, select habit_slp_05, and log completion on 2026-11-21.",
+  "expect_mutation": true,
+  "user_request": "Ghi bù giúp anh thói quen đi ngủ trước 23h cho ngày hôm qua 2026-11-21 nhé.",
+  "current_time": "2026-11-22T20:30:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "habit_tracker": {
+      "habits": [
+        {
+          "id": "habit_dummy_00",
+          "name": "Đạp xe buổi sáng",
+          "streak": 2,
+          "last_logged": "2026-11-20"
+        },
+        {
+          "id": "habit_slp_05",
+          "name": "Đi ngủ trước 23h",
+          "streak": 5,
+          "last_logged": "2026-11-20"
+        }
+      ],
+      "logs": []
+    },
+    "reminders": {},
+    "calendar": {}
+  },
+  "tool_calls": [
+    {
+      "name": "habit_tracker.list_habits",
+      "arguments": {}
+    },
+    {
+      "name": "habit_tracker.log",
+      "arguments": {
+        "habit_id": "habit_slp_05",
+        "date": "2026-11-21"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "habits": [
+        {
+          "id": "habit_dummy_00",
+          "name": "Đạp xe buổi sáng",
+          "streak": 2,
+          "last_logged": "2026-11-20"
+        },
+        {
+          "id": "habit_slp_05",
+          "name": "Đi ngủ trước 23h",
+          "streak": 5,
+          "last_logged": "2026-11-20"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "log": {
+        "id": "log_01",
+        "habit_id": "habit_slp_05",
+        "date": "2026-11-21"
+      },
+      "streak": 6
+    }
+  ],
+  "final_state": {
+    "habit_tracker": {
+      "habits": [
+        {
+          "id": "habit_dummy_00",
+          "name": "Đạp xe buổi sáng",
+          "streak": 2,
+          "last_logged": "2026-11-20"
+        },
+        {
+          "id": "habit_slp_05",
+          "name": "Đi ngủ trước 23h",
+          "streak": 6,
+          "last_logged": "2026-11-21"
+        }
+      ],
+      "logs": [
+        {
+          "id": "log_01",
+          "habit_id": "habit_slp_05",
+          "date": "2026-11-21"
+        }
+      ]
+    },
+    "reminders": {},
+    "calendar": {}
+  },
+  "state_diff": {
+    "habit_tracker": {
+      "before": {
+        "habits": [
+          {
+            "id": "habit_dummy_00",
+            "name": "Đạp xe buổi sáng",
+            "streak": 2,
+            "last_logged": "2026-11-20"
+          },
+          {
+            "id": "habit_slp_05",
+            "name": "Đi ngủ trước 23h",
+            "streak": 5,
+            "last_logged": "2026-11-20"
+          }
+        ],
+        "logs": []
+      },
+      "after": {
+        "habits": [
+          {
+            "id": "habit_dummy_00",
+            "name": "Đạp xe buổi sáng",
+            "streak": 2,
+            "last_logged": "2026-11-20"
+          },
+          {
+            "id": "habit_slp_05",
+            "name": "Đi ngủ trước 23h",
+            "streak": 6,
+            "last_logged": "2026-11-21"
+          }
+        ],
+        "logs": [
+          {
+            "id": "log_01",
+            "habit_id": "habit_slp_05",
+            "date": "2026-11-21"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "3b9cc2778a949bb9f16479383c7e85897adecd6925b32c5f3e85d125ea8d87d3",
+  "validation": {
+    "scenario_id": "sim_habit_tr_05",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "habit_tracker"
+    ],
+    "state_hash": "3b9cc2778a949bb9f16479383c7e85897adecd6925b32c5f3e85d125ea8d87d3",
+    "errors": []
+  }
+}

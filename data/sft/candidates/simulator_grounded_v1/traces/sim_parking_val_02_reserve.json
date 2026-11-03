@@ -1,0 +1,203 @@
+{
+  "scenario_id": "sim_parking_val_02_reserve",
+  "split": "val",
+  "template_id": "tpl_parking_reserve_val",
+  "scenario_type": "multi_result_selection",
+  "primary_apps": [
+    "parking"
+  ],
+  "installed_apps": [
+    "parking",
+    "maps",
+    "ewallet"
+  ],
+  "objective": "Find parking in Thảo Điền with spots > 0 and reserve lot_td_02.",
+  "expect_mutation": true,
+  "user_request": "Tra giúp anh bãi đậu ô tô khu Thảo Điền còn chỗ trống để đặt giữ chỗ từ 18:30 chiều nay trong vòng 2 giờ.",
+  "current_time": "2026-11-25T16:00:00+07:00",
+  "city": "TP.HCM",
+  "initial_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_td_01",
+          "name": "Bãi xe Xuân Thủy Thảo Điền",
+          "address": "40 Xuân Thủy",
+          "area": "Thảo Điền",
+          "price_per_hour": 30000,
+          "available_spots": 0
+        },
+        {
+          "id": "lot_td_02",
+          "name": "Bãi xe Vincom Mega Mall Thảo Điền",
+          "address": "161 Xa lộ Hà Nội",
+          "area": "Thảo Điền",
+          "price_per_hour": 35000,
+          "available_spots": 15
+        }
+      ],
+      "sessions": []
+    },
+    "maps": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "parking.find",
+      "arguments": {
+        "near": "Thảo Điền"
+      }
+    },
+    {
+      "name": "parking.reserve",
+      "arguments": {
+        "lot_id": "lot_td_02",
+        "from_time": "2026-11-25T18:30:00+07:00",
+        "hours": 2
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "lots": [
+        {
+          "id": "lot_td_01",
+          "name": "Bãi xe Xuân Thủy Thảo Điền",
+          "address": "40 Xuân Thủy",
+          "area": "Thảo Điền",
+          "price_per_hour": 30000,
+          "available_spots": 0
+        },
+        {
+          "id": "lot_td_02",
+          "name": "Bãi xe Vincom Mega Mall Thảo Điền",
+          "address": "161 Xa lộ Hà Nội",
+          "area": "Thảo Điền",
+          "price_per_hour": 35000,
+          "available_spots": 15
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "session": {
+        "id": "park_01",
+        "lot_id": "lot_td_02",
+        "from_time": "2026-11-25T18:30:00+07:00",
+        "hours": 2,
+        "end_time": "2026-11-25T20:30:00+07:00",
+        "total": 70000,
+        "status": "reserved"
+      }
+    }
+  ],
+  "final_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_td_01",
+          "name": "Bãi xe Xuân Thủy Thảo Điền",
+          "address": "40 Xuân Thủy",
+          "area": "Thảo Điền",
+          "price_per_hour": 30000,
+          "available_spots": 0
+        },
+        {
+          "id": "lot_td_02",
+          "name": "Bãi xe Vincom Mega Mall Thảo Điền",
+          "address": "161 Xa lộ Hà Nội",
+          "area": "Thảo Điền",
+          "price_per_hour": 35000,
+          "available_spots": 14
+        }
+      ],
+      "sessions": [
+        {
+          "id": "park_01",
+          "lot_id": "lot_td_02",
+          "from_time": "2026-11-25T18:30:00+07:00",
+          "hours": 2,
+          "end_time": "2026-11-25T20:30:00+07:00",
+          "total": 70000,
+          "status": "reserved"
+        }
+      ]
+    },
+    "maps": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "parking": {
+      "before": {
+        "lots": [
+          {
+            "id": "lot_td_01",
+            "name": "Bãi xe Xuân Thủy Thảo Điền",
+            "address": "40 Xuân Thủy",
+            "area": "Thảo Điền",
+            "price_per_hour": 30000,
+            "available_spots": 0
+          },
+          {
+            "id": "lot_td_02",
+            "name": "Bãi xe Vincom Mega Mall Thảo Điền",
+            "address": "161 Xa lộ Hà Nội",
+            "area": "Thảo Điền",
+            "price_per_hour": 35000,
+            "available_spots": 15
+          }
+        ],
+        "sessions": []
+      },
+      "after": {
+        "lots": [
+          {
+            "id": "lot_td_01",
+            "name": "Bãi xe Xuân Thủy Thảo Điền",
+            "address": "40 Xuân Thủy",
+            "area": "Thảo Điền",
+            "price_per_hour": 30000,
+            "available_spots": 0
+          },
+          {
+            "id": "lot_td_02",
+            "name": "Bãi xe Vincom Mega Mall Thảo Điền",
+            "address": "161 Xa lộ Hà Nội",
+            "area": "Thảo Điền",
+            "price_per_hour": 35000,
+            "available_spots": 14
+          }
+        ],
+        "sessions": [
+          {
+            "id": "park_01",
+            "lot_id": "lot_td_02",
+            "from_time": "2026-11-25T18:30:00+07:00",
+            "hours": 2,
+            "end_time": "2026-11-25T20:30:00+07:00",
+            "total": 70000,
+            "status": "reserved"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "8fd77dcc69d5464914c6e18096a61c09c5884a0eb43190947b696ee50e778d9b",
+  "validation": {
+    "scenario_id": "sim_parking_val_02_reserve",
+    "scenario_type": "multi_result_selection",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "parking"
+    ],
+    "state_hash": "8fd77dcc69d5464914c6e18096a61c09c5884a0eb43190947b696ee50e778d9b",
+    "errors": []
+  }
+}

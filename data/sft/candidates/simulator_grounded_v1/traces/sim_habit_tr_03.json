@@ -1,0 +1,169 @@
+{
+  "scenario_id": "sim_habit_tr_03",
+  "split": "train",
+  "template_id": "tpl_habit_log_train",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "habit_tracker"
+  ],
+  "installed_apps": [
+    "habit_tracker",
+    "reminders",
+    "calendar"
+  ],
+  "objective": "List habits, select habit_eng_03, and log completion on 2026-11-22.",
+  "expect_mutation": true,
+  "user_request": "Cập nhật nhật ký thói quen: hôm nay anh đã học xong 20 từ vựng tiếng Anh rồi nhé.",
+  "current_time": "2026-11-22T20:30:00+07:00",
+  "city": "Đà Nẵng",
+  "initial_state": {
+    "habit_tracker": {
+      "habits": [
+        {
+          "id": "habit_dummy_00",
+          "name": "Đạp xe buổi sáng",
+          "streak": 2,
+          "last_logged": "2026-11-20"
+        },
+        {
+          "id": "habit_eng_03",
+          "name": "Học 20 từ vựng tiếng Anh",
+          "streak": 5,
+          "last_logged": "2026-11-21"
+        }
+      ],
+      "logs": []
+    },
+    "reminders": {},
+    "calendar": {}
+  },
+  "tool_calls": [
+    {
+      "name": "habit_tracker.list_habits",
+      "arguments": {}
+    },
+    {
+      "name": "habit_tracker.log",
+      "arguments": {
+        "habit_id": "habit_eng_03",
+        "date": "2026-11-22"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "habits": [
+        {
+          "id": "habit_dummy_00",
+          "name": "Đạp xe buổi sáng",
+          "streak": 2,
+          "last_logged": "2026-11-20"
+        },
+        {
+          "id": "habit_eng_03",
+          "name": "Học 20 từ vựng tiếng Anh",
+          "streak": 5,
+          "last_logged": "2026-11-21"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "log": {
+        "id": "log_01",
+        "habit_id": "habit_eng_03",
+        "date": "2026-11-22"
+      },
+      "streak": 6
+    }
+  ],
+  "final_state": {
+    "habit_tracker": {
+      "habits": [
+        {
+          "id": "habit_dummy_00",
+          "name": "Đạp xe buổi sáng",
+          "streak": 2,
+          "last_logged": "2026-11-20"
+        },
+        {
+          "id": "habit_eng_03",
+          "name": "Học 20 từ vựng tiếng Anh",
+          "streak": 6,
+          "last_logged": "2026-11-22"
+        }
+      ],
+      "logs": [
+        {
+          "id": "log_01",
+          "habit_id": "habit_eng_03",
+          "date": "2026-11-22"
+        }
+      ]
+    },
+    "reminders": {},
+    "calendar": {}
+  },
+  "state_diff": {
+    "habit_tracker": {
+      "before": {
+        "habits": [
+          {
+            "id": "habit_dummy_00",
+            "name": "Đạp xe buổi sáng",
+            "streak": 2,
+            "last_logged": "2026-11-20"
+          },
+          {
+            "id": "habit_eng_03",
+            "name": "Học 20 từ vựng tiếng Anh",
+            "streak": 5,
+            "last_logged": "2026-11-21"
+          }
+        ],
+        "logs": []
+      },
+      "after": {
+        "habits": [
+          {
+            "id": "habit_dummy_00",
+            "name": "Đạp xe buổi sáng",
+            "streak": 2,
+            "last_logged": "2026-11-20"
+          },
+          {
+            "id": "habit_eng_03",
+            "name": "Học 20 từ vựng tiếng Anh",
+            "streak": 6,
+            "last_logged": "2026-11-22"
+          }
+        ],
+        "logs": [
+          {
+            "id": "log_01",
+            "habit_id": "habit_eng_03",
+            "date": "2026-11-22"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "aff619cea3d62a682511f0f61d67838bf9a63f26e2dbc12d31ce2d86ec28b01d",
+  "validation": {
+    "scenario_id": "sim_habit_tr_03",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "habit_tracker"
+    ],
+    "state_hash": "aff619cea3d62a682511f0f61d67838bf9a63f26e2dbc12d31ce2d86ec28b01d",
+    "errors": []
+  }
+}

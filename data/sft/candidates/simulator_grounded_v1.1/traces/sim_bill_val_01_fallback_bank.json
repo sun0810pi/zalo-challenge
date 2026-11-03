@@ -1,0 +1,163 @@
+{
+  "scenario_id": "sim_bill_val_01_fallback_bank",
+  "split": "val",
+  "template_id": "tpl_bill_arith_val_bank",
+  "scenario_type": "arithmetic_condition",
+  "primary_apps": [
+    "bill_payment",
+    "ewallet"
+  ],
+  "installed_apps": [
+    "bill_payment",
+    "ewallet",
+    "banking",
+    "sms"
+  ],
+  "objective": "Check electricity bill (640000) and wallet balance (300000) -> action=bank.",
+  "expect_mutation": true,
+  "user_request": "Kiểm tra hóa đơn tiền điện kỳ này cùng số dư ví điện tử, ưu tiên trả bằng ví nhưng nếu ví thiếu tiền thì chuyển sang trả bằng tài khoản ngân hàng nhé.",
+  "serialized_user_prompt": "Kiểm tra hóa đơn tiền điện kỳ này cùng số dư ví điện tử, ưu tiên trả bằng ví nhưng nếu ví thiếu tiền thì chuyển sang trả bằng tài khoản ngân hàng nhé",
+  "current_time": "2026-11-23T09:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Phạm Thanh Thảo",
+    "city": "Hà Nội",
+    "home_address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+    "work_address": "Tòa nhà Lotte Center, 54 Liễu Giai, Ba Đình, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0069,
+    "lng": 105.8027
+  },
+  "history": [],
+  "initial_state": {
+    "bill_payment": {
+      "bills": [
+        {
+          "id": "bill_el_v1",
+          "type": "electricity",
+          "amount": 640000,
+          "paid": false
+        }
+      ],
+      "autopays": []
+    },
+    "ewallet": {
+      "balance": 300000,
+      "transactions": []
+    },
+    "banking": {},
+    "sms": {}
+  },
+  "tool_calls": [
+    {
+      "name": "bill_payment.list_bills",
+      "arguments": {
+        "type": "electricity"
+      }
+    },
+    {
+      "name": "ewallet.get_balance",
+      "arguments": {}
+    },
+    {
+      "name": "bill_payment.pay",
+      "arguments": {
+        "bill_id": "bill_el_v1",
+        "source": "bank"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "bills": [
+        {
+          "id": "bill_el_v1",
+          "type": "electricity",
+          "amount": 640000,
+          "paid": false
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "balance": 300000
+    },
+    {
+      "ok": true,
+      "bill": {
+        "id": "bill_el_v1",
+        "type": "electricity",
+        "amount": 640000,
+        "paid": true,
+        "paid_with": "bank"
+      }
+    }
+  ],
+  "final_state": {
+    "bill_payment": {
+      "bills": [
+        {
+          "id": "bill_el_v1",
+          "type": "electricity",
+          "amount": 640000,
+          "paid": true,
+          "paid_with": "bank"
+        }
+      ],
+      "autopays": []
+    },
+    "ewallet": {
+      "balance": 300000,
+      "transactions": []
+    },
+    "banking": {},
+    "sms": {}
+  },
+  "state_diff": {
+    "bill_payment": {
+      "before": {
+        "bills": [
+          {
+            "id": "bill_el_v1",
+            "type": "electricity",
+            "amount": 640000,
+            "paid": false
+          }
+        ],
+        "autopays": []
+      },
+      "after": {
+        "bills": [
+          {
+            "id": "bill_el_v1",
+            "type": "electricity",
+            "amount": 640000,
+            "paid": true,
+            "paid_with": "bank"
+          }
+        ],
+        "autopays": []
+      }
+    }
+  },
+  "state_hash": "796110ee606df3d024bde107d8e241da5ed4a87414073a71f8a2209c14acd4ae",
+  "validation": {
+    "scenario_id": "sim_bill_val_01_fallback_bank",
+    "scenario_type": "arithmetic_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "bill_payment"
+    ],
+    "state_hash": "796110ee606df3d024bde107d8e241da5ed4a87414073a71f8a2209c14acd4ae",
+    "errors": []
+  }
+}

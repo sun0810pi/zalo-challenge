@@ -1,0 +1,140 @@
+{
+  "scenario_id": "pilot_022_weather_neg_condition_stop",
+  "split": "train",
+  "template_id": "tpl_weather_neg_condition_stop",
+  "scenario_type": "negative_condition",
+  "primary_apps": [
+    "weather",
+    "calendar"
+  ],
+  "installed_apps": [
+    "weather",
+    "calendar",
+    "reminders"
+  ],
+  "objective": "Check tomorrow's forecast (rain=False) and stop immediately without modifying calendar.",
+  "expect_mutation": false,
+  "user_request": "Kiểm tra dự báo thời tiết ngày mai 2026-11-21, nếu trời mưa thì hủy lịch giao hữu bóng đá buổi sáng, còn không mưa thì cứ giữ nguyên lịch nhé.",
+  "serialized_user_prompt": "Kiểm tra dự báo thời tiết ngày mai 2026-11-21, nếu trời mưa thì hủy lịch giao hữu bóng đá buổi sáng, còn không mưa thì cứ giữ nguyên lịch nhé",
+  "current_time": "2026-11-20T19:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Nguyễn Minh Quân",
+    "city": "Hà Nội",
+    "home_address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+    "work_address": "Tòa nhà Keangnam, Phạm Hùng, Nam Từ Liêm, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0245,
+    "lng": 105.8091
+  },
+  "history": [],
+  "initial_state": {
+    "weather": {
+      "current": [
+        {
+          "location": "Hà Nội",
+          "condition": "quang mây",
+          "temp": 25,
+          "rain": false
+        }
+      ],
+      "forecast": [
+        {
+          "location": "Hà Nội",
+          "date": "2026-11-21",
+          "condition": "nắng nhẹ",
+          "temp_min": 21,
+          "temp_max": 28,
+          "rain": false
+        }
+      ]
+    },
+    "calendar": {
+      "events": [
+        {
+          "id": "evt_soccer_01",
+          "title": "Giao hữu bóng đá",
+          "start": "2026-11-21T08:00:00+07:00",
+          "end": "2026-11-21T10:00:00+07:00",
+          "status": "confirmed"
+        }
+      ]
+    },
+    "reminders": {}
+  },
+  "tool_calls": [
+    {
+      "name": "weather.get_forecast",
+      "arguments": {
+        "date": "2026-11-21"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "forecast": [
+        {
+          "location": "Hà Nội",
+          "date": "2026-11-21",
+          "condition": "nắng nhẹ",
+          "temp_min": 21,
+          "temp_max": 28,
+          "rain": false
+        }
+      ]
+    }
+  ],
+  "final_state": {
+    "weather": {
+      "current": [
+        {
+          "location": "Hà Nội",
+          "condition": "quang mây",
+          "temp": 25,
+          "rain": false
+        }
+      ],
+      "forecast": [
+        {
+          "location": "Hà Nội",
+          "date": "2026-11-21",
+          "condition": "nắng nhẹ",
+          "temp_min": 21,
+          "temp_max": 28,
+          "rain": false
+        }
+      ]
+    },
+    "calendar": {
+      "events": [
+        {
+          "id": "evt_soccer_01",
+          "title": "Giao hữu bóng đá",
+          "start": "2026-11-21T08:00:00+07:00",
+          "end": "2026-11-21T10:00:00+07:00",
+          "status": "confirmed"
+        }
+      ]
+    },
+    "reminders": {}
+  },
+  "state_diff": {},
+  "state_hash": "bf7c997dbc32291969b4de499f135026a3e2db6e3ae3c73063dd65cbf1d1d9f7",
+  "validation": {
+    "scenario_id": "pilot_022_weather_neg_condition_stop",
+    "scenario_type": "negative_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "bf7c997dbc32291969b4de499f135026a3e2db6e3ae3c73063dd65cbf1d1d9f7",
+    "errors": []
+  }
+}

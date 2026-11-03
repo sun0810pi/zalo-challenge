@@ -1,0 +1,66 @@
+{
+  "scenario_id": "sim_tb_val_04_ask_date",
+  "split": "val",
+  "template_id": "tpl_tb_ask_date_val",
+  "scenario_type": "missing_info",
+  "primary_apps": [
+    "train_bus_tickets",
+    "sys"
+  ],
+  "installed_apps": [
+    "train_bus_tickets",
+    "calendar"
+  ],
+  "objective": "User did not specify travel date required by train_bus_tickets.search; call sys.ask_missing_info.",
+  "expect_mutation": false,
+  "user_request": "Tìm và đặt giúp anh 2 vé tàu từ Hà Nội đi Đà Nẵng nhé.",
+  "current_time": "2026-11-22T09:00:00+07:00",
+  "city": "Đà Nẵng",
+  "initial_state": {
+    "train_bus_tickets": {
+      "trips": [],
+      "bookings": []
+    },
+    "calendar": {}
+  },
+  "tool_calls": [
+    {
+      "name": "sys.ask_missing_info",
+      "arguments": {
+        "tool_name": "train_bus_tickets.search",
+        "params": [
+          "date"
+        ]
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "waiting_for_user": true
+    }
+  ],
+  "final_state": {
+    "train_bus_tickets": {
+      "trips": [],
+      "bookings": []
+    },
+    "calendar": {}
+  },
+  "state_diff": {},
+  "state_hash": "745af595f8d9e572a6c935fa7373e10d365bde37f18bcb67f06f7d188f7020ee",
+  "validation": {
+    "scenario_id": "sim_tb_val_04_ask_date",
+    "scenario_type": "missing_info",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "745af595f8d9e572a6c935fa7373e10d365bde37f18bcb67f06f7d188f7020ee",
+    "errors": []
+  }
+}

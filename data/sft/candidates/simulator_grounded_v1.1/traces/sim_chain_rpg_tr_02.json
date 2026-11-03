@@ -1,0 +1,334 @@
+{
+  "scenario_id": "sim_chain_rpg_tr_02",
+  "split": "train",
+  "template_id": "tpl_chain_recipes_pantry_grocery_train",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "recipes",
+    "pantry",
+    "grocery"
+  ],
+  "installed_apps": [
+    "recipes",
+    "pantry",
+    "grocery",
+    "notes"
+  ],
+  "objective": "Chain recipes.search -> pantry.list_items -> grocery for missing ingredient 'bánh phở'.",
+  "expect_mutation": true,
+  "user_request": "Xem công thức nấu phở bò cho 2 người, đối chiếu với tủ bếp xem món nào đang bằng 0 thì đặt mua ngay 1 gói trên ứng dụng đi chợ giao về nhà nhé.",
+  "serialized_user_prompt": "Xem công thức nấu phở bò cho 2 người, đối chiếu với tủ bếp xem món nào đang bằng 0 thì đặt mua ngay 1 gói trên ứng dụng đi chợ giao về nhà nhé",
+  "current_time": "2026-11-23T09:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "TP.HCM",
+  "user_profile": {
+    "name": "Trần Thu Hà",
+    "city": "TP.HCM",
+    "home_address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM",
+    "work_address": "Tòa nhà Bitexco, số 2 Hải Triều, Quận 1, TP.HCM"
+  },
+  "location": {
+    "lat": 10.7769,
+    "lng": 106.7009
+  },
+  "history": [],
+  "initial_state": {
+    "recipes": {
+      "recipes": [
+        {
+          "id": "rcp_pb_02",
+          "name": "Phở bò",
+          "servings": 2,
+          "ingredients": [
+            {
+              "name": "bánh phở",
+              "quantity": 1,
+              "unit": "phần"
+            },
+            {
+              "name": "hành tím",
+              "quantity": 3,
+              "unit": "củ"
+            }
+          ]
+        }
+      ],
+      "saved": []
+    },
+    "pantry": {
+      "items": [
+        {
+          "id": "pan_ok_01",
+          "name": "hành tím",
+          "stock": 10,
+          "unit": "củ"
+        },
+        {
+          "id": "pan_bp_02",
+          "name": "bánh phở",
+          "stock": 0,
+          "unit": "phần"
+        }
+      ]
+    },
+    "grocery": {
+      "products": [
+        {
+          "id": "gro_bp_02",
+          "name": "Bánh phở tươi gói 500g",
+          "price": 18000,
+          "unit": "phần",
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": []
+    },
+    "notes": {}
+  },
+  "tool_calls": [
+    {
+      "name": "recipes.search",
+      "arguments": {
+        "query": "phở bò",
+        "servings": 2
+      }
+    },
+    {
+      "name": "pantry.list_items",
+      "arguments": {}
+    },
+    {
+      "name": "grocery.search",
+      "arguments": {
+        "query": "bánh phở"
+      }
+    },
+    {
+      "name": "grocery.add_to_cart",
+      "arguments": {
+        "product_id": "gro_bp_02",
+        "quantity": 1
+      }
+    },
+    {
+      "name": "grocery.checkout",
+      "arguments": {
+        "address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "recipes": [
+        {
+          "id": "rcp_pb_02",
+          "name": "Phở bò",
+          "servings": 2,
+          "ingredients": [
+            {
+              "name": "bánh phở",
+              "quantity": 1,
+              "unit": "phần"
+            },
+            {
+              "name": "hành tím",
+              "quantity": 3,
+              "unit": "củ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "items": [
+        {
+          "id": "pan_ok_01",
+          "name": "hành tím",
+          "stock": 10,
+          "unit": "củ"
+        },
+        {
+          "id": "pan_bp_02",
+          "name": "bánh phở",
+          "stock": 0,
+          "unit": "phần"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "products": [
+        {
+          "id": "gro_bp_02",
+          "name": "Bánh phở tươi gói 500g",
+          "price": 18000,
+          "unit": "phần",
+          "in_stock": true
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "cart": [
+        {
+          "product_id": "gro_bp_02",
+          "name": "Bánh phở tươi gói 500g",
+          "price": 18000,
+          "quantity": 1
+        }
+      ],
+      "cart_total": 18000
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "items": [
+          {
+            "product_id": "gro_bp_02",
+            "name": "Bánh phở tươi gói 500g",
+            "price": 18000,
+            "quantity": 1
+          }
+        ],
+        "total": 18000,
+        "status": "placed",
+        "address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM"
+      }
+    }
+  ],
+  "final_state": {
+    "recipes": {
+      "recipes": [
+        {
+          "id": "rcp_pb_02",
+          "name": "Phở bò",
+          "servings": 2,
+          "ingredients": [
+            {
+              "name": "bánh phở",
+              "quantity": 1,
+              "unit": "phần"
+            },
+            {
+              "name": "hành tím",
+              "quantity": 3,
+              "unit": "củ"
+            }
+          ]
+        }
+      ],
+      "saved": []
+    },
+    "pantry": {
+      "items": [
+        {
+          "id": "pan_ok_01",
+          "name": "hành tím",
+          "stock": 10,
+          "unit": "củ"
+        },
+        {
+          "id": "pan_bp_02",
+          "name": "bánh phở",
+          "stock": 0,
+          "unit": "phần"
+        }
+      ]
+    },
+    "grocery": {
+      "products": [
+        {
+          "id": "gro_bp_02",
+          "name": "Bánh phở tươi gói 500g",
+          "price": 18000,
+          "unit": "phần",
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": [
+        {
+          "id": "ord_01",
+          "items": [
+            {
+              "product_id": "gro_bp_02",
+              "name": "Bánh phở tươi gói 500g",
+              "price": 18000,
+              "quantity": 1
+            }
+          ],
+          "total": 18000,
+          "status": "placed",
+          "address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM"
+        }
+      ]
+    },
+    "notes": {}
+  },
+  "state_diff": {
+    "grocery": {
+      "before": {
+        "products": [
+          {
+            "id": "gro_bp_02",
+            "name": "Bánh phở tươi gói 500g",
+            "price": 18000,
+            "unit": "phần",
+            "in_stock": true
+          }
+        ],
+        "cart": [],
+        "orders": []
+      },
+      "after": {
+        "products": [
+          {
+            "id": "gro_bp_02",
+            "name": "Bánh phở tươi gói 500g",
+            "price": 18000,
+            "unit": "phần",
+            "in_stock": true
+          }
+        ],
+        "cart": [],
+        "orders": [
+          {
+            "id": "ord_01",
+            "items": [
+              {
+                "product_id": "gro_bp_02",
+                "name": "Bánh phở tươi gói 500g",
+                "price": 18000,
+                "quantity": 1
+              }
+            ],
+            "total": 18000,
+            "status": "placed",
+            "address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "3f429cdb81e1b1746cd14370d83f0c4df6fb9081ec9aa6a3a433576753a6327d",
+  "validation": {
+    "scenario_id": "sim_chain_rpg_tr_02",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "grocery"
+    ],
+    "state_hash": "3f429cdb81e1b1746cd14370d83f0c4df6fb9081ec9aa6a3a433576753a6327d",
+    "errors": []
+  }
+}

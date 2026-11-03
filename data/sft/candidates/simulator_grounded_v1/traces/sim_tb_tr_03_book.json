@@ -1,0 +1,239 @@
+{
+  "scenario_id": "sim_tb_tr_03_book",
+  "split": "train",
+  "template_id": "tpl_tb_search_select_book_train",
+  "scenario_type": "multi_result_selection",
+  "primary_apps": [
+    "train_bus_tickets"
+  ],
+  "installed_apps": [
+    "train_bus_tickets",
+    "flights",
+    "ewallet"
+  ],
+  "objective": "Search bus from TP.HCM to Vũng Tàu, skip trip_full_03 with insufficient seats, book 2 seats on trip_ok_03.",
+  "expect_mutation": true,
+  "user_request": "Tìm xe khách từ TP.HCM đi Vũng Tàu ngày 2026-11-25 rồi đặt 2 ghế ở chuyến còn đủ chỗ trống giúp chị.",
+  "current_time": "2026-11-21T09:00:00+07:00",
+  "city": "Đà Nẵng",
+  "initial_state": {
+    "train_bus_tickets": {
+      "trips": [
+        {
+          "id": "trip_full_03",
+          "type": "bus",
+          "operator": "Hoa Mai Limousine Sớm",
+          "origin": "TP.HCM",
+          "destination": "Vũng Tàu",
+          "date": "2026-11-25",
+          "depart": "05:30",
+          "arrive": "11:00",
+          "price": 180000,
+          "seats_left": 1
+        },
+        {
+          "id": "trip_ok_03",
+          "type": "bus",
+          "operator": "Hoa Mai Limousine",
+          "origin": "TP.HCM",
+          "destination": "Vũng Tàu",
+          "date": "2026-11-25",
+          "depart": "09:00",
+          "arrive": "14:30",
+          "price": 180000,
+          "seats_left": 10
+        }
+      ],
+      "bookings": []
+    },
+    "flights": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "train_bus_tickets.search",
+      "arguments": {
+        "origin": "TP.HCM",
+        "destination": "Vũng Tàu",
+        "date": "2026-11-25",
+        "type": "bus"
+      }
+    },
+    {
+      "name": "train_bus_tickets.book",
+      "arguments": {
+        "trip_id": "trip_ok_03",
+        "seats": 2
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "trips": [
+        {
+          "id": "trip_full_03",
+          "type": "bus",
+          "operator": "Hoa Mai Limousine Sớm",
+          "origin": "TP.HCM",
+          "destination": "Vũng Tàu",
+          "date": "2026-11-25",
+          "depart": "05:30",
+          "arrive": "11:00",
+          "price": 180000,
+          "seats_left": 1
+        },
+        {
+          "id": "trip_ok_03",
+          "type": "bus",
+          "operator": "Hoa Mai Limousine",
+          "origin": "TP.HCM",
+          "destination": "Vũng Tàu",
+          "date": "2026-11-25",
+          "depart": "09:00",
+          "arrive": "14:30",
+          "price": 180000,
+          "seats_left": 10
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "booking": {
+        "id": "tk_01",
+        "trip_id": "trip_ok_03",
+        "seats": 2,
+        "total": 360000,
+        "status": "confirmed"
+      }
+    }
+  ],
+  "final_state": {
+    "train_bus_tickets": {
+      "trips": [
+        {
+          "id": "trip_full_03",
+          "type": "bus",
+          "operator": "Hoa Mai Limousine Sớm",
+          "origin": "TP.HCM",
+          "destination": "Vũng Tàu",
+          "date": "2026-11-25",
+          "depart": "05:30",
+          "arrive": "11:00",
+          "price": 180000,
+          "seats_left": 1
+        },
+        {
+          "id": "trip_ok_03",
+          "type": "bus",
+          "operator": "Hoa Mai Limousine",
+          "origin": "TP.HCM",
+          "destination": "Vũng Tàu",
+          "date": "2026-11-25",
+          "depart": "09:00",
+          "arrive": "14:30",
+          "price": 180000,
+          "seats_left": 8
+        }
+      ],
+      "bookings": [
+        {
+          "id": "tk_01",
+          "trip_id": "trip_ok_03",
+          "seats": 2,
+          "total": 360000,
+          "status": "confirmed"
+        }
+      ]
+    },
+    "flights": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "train_bus_tickets": {
+      "before": {
+        "trips": [
+          {
+            "id": "trip_full_03",
+            "type": "bus",
+            "operator": "Hoa Mai Limousine Sớm",
+            "origin": "TP.HCM",
+            "destination": "Vũng Tàu",
+            "date": "2026-11-25",
+            "depart": "05:30",
+            "arrive": "11:00",
+            "price": 180000,
+            "seats_left": 1
+          },
+          {
+            "id": "trip_ok_03",
+            "type": "bus",
+            "operator": "Hoa Mai Limousine",
+            "origin": "TP.HCM",
+            "destination": "Vũng Tàu",
+            "date": "2026-11-25",
+            "depart": "09:00",
+            "arrive": "14:30",
+            "price": 180000,
+            "seats_left": 10
+          }
+        ],
+        "bookings": []
+      },
+      "after": {
+        "trips": [
+          {
+            "id": "trip_full_03",
+            "type": "bus",
+            "operator": "Hoa Mai Limousine Sớm",
+            "origin": "TP.HCM",
+            "destination": "Vũng Tàu",
+            "date": "2026-11-25",
+            "depart": "05:30",
+            "arrive": "11:00",
+            "price": 180000,
+            "seats_left": 1
+          },
+          {
+            "id": "trip_ok_03",
+            "type": "bus",
+            "operator": "Hoa Mai Limousine",
+            "origin": "TP.HCM",
+            "destination": "Vũng Tàu",
+            "date": "2026-11-25",
+            "depart": "09:00",
+            "arrive": "14:30",
+            "price": 180000,
+            "seats_left": 8
+          }
+        ],
+        "bookings": [
+          {
+            "id": "tk_01",
+            "trip_id": "trip_ok_03",
+            "seats": 2,
+            "total": 360000,
+            "status": "confirmed"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "fdf3727d4c69845abb128fb7b81c174adf1141c60a3532db89f2e5b9b45b98d9",
+  "validation": {
+    "scenario_id": "sim_tb_tr_03_book",
+    "scenario_type": "multi_result_selection",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "train_bus_tickets"
+    ],
+    "state_hash": "fdf3727d4c69845abb128fb7b81c174adf1141c60a3532db89f2e5b9b45b98d9",
+    "errors": []
+  }
+}

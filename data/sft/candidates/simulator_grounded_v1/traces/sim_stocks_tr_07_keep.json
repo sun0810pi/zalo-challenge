@@ -1,0 +1,163 @@
+{
+  "scenario_id": "sim_stocks_tr_07_keep",
+  "split": "train",
+  "template_id": "tpl_stocks_arith_keep_train",
+  "scenario_type": "arithmetic_condition",
+  "primary_apps": [
+    "stocks"
+  ],
+  "installed_apps": [
+    "stocks",
+    "banking"
+  ],
+  "objective": "Read portfolio for VHM (held=500) and place arithmetic sell order.",
+  "expect_mutation": true,
+  "user_request": "Xem danh mục cổ phiếu VHM của chị rồi bán bớt đi, chỉ để lại 100 cổ phiếu thôi nhé.",
+  "current_time": "2026-11-23T14:00:00+07:00",
+  "city": "Đà Nẵng",
+  "initial_state": {
+    "stocks": {
+      "holdings": [
+        {
+          "symbol": "VHM",
+          "name": "Vinhomes",
+          "quantity": 500,
+          "avg_price": 39700,
+          "price": 41200
+        }
+      ],
+      "quotes": [],
+      "orders": [],
+      "alerts": []
+    },
+    "banking": {}
+  },
+  "tool_calls": [
+    {
+      "name": "stocks.get_portfolio",
+      "arguments": {}
+    },
+    {
+      "name": "stocks.place_order",
+      "arguments": {
+        "symbol": "VHM",
+        "side": "sell",
+        "quantity": 400,
+        "price": 41200
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "holdings": [
+        {
+          "symbol": "VHM",
+          "name": "Vinhomes",
+          "quantity": 500,
+          "avg_price": 39700,
+          "price": 41200
+        }
+      ],
+      "total_value": 20600000
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "symbol": "VHM",
+        "side": "sell",
+        "quantity": 400,
+        "type": "limit",
+        "price": 41200,
+        "status": "placed"
+      }
+    }
+  ],
+  "final_state": {
+    "stocks": {
+      "holdings": [
+        {
+          "symbol": "VHM",
+          "name": "Vinhomes",
+          "quantity": 500,
+          "avg_price": 39700,
+          "price": 41200
+        }
+      ],
+      "quotes": [],
+      "orders": [
+        {
+          "id": "ord_01",
+          "symbol": "VHM",
+          "side": "sell",
+          "quantity": 400,
+          "type": "limit",
+          "price": 41200,
+          "status": "placed"
+        }
+      ],
+      "alerts": []
+    },
+    "banking": {}
+  },
+  "state_diff": {
+    "stocks": {
+      "before": {
+        "holdings": [
+          {
+            "symbol": "VHM",
+            "name": "Vinhomes",
+            "quantity": 500,
+            "avg_price": 39700,
+            "price": 41200
+          }
+        ],
+        "quotes": [],
+        "orders": [],
+        "alerts": []
+      },
+      "after": {
+        "holdings": [
+          {
+            "symbol": "VHM",
+            "name": "Vinhomes",
+            "quantity": 500,
+            "avg_price": 39700,
+            "price": 41200
+          }
+        ],
+        "quotes": [],
+        "orders": [
+          {
+            "id": "ord_01",
+            "symbol": "VHM",
+            "side": "sell",
+            "quantity": 400,
+            "type": "limit",
+            "price": 41200,
+            "status": "placed"
+          }
+        ],
+        "alerts": []
+      }
+    }
+  },
+  "state_hash": "9296ad0ab9f9a007d39fcebc2be708f13ba83a13e948d4d3ca6b14f9c96dab02",
+  "validation": {
+    "scenario_id": "sim_stocks_tr_07_keep",
+    "scenario_type": "arithmetic_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "stocks"
+    ],
+    "state_hash": "9296ad0ab9f9a007d39fcebc2be708f13ba83a13e948d4d3ca6b14f9c96dab02",
+    "errors": []
+  }
+}

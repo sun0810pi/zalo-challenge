@@ -1,0 +1,269 @@
+{
+  "scenario_id": "sim_parking_tr_07_end",
+  "split": "train",
+  "template_id": "tpl_parking_end_train",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "parking"
+  ],
+  "installed_apps": [
+    "parking",
+    "ewallet"
+  ],
+  "objective": "List parking sessions and end active session park_kn_02.",
+  "expect_mutation": true,
+  "user_request": "Mình lấy xe ra khỏi bãi đỗ xe Keangnam rồi, kết thúc phiên đỗ xe đang hoạt động giúp mình.",
+  "serialized_user_prompt": "Mình lấy xe ra khỏi bãi đỗ xe Keangnam rồi, kết thúc phiên đỗ xe đang hoạt động giúp mình",
+  "current_time": "2026-11-22T17:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Nguyễn Minh Quân",
+    "city": "Hà Nội",
+    "home_address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+    "work_address": "Tòa nhà Keangnam, Phạm Hùng, Nam Từ Liêm, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0245,
+    "lng": 105.8091
+  },
+  "history": [],
+  "initial_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_old_01",
+          "name": "Bãi xe Tràng Thi",
+          "address": "15 Tràng Thi",
+          "area": "Hoàn Kiếm",
+          "price_per_hour": 25000,
+          "available_spots": 5
+        },
+        {
+          "id": "lot_cur_02",
+          "name": "Bãi xe Keangnam",
+          "address": "Keangnam",
+          "area": "Keangnam",
+          "price_per_hour": 30000,
+          "available_spots": 4
+        }
+      ],
+      "sessions": [
+        {
+          "id": "park_old_01",
+          "lot_id": "lot_old_01",
+          "from_time": "2026-11-20T08:00:00+07:00",
+          "hours": 2,
+          "end_time": "2026-11-20T10:00:00+07:00",
+          "total": 50000,
+          "status": "ended"
+        },
+        {
+          "id": "park_kn_02",
+          "lot_id": "lot_cur_02",
+          "from_time": "2026-11-22T14:00:00+07:00",
+          "hours": 3,
+          "end_time": "2026-11-22T17:00:00+07:00",
+          "total": 90000,
+          "status": "reserved"
+        }
+      ]
+    },
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "parking.list_sessions",
+      "arguments": {}
+    },
+    {
+      "name": "parking.end_session",
+      "arguments": {
+        "session_id": "park_kn_02"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "sessions": [
+        {
+          "id": "park_old_01",
+          "lot_id": "lot_old_01",
+          "from_time": "2026-11-20T08:00:00+07:00",
+          "hours": 2,
+          "end_time": "2026-11-20T10:00:00+07:00",
+          "total": 50000,
+          "status": "ended",
+          "lot_name": "Bãi xe Tràng Thi"
+        },
+        {
+          "id": "park_kn_02",
+          "lot_id": "lot_cur_02",
+          "from_time": "2026-11-22T14:00:00+07:00",
+          "hours": 3,
+          "end_time": "2026-11-22T17:00:00+07:00",
+          "total": 90000,
+          "status": "reserved",
+          "lot_name": "Bãi xe Keangnam"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "session": {
+        "id": "park_kn_02",
+        "lot_id": "lot_cur_02",
+        "from_time": "2026-11-22T14:00:00+07:00",
+        "hours": 3,
+        "end_time": "2026-11-22T17:00:00+07:00",
+        "total": 90000,
+        "status": "ended"
+      }
+    }
+  ],
+  "final_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_old_01",
+          "name": "Bãi xe Tràng Thi",
+          "address": "15 Tràng Thi",
+          "area": "Hoàn Kiếm",
+          "price_per_hour": 25000,
+          "available_spots": 5
+        },
+        {
+          "id": "lot_cur_02",
+          "name": "Bãi xe Keangnam",
+          "address": "Keangnam",
+          "area": "Keangnam",
+          "price_per_hour": 30000,
+          "available_spots": 5
+        }
+      ],
+      "sessions": [
+        {
+          "id": "park_old_01",
+          "lot_id": "lot_old_01",
+          "from_time": "2026-11-20T08:00:00+07:00",
+          "hours": 2,
+          "end_time": "2026-11-20T10:00:00+07:00",
+          "total": 50000,
+          "status": "ended"
+        },
+        {
+          "id": "park_kn_02",
+          "lot_id": "lot_cur_02",
+          "from_time": "2026-11-22T14:00:00+07:00",
+          "hours": 3,
+          "end_time": "2026-11-22T17:00:00+07:00",
+          "total": 90000,
+          "status": "ended"
+        }
+      ]
+    },
+    "ewallet": {}
+  },
+  "state_diff": {
+    "parking": {
+      "before": {
+        "lots": [
+          {
+            "id": "lot_old_01",
+            "name": "Bãi xe Tràng Thi",
+            "address": "15 Tràng Thi",
+            "area": "Hoàn Kiếm",
+            "price_per_hour": 25000,
+            "available_spots": 5
+          },
+          {
+            "id": "lot_cur_02",
+            "name": "Bãi xe Keangnam",
+            "address": "Keangnam",
+            "area": "Keangnam",
+            "price_per_hour": 30000,
+            "available_spots": 4
+          }
+        ],
+        "sessions": [
+          {
+            "id": "park_old_01",
+            "lot_id": "lot_old_01",
+            "from_time": "2026-11-20T08:00:00+07:00",
+            "hours": 2,
+            "end_time": "2026-11-20T10:00:00+07:00",
+            "total": 50000,
+            "status": "ended"
+          },
+          {
+            "id": "park_kn_02",
+            "lot_id": "lot_cur_02",
+            "from_time": "2026-11-22T14:00:00+07:00",
+            "hours": 3,
+            "end_time": "2026-11-22T17:00:00+07:00",
+            "total": 90000,
+            "status": "reserved"
+          }
+        ]
+      },
+      "after": {
+        "lots": [
+          {
+            "id": "lot_old_01",
+            "name": "Bãi xe Tràng Thi",
+            "address": "15 Tràng Thi",
+            "area": "Hoàn Kiếm",
+            "price_per_hour": 25000,
+            "available_spots": 5
+          },
+          {
+            "id": "lot_cur_02",
+            "name": "Bãi xe Keangnam",
+            "address": "Keangnam",
+            "area": "Keangnam",
+            "price_per_hour": 30000,
+            "available_spots": 5
+          }
+        ],
+        "sessions": [
+          {
+            "id": "park_old_01",
+            "lot_id": "lot_old_01",
+            "from_time": "2026-11-20T08:00:00+07:00",
+            "hours": 2,
+            "end_time": "2026-11-20T10:00:00+07:00",
+            "total": 50000,
+            "status": "ended"
+          },
+          {
+            "id": "park_kn_02",
+            "lot_id": "lot_cur_02",
+            "from_time": "2026-11-22T14:00:00+07:00",
+            "hours": 3,
+            "end_time": "2026-11-22T17:00:00+07:00",
+            "total": 90000,
+            "status": "ended"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "4c0ebf9a4c9f56ec834b9f2024531f92339f0615d9e002de3bfee76752d4f58f",
+  "validation": {
+    "scenario_id": "sim_parking_tr_07_end",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "parking"
+    ],
+    "state_hash": "4c0ebf9a4c9f56ec834b9f2024531f92339f0615d9e002de3bfee76752d4f58f",
+    "errors": []
+  }
+}

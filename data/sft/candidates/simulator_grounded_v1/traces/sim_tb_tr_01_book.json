@@ -1,0 +1,239 @@
+{
+  "scenario_id": "sim_tb_tr_01_book",
+  "split": "train",
+  "template_id": "tpl_tb_search_select_book_train",
+  "scenario_type": "multi_result_selection",
+  "primary_apps": [
+    "train_bus_tickets"
+  ],
+  "installed_apps": [
+    "train_bus_tickets",
+    "flights",
+    "ewallet"
+  ],
+  "objective": "Search train from Hà Nội to Đà Nẵng, skip trip_full_01 with insufficient seats, book 2 seats on trip_ok_01.",
+  "expect_mutation": true,
+  "user_request": "Tìm chuyến tàu hỏa từ Hà Nội đi Đà Nẵng ngày 2026-11-26 còn đủ 2 chỗ rồi đặt 2 vé giúp anh.",
+  "current_time": "2026-11-21T09:00:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "train_bus_tickets": {
+      "trips": [
+        {
+          "id": "trip_full_01",
+          "type": "train",
+          "operator": "SE1 Sớm",
+          "origin": "Hà Nội",
+          "destination": "Đà Nẵng",
+          "date": "2026-11-26",
+          "depart": "05:30",
+          "arrive": "11:00",
+          "price": 480000,
+          "seats_left": 1
+        },
+        {
+          "id": "trip_ok_01",
+          "type": "train",
+          "operator": "SE1",
+          "origin": "Hà Nội",
+          "destination": "Đà Nẵng",
+          "date": "2026-11-26",
+          "depart": "07:30",
+          "arrive": "14:30",
+          "price": 480000,
+          "seats_left": 10
+        }
+      ],
+      "bookings": []
+    },
+    "flights": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "train_bus_tickets.search",
+      "arguments": {
+        "origin": "Hà Nội",
+        "destination": "Đà Nẵng",
+        "date": "2026-11-26",
+        "type": "train"
+      }
+    },
+    {
+      "name": "train_bus_tickets.book",
+      "arguments": {
+        "trip_id": "trip_ok_01",
+        "seats": 2
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "trips": [
+        {
+          "id": "trip_full_01",
+          "type": "train",
+          "operator": "SE1 Sớm",
+          "origin": "Hà Nội",
+          "destination": "Đà Nẵng",
+          "date": "2026-11-26",
+          "depart": "05:30",
+          "arrive": "11:00",
+          "price": 480000,
+          "seats_left": 1
+        },
+        {
+          "id": "trip_ok_01",
+          "type": "train",
+          "operator": "SE1",
+          "origin": "Hà Nội",
+          "destination": "Đà Nẵng",
+          "date": "2026-11-26",
+          "depart": "07:30",
+          "arrive": "14:30",
+          "price": 480000,
+          "seats_left": 10
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "booking": {
+        "id": "tk_01",
+        "trip_id": "trip_ok_01",
+        "seats": 2,
+        "total": 960000,
+        "status": "confirmed"
+      }
+    }
+  ],
+  "final_state": {
+    "train_bus_tickets": {
+      "trips": [
+        {
+          "id": "trip_full_01",
+          "type": "train",
+          "operator": "SE1 Sớm",
+          "origin": "Hà Nội",
+          "destination": "Đà Nẵng",
+          "date": "2026-11-26",
+          "depart": "05:30",
+          "arrive": "11:00",
+          "price": 480000,
+          "seats_left": 1
+        },
+        {
+          "id": "trip_ok_01",
+          "type": "train",
+          "operator": "SE1",
+          "origin": "Hà Nội",
+          "destination": "Đà Nẵng",
+          "date": "2026-11-26",
+          "depart": "07:30",
+          "arrive": "14:30",
+          "price": 480000,
+          "seats_left": 8
+        }
+      ],
+      "bookings": [
+        {
+          "id": "tk_01",
+          "trip_id": "trip_ok_01",
+          "seats": 2,
+          "total": 960000,
+          "status": "confirmed"
+        }
+      ]
+    },
+    "flights": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "train_bus_tickets": {
+      "before": {
+        "trips": [
+          {
+            "id": "trip_full_01",
+            "type": "train",
+            "operator": "SE1 Sớm",
+            "origin": "Hà Nội",
+            "destination": "Đà Nẵng",
+            "date": "2026-11-26",
+            "depart": "05:30",
+            "arrive": "11:00",
+            "price": 480000,
+            "seats_left": 1
+          },
+          {
+            "id": "trip_ok_01",
+            "type": "train",
+            "operator": "SE1",
+            "origin": "Hà Nội",
+            "destination": "Đà Nẵng",
+            "date": "2026-11-26",
+            "depart": "07:30",
+            "arrive": "14:30",
+            "price": 480000,
+            "seats_left": 10
+          }
+        ],
+        "bookings": []
+      },
+      "after": {
+        "trips": [
+          {
+            "id": "trip_full_01",
+            "type": "train",
+            "operator": "SE1 Sớm",
+            "origin": "Hà Nội",
+            "destination": "Đà Nẵng",
+            "date": "2026-11-26",
+            "depart": "05:30",
+            "arrive": "11:00",
+            "price": 480000,
+            "seats_left": 1
+          },
+          {
+            "id": "trip_ok_01",
+            "type": "train",
+            "operator": "SE1",
+            "origin": "Hà Nội",
+            "destination": "Đà Nẵng",
+            "date": "2026-11-26",
+            "depart": "07:30",
+            "arrive": "14:30",
+            "price": 480000,
+            "seats_left": 8
+          }
+        ],
+        "bookings": [
+          {
+            "id": "tk_01",
+            "trip_id": "trip_ok_01",
+            "seats": 2,
+            "total": 960000,
+            "status": "confirmed"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "bf8a0e38dee447c7b2645c7cc260bc7f90f5f083fc39c8b240deb768c3697e06",
+  "validation": {
+    "scenario_id": "sim_tb_tr_01_book",
+    "scenario_type": "multi_result_selection",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "train_bus_tickets"
+    ],
+    "state_hash": "bf8a0e38dee447c7b2645c7cc260bc7f90f5f083fc39c8b240deb768c3697e06",
+    "errors": []
+  }
+}

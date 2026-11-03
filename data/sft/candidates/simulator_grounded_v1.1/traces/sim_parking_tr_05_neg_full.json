@@ -1,0 +1,126 @@
+{
+  "scenario_id": "sim_parking_tr_05_neg_full",
+  "split": "train",
+  "template_id": "tpl_parking_neg_full_train",
+  "scenario_type": "negative_condition",
+  "primary_apps": [
+    "parking"
+  ],
+  "installed_apps": [
+    "parking",
+    "maps"
+  ],
+  "objective": "Check parking near Cầu Giấy; all lots have available_spots=0, so stop without reserving.",
+  "expect_mutation": false,
+  "user_request": "Kiểm tra bãi đỗ xe gần Cầu Giấy xem còn chỗ trống không, nếu còn thì đặt giữ chỗ 2 tiếng lúc 15 giờ chiều nay, hết chỗ rồi thì thôi nhé.",
+  "serialized_user_prompt": "Kiểm tra bãi đỗ xe gần Cầu Giấy xem còn chỗ trống không, nếu còn thì đặt giữ chỗ 2 tiếng lúc 15 giờ chiều nay, hết chỗ rồi thì thôi nhé",
+  "current_time": "2026-11-21T13:30:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Nguyễn Minh Quân",
+    "city": "Hà Nội",
+    "home_address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+    "work_address": "Tòa nhà Keangnam, Phạm Hùng, Nam Từ Liêm, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0245,
+    "lng": 105.8091
+  },
+  "history": [],
+  "initial_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_cg_01",
+          "name": "Bãi đỗ xe Cầu Giấy A",
+          "address": "120 Cầu Giấy",
+          "area": "Cầu Giấy",
+          "price_per_hour": 25000,
+          "available_spots": 0
+        },
+        {
+          "id": "lot_cg_02",
+          "name": "Bãi đỗ xe Công viên Cầu Giấy",
+          "address": "Phố Duy Tân",
+          "area": "Cầu Giấy",
+          "price_per_hour": 30000,
+          "available_spots": 0
+        }
+      ],
+      "sessions": []
+    },
+    "maps": {}
+  },
+  "tool_calls": [
+    {
+      "name": "parking.find",
+      "arguments": {
+        "near": "Cầu Giấy"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "lots": [
+        {
+          "id": "lot_cg_01",
+          "name": "Bãi đỗ xe Cầu Giấy A",
+          "address": "120 Cầu Giấy",
+          "area": "Cầu Giấy",
+          "price_per_hour": 25000,
+          "available_spots": 0
+        },
+        {
+          "id": "lot_cg_02",
+          "name": "Bãi đỗ xe Công viên Cầu Giấy",
+          "address": "Phố Duy Tân",
+          "area": "Cầu Giấy",
+          "price_per_hour": 30000,
+          "available_spots": 0
+        }
+      ]
+    }
+  ],
+  "final_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_cg_01",
+          "name": "Bãi đỗ xe Cầu Giấy A",
+          "address": "120 Cầu Giấy",
+          "area": "Cầu Giấy",
+          "price_per_hour": 25000,
+          "available_spots": 0
+        },
+        {
+          "id": "lot_cg_02",
+          "name": "Bãi đỗ xe Công viên Cầu Giấy",
+          "address": "Phố Duy Tân",
+          "area": "Cầu Giấy",
+          "price_per_hour": 30000,
+          "available_spots": 0
+        }
+      ],
+      "sessions": []
+    },
+    "maps": {}
+  },
+  "state_diff": {},
+  "state_hash": "53a08fa9875f0527ddbe39d587a037225ca16a6f8d68b03af25e2ae697fc0d50",
+  "validation": {
+    "scenario_id": "sim_parking_tr_05_neg_full",
+    "scenario_type": "negative_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "53a08fa9875f0527ddbe39d587a037225ca16a6f8d68b03af25e2ae697fc0d50",
+    "errors": []
+  }
+}

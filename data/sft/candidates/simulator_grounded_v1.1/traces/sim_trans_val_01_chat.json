@@ -1,0 +1,222 @@
+{
+  "scenario_id": "sim_trans_val_01_chat",
+  "split": "val",
+  "template_id": "tpl_translator_chat_ott_val",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "translator",
+    "chat_ott"
+  ],
+  "installed_apps": [
+    "translator",
+    "chat_ott",
+    "contacts"
+  ],
+  "objective": "Translate text to en and forward result to chat_ott.",
+  "expect_mutation": true,
+  "user_request": "Dịch câu 'Đơn hàng của quý khách đã được xuất kho sáng nay' sang tiếng Anh rồi gửi tin nhắn qua ứng dụng chat cho Alex giúp mình.",
+  "serialized_user_prompt": "Dịch câu 'Đơn hàng của quý khách đã được xuất kho sáng nay' sang tiếng Anh rồi gửi tin nhắn qua ứng dụng chat cho Alex giúp mình",
+  "current_time": "2026-11-23T09:30:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Nguyễn Minh Quân",
+    "city": "Hà Nội",
+    "home_address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+    "work_address": "Tòa nhà Keangnam, Phạm Hùng, Nam Từ Liêm, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0245,
+    "lng": 105.8091
+  },
+  "history": [],
+  "initial_state": {
+    "translator": {
+      "dictionary": [
+        {
+          "text": "Đơn hàng của quý khách đã được xuất kho sáng nay",
+          "to_lang": "en",
+          "translation": "Your order was dispatched from our warehouse this morning"
+        }
+      ]
+    },
+    "chat_ott": {
+      "chats": [
+        {
+          "id": "chat_other_01",
+          "name": "Nhóm Gia Đình",
+          "type": "group",
+          "messages": []
+        },
+        {
+          "id": "chat_target_02",
+          "name": "Alex",
+          "type": "direct",
+          "messages": []
+        }
+      ]
+    },
+    "contacts": {
+      "contacts": [
+        {
+          "id": "ct_target_01",
+          "name": "Alex",
+          "phone": "0909123456",
+          "relation": "đối tác"
+        }
+      ]
+    }
+  },
+  "tool_calls": [
+    {
+      "name": "translator.translate",
+      "arguments": {
+        "text": "Đơn hàng của quý khách đã được xuất kho sáng nay",
+        "to_lang": "en"
+      }
+    },
+    {
+      "name": "chat_ott.list_chats",
+      "arguments": {}
+    },
+    {
+      "name": "chat_ott.send_message",
+      "arguments": {
+        "chat_id": "chat_target_02",
+        "content": "Your order was dispatched from our warehouse this morning"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "text": "Đơn hàng của quý khách đã được xuất kho sáng nay",
+      "from_lang": null,
+      "to_lang": "en",
+      "translation": "Your order was dispatched from our warehouse this morning",
+      "translated": "Your order was dispatched from our warehouse this morning"
+    },
+    {
+      "ok": true,
+      "chats": [
+        {
+          "id": "chat_other_01",
+          "name": "Nhóm Gia Đình",
+          "type": "group"
+        },
+        {
+          "id": "chat_target_02",
+          "name": "Alex",
+          "type": "direct"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "message": {
+        "from": "me",
+        "content": "Your order was dispatched from our warehouse this morning"
+      }
+    }
+  ],
+  "final_state": {
+    "translator": {
+      "dictionary": [
+        {
+          "text": "Đơn hàng của quý khách đã được xuất kho sáng nay",
+          "to_lang": "en",
+          "translation": "Your order was dispatched from our warehouse this morning"
+        }
+      ]
+    },
+    "chat_ott": {
+      "chats": [
+        {
+          "id": "chat_other_01",
+          "name": "Nhóm Gia Đình",
+          "type": "group",
+          "messages": []
+        },
+        {
+          "id": "chat_target_02",
+          "name": "Alex",
+          "type": "direct",
+          "messages": [
+            {
+              "from": "me",
+              "content": "Your order was dispatched from our warehouse this morning"
+            }
+          ]
+        }
+      ]
+    },
+    "contacts": {
+      "contacts": [
+        {
+          "id": "ct_target_01",
+          "name": "Alex",
+          "phone": "0909123456",
+          "relation": "đối tác"
+        }
+      ]
+    }
+  },
+  "state_diff": {
+    "chat_ott": {
+      "before": {
+        "chats": [
+          {
+            "id": "chat_other_01",
+            "name": "Nhóm Gia Đình",
+            "type": "group",
+            "messages": []
+          },
+          {
+            "id": "chat_target_02",
+            "name": "Alex",
+            "type": "direct",
+            "messages": []
+          }
+        ]
+      },
+      "after": {
+        "chats": [
+          {
+            "id": "chat_other_01",
+            "name": "Nhóm Gia Đình",
+            "type": "group",
+            "messages": []
+          },
+          {
+            "id": "chat_target_02",
+            "name": "Alex",
+            "type": "direct",
+            "messages": [
+              {
+                "from": "me",
+                "content": "Your order was dispatched from our warehouse this morning"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "ddf225f40f9d3b4646576eb1ea0934cba0a39a5d45b04be48c4b902f616210e9",
+  "validation": {
+    "scenario_id": "sim_trans_val_01_chat",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "chat_ott"
+    ],
+    "state_hash": "ddf225f40f9d3b4646576eb1ea0934cba0a39a5d45b04be48c4b902f616210e9",
+    "errors": []
+  }
+}

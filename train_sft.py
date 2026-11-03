@@ -28,9 +28,10 @@ def _patch_colab_torchao():
 class AssistantOnlyDataCollator:
     """Mask all system/user/tool_response tokens with -100 so loss is computed strictly on assistant `<think>` + `<tool_call>` turns."""
 
-    def __init__(self, tokenizer: Any, max_seq_len: int = 8192):
+    def __init__(self, tokenizer: Any, max_seq_len: int = 8192, strict_no_truncation: bool = False):
         self.tokenizer = tokenizer
         self.max_seq_len = max_seq_len
+        self.strict_no_truncation = strict_no_truncation
         self.assistant_start_ids = tokenizer.encode("<|im_start|>assistant\n", add_special_tokens=False)
         self.im_end_ids = tokenizer.encode("<|im_end|>", add_special_tokens=False)
 
@@ -44,6 +45,38 @@ class AssistantOnlyDataCollator:
                 return i
         return -1
 
+    def compute_labels_for_ids(self, ids: list[int]) -> list[int]:
+        labels = [-100] * len(ids)
+        pos = 0
+        found_any = False
+        while pos < len(ids):
+            start_idx = self._find_subseq(ids, self.assistant_start_ids, pos)
+            if start_idx == -1:
+                break
+            content_start = start_idx + len(self.assistant_start_ids)
+            end_idx = self._find_subseq(ids, self.im_end_ids, content_start)
+            if end_idx == -1:
+                if self.strict_no_truncation:
+                    raise ValueError(
+                        f"Assistant turn truncated before '<|im_end|>' at sequence length {len(ids)} "
+                        f"(max_seq_len={self.max_seq_len}). Increase --max-seq-len to >= 9216."
+                    )
+                end_token_inclusive = len(ids)
+            else:
+                end_token_inclusive = end_idx + len(self.im_end_ids)
+
+            for j in range(content_start, end_token_inclusive):
+                labels[j] = ids[j]
+            found_any = True
+            pos = end_token_inclusive
+
+        if not found_any:
+            raise ValueError(
+                f"No assistant span found in sequence (length={len(ids)}). "
+                "Ensure ChatML '<|im_start|>assistant' and '<|im_end|>' tokens are properly formatted."
+            )
+        return labels
+
     def __call__(self, features: list[dict[str, Any]]) -> dict[str, Any]:
         import torch
 
@@ -51,41 +84,40 @@ class AssistantOnlyDataCollator:
         batch_labels: list[list[int]] = []
 
         for feat in features:
-            if "input_ids" in feat:
+            if "input_ids" in feat and "labels" in feat:
+                # Fast path: pre-tokenized input_ids and pre-computed assistant labels
                 ids = list(feat["input_ids"])[: self.max_seq_len]
+                labels = list(feat["labels"])[: self.max_seq_len]
+                batch_input_ids.append(ids)
+                batch_labels.append(labels)
+                continue
+
+            if "input_ids" in feat:
+                full_ids = list(feat["input_ids"])
+                if self.strict_no_truncation and len(full_ids) > self.max_seq_len:
+                    raise ValueError(
+                        f"Sequence length {len(full_ids)} exceeds max_seq_len={self.max_seq_len}. "
+                        "Increase --max-seq-len to >= 9216 to prevent assistant target truncation."
+                    )
+                ids = full_ids[: self.max_seq_len]
             else:
-                ids = self.tokenizer.encode(
-                    feat["text"],
-                    add_special_tokens=False,
-                    truncation=True,
-                    max_length=self.max_seq_len,
-                )
-
-            labels = [-100] * len(ids)
-            pos = 0
-            found_any = False
-            while pos < len(ids):
-                start_idx = self._find_subseq(ids, self.assistant_start_ids, pos)
-                if start_idx == -1:
-                    break
-                content_start = start_idx + len(self.assistant_start_ids)
-                end_idx = self._find_subseq(ids, self.im_end_ids, content_start)
-                if end_idx == -1:
-                    end_token_inclusive = len(ids)
+                if self.strict_no_truncation:
+                    full_ids = self.tokenizer.encode(feat["text"], add_special_tokens=False)
+                    if len(full_ids) > self.max_seq_len:
+                        raise ValueError(
+                            f"Sequence length {len(full_ids)} exceeds max_seq_len={self.max_seq_len}. "
+                            "Increase --max-seq-len to >= 9216 to prevent assistant target truncation."
+                        )
+                    ids = full_ids
                 else:
-                    end_token_inclusive = end_idx + len(self.im_end_ids)
+                    ids = self.tokenizer.encode(
+                        feat["text"],
+                        add_special_tokens=False,
+                        truncation=True,
+                        max_length=self.max_seq_len,
+                    )
 
-                for j in range(content_start, end_token_inclusive):
-                    labels[j] = ids[j]
-                found_any = True
-                pos = end_token_inclusive
-
-            if not found_any:
-                raise ValueError(
-                    f"No assistant span found in sequence (length={len(ids)}). "
-                    "Ensure ChatML '<|im_start|>assistant' and '<|im_end|>' tokens are properly formatted."
-                )
-
+            labels = self.compute_labels_for_ids(ids)
             batch_input_ids.append(ids)
             batch_labels.append(labels)
 
@@ -125,7 +157,56 @@ def main():
         action="store_true",
         help="Bật QLoRA 4-bit nếu chạy trên GPU 16GB (T4); trên L4/A100/A30 24GB+ có thể chạy thẳng BF16 LoRA",
     )
+    # Optional controlled performance optimizations (off by default to preserve original configuration)
+    ap.add_argument(
+        "--optimized",
+        action="store_true",
+        help="Bật cấu hình tối ưu tốc độ trên NVIDIA L4 (pretokenize, group_by_length, sdpa, adamw_torch_fused, max_seq_len>=9216)",
+    )
+    ap.add_argument(
+        "--pretokenize",
+        action="store_true",
+        help="Tokenize trước input_ids và labels 1 lần để loại bỏ CPU bottleneck trong DataCollator",
+    )
+    ap.add_argument(
+        "--group-by-length",
+        action="store_true",
+        help="Gom nhóm các mẫu có độ dài tương đương vào cùng micro-batch để giảm ~80% padding waste",
+    )
+    ap.add_argument(
+        "--attn-implementation",
+        default=None,
+        choices=["sdpa", "flash_attention_2", "eager"],
+        help="Cơ chế Attention (sdpa hoặc flash_attention_2 giúp tăng tốc trên L4/A100)",
+    )
+    ap.add_argument(
+        "--optim",
+        default=None,
+        help="Optimizer (ví dụ: adamw_torch_fused hoặc paged_adamw_8bit)",
+    )
+    ap.add_argument(
+        "--non-reentrant-checkpointing",
+        action="store_true",
+        help="Sử dụng gradient_checkpointing_kwargs={'use_reentrant': False} để giảm overhead autograd",
+    )
+    ap.add_argument(
+        "--verify-no-truncation",
+        action="store_true",
+        help="Kiểm tra nghiêm ngặt đảm bảo không có bất kỳ lượt assistant hoặc tool_call nào bị cắt cụt",
+    )
     args = ap.parse_args()
+
+    if args.optimized:
+        args.pretokenize = True
+        args.group_by_length = True
+        args.non_reentrant_checkpointing = True
+        args.verify_no_truncation = True
+        if args.attn_implementation is None:
+            args.attn_implementation = "sdpa"
+        if args.optim is None:
+            args.optim = "adamw_torch_fused"
+        if args.max_seq_len < 9216:
+            args.max_seq_len = 9216
 
     _patch_colab_torchao()
 
@@ -134,6 +215,10 @@ def main():
     from peft import LoraConfig
     from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
     from trl import SFTConfig, SFTTrainer
+
+    if args.optimized and torch.cuda.is_available():
+        torch.backends.cuda.matmul.allow_tf32 = True
+        torch.backends.cudnn.allow_tf32 = True
 
     data_dir = Path(args.data_dir)
     if not (data_dir / "sft_train.jsonl").is_file():
@@ -155,12 +240,18 @@ def main():
         )
 
     dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
+    model_load_kwargs: dict[str, Any] = {
+        "quantization_config": quant_config,
+        "dtype": dtype,
+        "device_map": "auto",
+        "trust_remote_code": True,
+    }
+    if args.attn_implementation:
+        model_load_kwargs["attn_implementation"] = args.attn_implementation
+
     model = AutoModelForCausalLM.from_pretrained(
         args.model,
-        quantization_config=quant_config,
-        dtype=dtype,
-        device_map="auto",
-        trust_remote_code=True,
+        **model_load_kwargs,
     )
 
     peft_config = LoraConfig(
@@ -180,6 +271,12 @@ def main():
         },
     )
 
+    data_collator = AssistantOnlyDataCollator(
+        tokenizer=tokenizer,
+        max_seq_len=args.max_seq_len,
+        strict_no_truncation=args.verify_no_truncation,
+    )
+
     def format_row(example):
         # Bảo toàn đầy đủ thẻ <think>...</think> ở MỌI bước assistant trong multi-turn ReAct
         text = render_chatml_preserving_think(
@@ -187,10 +284,25 @@ def main():
             example["messages"],
             add_generation_prompt=False,
         )
-        return {"text": text}
+        if not args.pretokenize:
+            return {"text": text}
+
+        full_ids = tokenizer.encode(text, add_special_tokens=False)
+        if args.verify_no_truncation and len(full_ids) > args.max_seq_len:
+            raise ValueError(
+                f"Sample length {len(full_ids)} exceeds max_seq_len={args.max_seq_len}. "
+                "Increase --max-seq-len to >= 9216 so assistant targets are never truncated."
+            )
+        ids = full_ids[: args.max_seq_len]
+        labels = data_collator.compute_labels_for_ids(ids)
+        return {
+            "text": text,
+            "input_ids": ids,
+            "labels": labels,
+            "length": len(ids),
+        }
 
     dataset = dataset.map(format_row, remove_columns=dataset["train"].column_names)
-    data_collator = AssistantOnlyDataCollator(tokenizer=tokenizer, max_seq_len=args.max_seq_len)
 
     # Tự động kiểm tra các tham số hợp lệ của SFTConfig theo phiên bản trl/transformers trên Colab
     valid_sft_params = set(inspect.signature(SFTConfig.__init__).parameters.keys())
@@ -217,6 +329,16 @@ def main():
         "seed": 42,
         "report_to": "none",
     }
+    if args.group_by_length:
+        sft_kwargs["group_by_length"] = True
+        sft_kwargs["length_column_name"] = "length"
+    if args.optim:
+        sft_kwargs["optim"] = args.optim
+    if args.non_reentrant_checkpointing:
+        sft_kwargs["gradient_checkpointing_kwargs"] = {"use_reentrant": False}
+    if args.optimized and torch.cuda.is_available():
+        sft_kwargs["tf32"] = True
+
     if "max_length" in valid_sft_params:
         sft_kwargs["max_length"] = args.max_seq_len
     elif "max_seq_length" in valid_sft_params:

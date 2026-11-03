@@ -1,0 +1,229 @@
+{
+  "scenario_id": "sim_flights_tr_02",
+  "split": "train",
+  "template_id": "tpl_flights_train_book",
+  "scenario_type": "multi_result_selection",
+  "primary_apps": [
+    "flights"
+  ],
+  "installed_apps": [
+    "flights",
+    "calendar",
+    "ewallet"
+  ],
+  "objective": "Execute flight workflow on fl_vj_02.",
+  "expect_mutation": true,
+  "user_request": "Tra cứu vé máy bay từ TP.HCM đi Đà Nẵng ngày 2026-11-29 và đặt 2 vé hạng phổ thông ở chuyến có giá thấp nhất nhé.",
+  "current_time": "2026-11-23T08:00:00+07:00",
+  "city": "TP.HCM",
+  "initial_state": {
+    "flights": {
+      "flights": [
+        {
+          "id": "fl_exp_01",
+          "origin": "SGN",
+          "destination": "DAD",
+          "date": "2026-11-29",
+          "depart": "13:00",
+          "arrive": "15:00",
+          "airline": "Bamboo Airways",
+          "price": 1340000,
+          "flight_no": "QH202"
+        },
+        {
+          "id": "fl_vj_02",
+          "origin": "SGN",
+          "destination": "DAD",
+          "date": "2026-11-29",
+          "depart": "07:15",
+          "arrive": "10:10",
+          "airline": "Vietjet Air",
+          "price": 890000,
+          "flight_no": "VN123"
+        }
+      ],
+      "bookings": []
+    },
+    "calendar": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "flights.search",
+      "arguments": {
+        "origin": "SGN",
+        "destination": "DAD",
+        "date": "2026-11-29"
+      }
+    },
+    {
+      "name": "flights.book",
+      "arguments": {
+        "flight_id": "fl_vj_02",
+        "passengers": 2,
+        "seat_class": "economy"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "flights": [
+        {
+          "id": "fl_exp_01",
+          "origin": "SGN",
+          "destination": "DAD",
+          "date": "2026-11-29",
+          "depart": "13:00",
+          "arrive": "15:00",
+          "airline": "Bamboo Airways",
+          "price": 1340000,
+          "flight_no": "QH202"
+        },
+        {
+          "id": "fl_vj_02",
+          "origin": "SGN",
+          "destination": "DAD",
+          "date": "2026-11-29",
+          "depart": "07:15",
+          "arrive": "10:10",
+          "airline": "Vietjet Air",
+          "price": 890000,
+          "flight_no": "VN123"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "booking": {
+        "id": "bk_01",
+        "flight_id": "fl_vj_02",
+        "passengers": 2,
+        "seat_class": "economy",
+        "status": "confirmed"
+      }
+    }
+  ],
+  "final_state": {
+    "flights": {
+      "flights": [
+        {
+          "id": "fl_exp_01",
+          "origin": "SGN",
+          "destination": "DAD",
+          "date": "2026-11-29",
+          "depart": "13:00",
+          "arrive": "15:00",
+          "airline": "Bamboo Airways",
+          "price": 1340000,
+          "flight_no": "QH202"
+        },
+        {
+          "id": "fl_vj_02",
+          "origin": "SGN",
+          "destination": "DAD",
+          "date": "2026-11-29",
+          "depart": "07:15",
+          "arrive": "10:10",
+          "airline": "Vietjet Air",
+          "price": 890000,
+          "flight_no": "VN123"
+        }
+      ],
+      "bookings": [
+        {
+          "id": "bk_01",
+          "flight_id": "fl_vj_02",
+          "passengers": 2,
+          "seat_class": "economy",
+          "status": "confirmed"
+        }
+      ]
+    },
+    "calendar": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "flights": {
+      "before": {
+        "flights": [
+          {
+            "id": "fl_exp_01",
+            "origin": "SGN",
+            "destination": "DAD",
+            "date": "2026-11-29",
+            "depart": "13:00",
+            "arrive": "15:00",
+            "airline": "Bamboo Airways",
+            "price": 1340000,
+            "flight_no": "QH202"
+          },
+          {
+            "id": "fl_vj_02",
+            "origin": "SGN",
+            "destination": "DAD",
+            "date": "2026-11-29",
+            "depart": "07:15",
+            "arrive": "10:10",
+            "airline": "Vietjet Air",
+            "price": 890000,
+            "flight_no": "VN123"
+          }
+        ],
+        "bookings": []
+      },
+      "after": {
+        "flights": [
+          {
+            "id": "fl_exp_01",
+            "origin": "SGN",
+            "destination": "DAD",
+            "date": "2026-11-29",
+            "depart": "13:00",
+            "arrive": "15:00",
+            "airline": "Bamboo Airways",
+            "price": 1340000,
+            "flight_no": "QH202"
+          },
+          {
+            "id": "fl_vj_02",
+            "origin": "SGN",
+            "destination": "DAD",
+            "date": "2026-11-29",
+            "depart": "07:15",
+            "arrive": "10:10",
+            "airline": "Vietjet Air",
+            "price": 890000,
+            "flight_no": "VN123"
+          }
+        ],
+        "bookings": [
+          {
+            "id": "bk_01",
+            "flight_id": "fl_vj_02",
+            "passengers": 2,
+            "seat_class": "economy",
+            "status": "confirmed"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "e45f329496a96bf0e13d018f7064e5da832543522a12d18193fff5d87e527350",
+  "validation": {
+    "scenario_id": "sim_flights_tr_02",
+    "scenario_type": "multi_result_selection",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "flights"
+    ],
+    "state_hash": "e45f329496a96bf0e13d018f7064e5da832543522a12d18193fff5d87e527350",
+    "errors": []
+  }
+}

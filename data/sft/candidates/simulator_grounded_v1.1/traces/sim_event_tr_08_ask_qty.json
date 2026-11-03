@@ -1,0 +1,122 @@
+{
+  "scenario_id": "sim_event_tr_08_ask_qty",
+  "split": "train",
+  "template_id": "tpl_event_ask_qty_train",
+  "scenario_type": "missing_info",
+  "primary_apps": [
+    "event_tickets",
+    "sys"
+  ],
+  "installed_apps": [
+    "event_tickets",
+    "calendar"
+  ],
+  "objective": "Search event and ask user for missing required parameter quantity.",
+  "expect_mutation": false,
+  "user_request": "Tìm sự kiện Triển lãm Tranh Sơn Mài rồi đặt vé giúp mình với.",
+  "serialized_user_prompt": "Tìm sự kiện Triển lãm Tranh Sơn Mài rồi đặt vé giúp mình với",
+  "current_time": "2026-11-22T13:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Đà Nẵng",
+  "user_profile": {
+    "name": "Lê Hoàng Nam",
+    "city": "Đà Nẵng",
+    "home_address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+    "work_address": "Khu Công nghệ thông tin tập trung, Liên Chiểu, Đà Nẵng"
+  },
+  "location": {
+    "lat": 16.0601,
+    "lng": 108.2122
+  },
+  "history": [],
+  "initial_state": {
+    "event_tickets": {
+      "events": [
+        {
+          "id": "event_sm_01",
+          "name": "Triển lãm Tranh Sơn Mài Đương Đại",
+          "category": "triển lãm",
+          "date": "2026-12-03",
+          "time": "09:00",
+          "venue": "Trung tâm Nghệ thuật",
+          "price": 120000,
+          "available": 40
+        }
+      ],
+      "bookings": []
+    },
+    "calendar": {}
+  },
+  "tool_calls": [
+    {
+      "name": "event_tickets.search",
+      "arguments": {
+        "query": "Triển lãm Tranh Sơn Mài"
+      }
+    },
+    {
+      "name": "sys.ask_missing_info",
+      "arguments": {
+        "tool_name": "event_tickets.book",
+        "params": [
+          "quantity"
+        ]
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "events": [
+        {
+          "id": "event_sm_01",
+          "name": "Triển lãm Tranh Sơn Mài Đương Đại",
+          "category": "triển lãm",
+          "date": "2026-12-03",
+          "time": "09:00",
+          "venue": "Trung tâm Nghệ thuật",
+          "price": 120000,
+          "available": 40
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "waiting_for_user": true
+    }
+  ],
+  "final_state": {
+    "event_tickets": {
+      "events": [
+        {
+          "id": "event_sm_01",
+          "name": "Triển lãm Tranh Sơn Mài Đương Đại",
+          "category": "triển lãm",
+          "date": "2026-12-03",
+          "time": "09:00",
+          "venue": "Trung tâm Nghệ thuật",
+          "price": 120000,
+          "available": 40
+        }
+      ],
+      "bookings": []
+    },
+    "calendar": {}
+  },
+  "state_diff": {},
+  "state_hash": "344ce33f2f5181717fed8964521ad28f4563442168f7cc397aa0bdb0e4e1658d",
+  "validation": {
+    "scenario_id": "sim_event_tr_08_ask_qty",
+    "scenario_type": "missing_info",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "344ce33f2f5181717fed8964521ad28f4563442168f7cc397aa0bdb0e4e1658d",
+    "errors": []
+  }
+}

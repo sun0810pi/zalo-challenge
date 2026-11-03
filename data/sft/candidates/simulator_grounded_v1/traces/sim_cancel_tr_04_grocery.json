@@ -1,0 +1,47 @@
+{
+  "scenario_id": "sim_cancel_tr_04_grocery",
+  "split": "train",
+  "template_id": "tpl_self_cancel_train_grocery",
+  "scenario_type": "cancellation",
+  "primary_apps": [
+    "grocery"
+  ],
+  "installed_apps": [
+    "grocery",
+    "pantry",
+    "reminders"
+  ],
+  "objective": "Recognize self-cancellation phrase at end of request and emit 0 tool calls.",
+  "expect_mutation": false,
+  "user_request": "Đặt mua 2 hộp sữa tươi trên ứng dụng đi chợ giúp chị. Khoan đã, trong tủ lạnh vẫn còn nguyên 1 thùng, thôi đừng đặt nữa.",
+  "current_time": "2026-11-23T12:00:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "grocery": {},
+    "pantry": {},
+    "reminders": {}
+  },
+  "tool_calls": [],
+  "tool_results": [],
+  "final_state": {
+    "grocery": {},
+    "pantry": {},
+    "reminders": {}
+  },
+  "state_diff": {},
+  "state_hash": "89a70461a844a7122a1039500ed0c331a7e6f54d35780006c05ca7380844c80e",
+  "validation": {
+    "scenario_id": "sim_cancel_tr_04_grocery",
+    "scenario_type": "cancellation",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "89a70461a844a7122a1039500ed0c331a7e6f54d35780006c05ca7380844c80e",
+    "errors": []
+  }
+}

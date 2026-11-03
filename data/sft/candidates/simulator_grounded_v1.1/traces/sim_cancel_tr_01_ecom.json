@@ -1,0 +1,60 @@
+{
+  "scenario_id": "sim_cancel_tr_01_ecom",
+  "split": "train",
+  "template_id": "tpl_self_cancel_train_ecommerce",
+  "scenario_type": "cancellation",
+  "primary_apps": [
+    "ecommerce"
+  ],
+  "installed_apps": [
+    "ecommerce",
+    "ewallet",
+    "reminders"
+  ],
+  "objective": "Recognize self-cancellation phrase at end of request and emit 0 tool calls.",
+  "expect_mutation": false,
+  "user_request": "Tìm mua giúp anh chiếc bàn phím cơ trên sàn thương mại điện tử. À mà thôi, đồng nghiệp vừa tặng một cái rồi, không cần mua nữa nhé.",
+  "serialized_user_prompt": "Tìm mua giúp anh chiếc bàn phím cơ trên sàn thương mại điện tử. À mà thôi, đồng nghiệp vừa tặng một cái rồi, không cần mua nữa nhé",
+  "current_time": "2026-11-23T12:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Nguyễn Minh Quân",
+    "city": "Hà Nội",
+    "home_address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+    "work_address": "Tòa nhà Keangnam, Phạm Hùng, Nam Từ Liêm, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0245,
+    "lng": 105.8091
+  },
+  "history": [],
+  "initial_state": {
+    "ecommerce": {},
+    "ewallet": {},
+    "reminders": {}
+  },
+  "tool_calls": [],
+  "tool_results": [],
+  "final_state": {
+    "ecommerce": {},
+    "ewallet": {},
+    "reminders": {}
+  },
+  "state_diff": {},
+  "state_hash": "8f94bed821ba1d04e5a24764b568830b37ed445f0f77de469f2fc78da4f2a8fb",
+  "validation": {
+    "scenario_id": "sim_cancel_tr_01_ecom",
+    "scenario_type": "cancellation",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "8f94bed821ba1d04e5a24764b568830b37ed445f0f77de469f2fc78da4f2a8fb",
+    "errors": []
+  }
+}

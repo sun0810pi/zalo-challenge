@@ -1,0 +1,137 @@
+{
+  "scenario_id": "sim_transit_tr_05_read_only",
+  "split": "train",
+  "template_id": "tpl_transit_readonly_train",
+  "scenario_type": "negative_condition",
+  "primary_apps": [
+    "public_transit"
+  ],
+  "installed_apps": [
+    "public_transit",
+    "maps"
+  ],
+  "objective": "Find routes and check next departures without mutating state.",
+  "expect_mutation": false,
+  "user_request": "Kiểm tra giúp mình tuyến xe buýt từ Long Biên đi Gia Lâm và xem các chuyến sắp khởi hành tại trạm Long Biên nhé, chỉ xem thôi chưa cần nạp thẻ.",
+  "current_time": "2026-11-22T08:30:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "public_transit": {
+      "card_balance": 45000,
+      "routes": [
+        {
+          "id": "bus_lb_01",
+          "name": "Tuyến Long Biên - Gia Lâm",
+          "type": "bus",
+          "stops": [
+            "Long Biên",
+            "Nguyễn Văn Cừ",
+            "Gia Lâm"
+          ],
+          "fare": 7000,
+          "duration_min": 20,
+          "headway_min": 12
+        }
+      ],
+      "departures": [
+        {
+          "stop": "Long Biên",
+          "route": "bus_lb_01",
+          "time": "08:35"
+        }
+      ],
+      "topups": []
+    },
+    "maps": {}
+  },
+  "tool_calls": [
+    {
+      "name": "public_transit.find_routes",
+      "arguments": {
+        "origin": "Long Biên",
+        "destination": "Gia Lâm"
+      }
+    },
+    {
+      "name": "public_transit.next_departures",
+      "arguments": {
+        "stop": "Long Biên",
+        "route": "bus_lb_01"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "routes": [
+        {
+          "route_id": "bus_lb_01",
+          "name": "Tuyến Long Biên - Gia Lâm",
+          "type": "bus",
+          "board_at": "Long Biên",
+          "alight_at": "Gia Lâm",
+          "stops_count": 2,
+          "duration_min": 20,
+          "fare": 7000,
+          "headway_min": 12
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "departures": [
+        {
+          "stop": "Long Biên",
+          "route": "bus_lb_01",
+          "time": "08:35",
+          "route_name": "Tuyến Long Biên - Gia Lâm"
+        }
+      ]
+    }
+  ],
+  "final_state": {
+    "public_transit": {
+      "card_balance": 45000,
+      "routes": [
+        {
+          "id": "bus_lb_01",
+          "name": "Tuyến Long Biên - Gia Lâm",
+          "type": "bus",
+          "stops": [
+            "Long Biên",
+            "Nguyễn Văn Cừ",
+            "Gia Lâm"
+          ],
+          "fare": 7000,
+          "duration_min": 20,
+          "headway_min": 12
+        }
+      ],
+      "departures": [
+        {
+          "stop": "Long Biên",
+          "route": "bus_lb_01",
+          "time": "08:35"
+        }
+      ],
+      "topups": []
+    },
+    "maps": {}
+  },
+  "state_diff": {},
+  "state_hash": "09ee16c0e8af49e99c017b83a7eb0b0dc44e2ad3f457ed9145baf9e5ec4aa7a1",
+  "validation": {
+    "scenario_id": "sim_transit_tr_05_read_only",
+    "scenario_type": "negative_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "09ee16c0e8af49e99c017b83a7eb0b0dc44e2ad3f457ed9145baf9e5ec4aa7a1",
+    "errors": []
+  }
+}

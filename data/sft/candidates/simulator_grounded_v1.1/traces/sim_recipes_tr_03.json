@@ -1,0 +1,196 @@
+{
+  "scenario_id": "sim_recipes_tr_03",
+  "split": "train",
+  "template_id": "tpl_recipes_save_train_False",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "recipes"
+  ],
+  "installed_apps": [
+    "recipes",
+    "pantry",
+    "notes"
+  ],
+  "objective": "Search recipe gà hấp lá chanh for 5 servings, optionally get details, and save rcp_gh_03.",
+  "expect_mutation": true,
+  "user_request": "Tìm món gà hấp lá chanh cho 5 người ăn rồi bấm lưu công thức lại giúp mình.",
+  "serialized_user_prompt": "Tìm món gà hấp lá chanh cho 5 người ăn rồi bấm lưu công thức lại giúp mình",
+  "current_time": "2026-11-22T15:30:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Đà Nẵng",
+  "user_profile": {
+    "name": "Lê Hoàng Nam",
+    "city": "Đà Nẵng",
+    "home_address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+    "work_address": "Khu Công nghệ thông tin tập trung, Liên Chiểu, Đà Nẵng"
+  },
+  "location": {
+    "lat": 16.0601,
+    "lng": 108.2122
+  },
+  "history": [],
+  "initial_state": {
+    "recipes": {
+      "recipes": [
+        {
+          "id": "rcp_gh_03",
+          "name": "Gà ta hấp lá chanh",
+          "servings": 2,
+          "steps": [
+            "Sơ chế",
+            "Nấu chín"
+          ],
+          "ingredients": [
+            {
+              "name": "thịt",
+              "quantity": 400,
+              "unit": "g"
+            }
+          ]
+        }
+      ],
+      "saved": []
+    },
+    "pantry": {},
+    "notes": {}
+  },
+  "tool_calls": [
+    {
+      "name": "recipes.search",
+      "arguments": {
+        "query": "gà hấp lá chanh",
+        "servings": 5
+      }
+    },
+    {
+      "name": "recipes.save",
+      "arguments": {
+        "recipe_id": "rcp_gh_03"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "recipes": [
+        {
+          "id": "rcp_gh_03",
+          "name": "Gà ta hấp lá chanh",
+          "servings": 5,
+          "ingredients": [
+            {
+              "name": "thịt",
+              "quantity": 1000,
+              "unit": "g"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "saved": {
+        "id": "sav_01",
+        "recipe_id": "rcp_gh_03"
+      }
+    }
+  ],
+  "final_state": {
+    "recipes": {
+      "recipes": [
+        {
+          "id": "rcp_gh_03",
+          "name": "Gà ta hấp lá chanh",
+          "servings": 2,
+          "steps": [
+            "Sơ chế",
+            "Nấu chín"
+          ],
+          "ingredients": [
+            {
+              "name": "thịt",
+              "quantity": 400,
+              "unit": "g"
+            }
+          ]
+        }
+      ],
+      "saved": [
+        {
+          "id": "sav_01",
+          "recipe_id": "rcp_gh_03"
+        }
+      ]
+    },
+    "pantry": {},
+    "notes": {}
+  },
+  "state_diff": {
+    "recipes": {
+      "before": {
+        "recipes": [
+          {
+            "id": "rcp_gh_03",
+            "name": "Gà ta hấp lá chanh",
+            "servings": 2,
+            "steps": [
+              "Sơ chế",
+              "Nấu chín"
+            ],
+            "ingredients": [
+              {
+                "name": "thịt",
+                "quantity": 400,
+                "unit": "g"
+              }
+            ]
+          }
+        ],
+        "saved": []
+      },
+      "after": {
+        "recipes": [
+          {
+            "id": "rcp_gh_03",
+            "name": "Gà ta hấp lá chanh",
+            "servings": 2,
+            "steps": [
+              "Sơ chế",
+              "Nấu chín"
+            ],
+            "ingredients": [
+              {
+                "name": "thịt",
+                "quantity": 400,
+                "unit": "g"
+              }
+            ]
+          }
+        ],
+        "saved": [
+          {
+            "id": "sav_01",
+            "recipe_id": "rcp_gh_03"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "df55f185395068dbd585fb08ba9417ec72505f8c1b84c15acf3ed4bc80839b02",
+  "validation": {
+    "scenario_id": "sim_recipes_tr_03",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "recipes"
+    ],
+    "state_hash": "df55f185395068dbd585fb08ba9417ec72505f8c1b84c15acf3ed4bc80839b02",
+    "errors": []
+  }
+}

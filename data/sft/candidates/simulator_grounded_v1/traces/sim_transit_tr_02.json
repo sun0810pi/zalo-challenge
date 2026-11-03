@@ -1,0 +1,250 @@
+{
+  "scenario_id": "sim_transit_tr_02",
+  "split": "train",
+  "template_id": "tpl_transit_train_True",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "public_transit"
+  ],
+  "installed_apps": [
+    "public_transit",
+    "maps",
+    "ewallet"
+  ],
+  "objective": "Find transit routes from Cát Linh to Hà Đông, optionally check departures, and topup 100000.",
+  "expect_mutation": true,
+  "user_request": "Tra cứu tuyến tàu điện từ Cát Linh đi Hà Đông, xem các chuyến sắp khởi hành ở ga Cát Linh và nạp 100 nghìn đồng vào thẻ giao thông nhé.",
+  "current_time": "2026-11-22T08:00:00+07:00",
+  "city": "TP.HCM",
+  "initial_state": {
+    "public_transit": {
+      "card_balance": 15000,
+      "routes": [
+        {
+          "id": "rt_tr_02",
+          "name": "Tuyến Cát Linh - Hà Đông",
+          "type": "metro",
+          "stops": [
+            "Cát Linh",
+            "Trạm Trung Gian",
+            "Hà Đông"
+          ],
+          "fare": 10000,
+          "duration_min": 25,
+          "headway_min": 8
+        }
+      ],
+      "departures": [
+        {
+          "stop": "Cát Linh",
+          "route": "rt_tr_02",
+          "time": "08:10"
+        },
+        {
+          "stop": "Cát Linh",
+          "route": "rt_tr_02",
+          "time": "08:18"
+        }
+      ],
+      "topups": []
+    },
+    "maps": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "public_transit.find_routes",
+      "arguments": {
+        "origin": "Cát Linh",
+        "destination": "Hà Đông"
+      }
+    },
+    {
+      "name": "public_transit.next_departures",
+      "arguments": {
+        "stop": "Cát Linh",
+        "route": "rt_tr_02"
+      }
+    },
+    {
+      "name": "public_transit.topup_card",
+      "arguments": {
+        "amount": 100000
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "routes": [
+        {
+          "route_id": "rt_tr_02",
+          "name": "Tuyến Cát Linh - Hà Đông",
+          "type": "metro",
+          "board_at": "Cát Linh",
+          "alight_at": "Hà Đông",
+          "stops_count": 2,
+          "duration_min": 24,
+          "fare": 10000,
+          "headway_min": 8
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "departures": [
+        {
+          "stop": "Cát Linh",
+          "route": "rt_tr_02",
+          "time": "08:10",
+          "route_name": "Tuyến Cát Linh - Hà Đông"
+        },
+        {
+          "stop": "Cát Linh",
+          "route": "rt_tr_02",
+          "time": "08:18",
+          "route_name": "Tuyến Cát Linh - Hà Đông"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "topup": {
+        "id": "top_01",
+        "amount": 100000,
+        "status": "done"
+      },
+      "card_balance": 115000
+    }
+  ],
+  "final_state": {
+    "public_transit": {
+      "card_balance": 115000,
+      "routes": [
+        {
+          "id": "rt_tr_02",
+          "name": "Tuyến Cát Linh - Hà Đông",
+          "type": "metro",
+          "stops": [
+            "Cát Linh",
+            "Trạm Trung Gian",
+            "Hà Đông"
+          ],
+          "fare": 10000,
+          "duration_min": 25,
+          "headway_min": 8
+        }
+      ],
+      "departures": [
+        {
+          "stop": "Cát Linh",
+          "route": "rt_tr_02",
+          "time": "08:10"
+        },
+        {
+          "stop": "Cát Linh",
+          "route": "rt_tr_02",
+          "time": "08:18"
+        }
+      ],
+      "topups": [
+        {
+          "id": "top_01",
+          "amount": 100000,
+          "status": "done"
+        }
+      ]
+    },
+    "maps": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "public_transit": {
+      "before": {
+        "card_balance": 15000,
+        "routes": [
+          {
+            "id": "rt_tr_02",
+            "name": "Tuyến Cát Linh - Hà Đông",
+            "type": "metro",
+            "stops": [
+              "Cát Linh",
+              "Trạm Trung Gian",
+              "Hà Đông"
+            ],
+            "fare": 10000,
+            "duration_min": 25,
+            "headway_min": 8
+          }
+        ],
+        "departures": [
+          {
+            "stop": "Cát Linh",
+            "route": "rt_tr_02",
+            "time": "08:10"
+          },
+          {
+            "stop": "Cát Linh",
+            "route": "rt_tr_02",
+            "time": "08:18"
+          }
+        ],
+        "topups": []
+      },
+      "after": {
+        "card_balance": 115000,
+        "routes": [
+          {
+            "id": "rt_tr_02",
+            "name": "Tuyến Cát Linh - Hà Đông",
+            "type": "metro",
+            "stops": [
+              "Cát Linh",
+              "Trạm Trung Gian",
+              "Hà Đông"
+            ],
+            "fare": 10000,
+            "duration_min": 25,
+            "headway_min": 8
+          }
+        ],
+        "departures": [
+          {
+            "stop": "Cát Linh",
+            "route": "rt_tr_02",
+            "time": "08:10"
+          },
+          {
+            "stop": "Cát Linh",
+            "route": "rt_tr_02",
+            "time": "08:18"
+          }
+        ],
+        "topups": [
+          {
+            "id": "top_01",
+            "amount": 100000,
+            "status": "done"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "e7c03bb96fef9af923e7a181f94898abd05f5a672b5bbf4963c4c39eba341697",
+  "validation": {
+    "scenario_id": "sim_transit_tr_02",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "public_transit"
+    ],
+    "state_hash": "e7c03bb96fef9af923e7a181f94898abd05f5a672b5bbf4963c4c39eba341697",
+    "errors": []
+  }
+}

@@ -1,0 +1,344 @@
+{
+  "scenario_id": "pilot_021_smarthome_selective_fan",
+  "split": "train",
+  "template_id": "tpl_smarthome_selective_fan",
+  "scenario_type": "multi_result_selection",
+  "primary_apps": [
+    "smart_home"
+  ],
+  "installed_apps": [
+    "smart_home",
+    "alarm"
+  ],
+  "objective": "Check device statuses, identify that AC is off in phòng khách and cool in phòng ngủ, turn on only dev_fan_pk at speed 3.",
+  "expect_mutation": true,
+  "user_request": "Bật hết quạt trong nhà lên tốc độ số 3 giúp anh, nhưng phòng nào điều hòa đang bật làm mát thì thôi không bật quạt phòng đó.",
+  "current_time": "2026-11-20T13:00:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "smart_home": {
+      "devices": [
+        {
+          "id": "dev_light_pk",
+          "name": "Đèn phòng khách",
+          "room": "phòng khách",
+          "type": "light",
+          "state": {
+            "power": "on"
+          }
+        },
+        {
+          "id": "dev_fan_pk",
+          "name": "Quạt trần phòng khách",
+          "room": "phòng khách",
+          "type": "fan",
+          "state": {
+            "power": "off",
+            "speed": 1
+          }
+        },
+        {
+          "id": "dev_ac_pk",
+          "name": "Điều hòa phòng khách",
+          "room": "phòng khách",
+          "type": "climate",
+          "state": {
+            "mode": "off",
+            "temperature": 26
+          }
+        },
+        {
+          "id": "dev_fan_pn",
+          "name": "Quạt cây phòng ngủ",
+          "room": "phòng ngủ",
+          "type": "fan",
+          "state": {
+            "power": "off",
+            "speed": 1
+          }
+        },
+        {
+          "id": "dev_ac_pn",
+          "name": "Điều hòa phòng ngủ",
+          "room": "phòng ngủ",
+          "type": "climate",
+          "state": {
+            "mode": "cool",
+            "temperature": 25
+          }
+        }
+      ],
+      "scenes": []
+    },
+    "alarm": {}
+  },
+  "tool_calls": [
+    {
+      "name": "smart_home.get_status",
+      "arguments": {}
+    },
+    {
+      "name": "smart_home.fan_set",
+      "arguments": {
+        "device_id": "dev_fan_pk",
+        "power": "on",
+        "speed": 3
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "devices": [
+        {
+          "id": "dev_light_pk",
+          "name": "Đèn phòng khách",
+          "room": "phòng khách",
+          "type": "light",
+          "state": {
+            "power": "on"
+          }
+        },
+        {
+          "id": "dev_fan_pk",
+          "name": "Quạt trần phòng khách",
+          "room": "phòng khách",
+          "type": "fan",
+          "state": {
+            "power": "off",
+            "speed": 1
+          }
+        },
+        {
+          "id": "dev_ac_pk",
+          "name": "Điều hòa phòng khách",
+          "room": "phòng khách",
+          "type": "climate",
+          "state": {
+            "mode": "off",
+            "temperature": 26
+          }
+        },
+        {
+          "id": "dev_fan_pn",
+          "name": "Quạt cây phòng ngủ",
+          "room": "phòng ngủ",
+          "type": "fan",
+          "state": {
+            "power": "off",
+            "speed": 1
+          }
+        },
+        {
+          "id": "dev_ac_pn",
+          "name": "Điều hòa phòng ngủ",
+          "room": "phòng ngủ",
+          "type": "climate",
+          "state": {
+            "mode": "cool",
+            "temperature": 25
+          }
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "item": {
+        "id": "dev_fan_pk",
+        "name": "Quạt trần phòng khách",
+        "room": "phòng khách",
+        "type": "fan",
+        "state": {
+          "power": "on",
+          "speed": 3
+        }
+      }
+    }
+  ],
+  "final_state": {
+    "smart_home": {
+      "devices": [
+        {
+          "id": "dev_light_pk",
+          "name": "Đèn phòng khách",
+          "room": "phòng khách",
+          "type": "light",
+          "state": {
+            "power": "on"
+          }
+        },
+        {
+          "id": "dev_fan_pk",
+          "name": "Quạt trần phòng khách",
+          "room": "phòng khách",
+          "type": "fan",
+          "state": {
+            "power": "on",
+            "speed": 3
+          }
+        },
+        {
+          "id": "dev_ac_pk",
+          "name": "Điều hòa phòng khách",
+          "room": "phòng khách",
+          "type": "climate",
+          "state": {
+            "mode": "off",
+            "temperature": 26
+          }
+        },
+        {
+          "id": "dev_fan_pn",
+          "name": "Quạt cây phòng ngủ",
+          "room": "phòng ngủ",
+          "type": "fan",
+          "state": {
+            "power": "off",
+            "speed": 1
+          }
+        },
+        {
+          "id": "dev_ac_pn",
+          "name": "Điều hòa phòng ngủ",
+          "room": "phòng ngủ",
+          "type": "climate",
+          "state": {
+            "mode": "cool",
+            "temperature": 25
+          }
+        }
+      ],
+      "scenes": []
+    },
+    "alarm": {}
+  },
+  "state_diff": {
+    "smart_home": {
+      "before": {
+        "devices": [
+          {
+            "id": "dev_light_pk",
+            "name": "Đèn phòng khách",
+            "room": "phòng khách",
+            "type": "light",
+            "state": {
+              "power": "on"
+            }
+          },
+          {
+            "id": "dev_fan_pk",
+            "name": "Quạt trần phòng khách",
+            "room": "phòng khách",
+            "type": "fan",
+            "state": {
+              "power": "off",
+              "speed": 1
+            }
+          },
+          {
+            "id": "dev_ac_pk",
+            "name": "Điều hòa phòng khách",
+            "room": "phòng khách",
+            "type": "climate",
+            "state": {
+              "mode": "off",
+              "temperature": 26
+            }
+          },
+          {
+            "id": "dev_fan_pn",
+            "name": "Quạt cây phòng ngủ",
+            "room": "phòng ngủ",
+            "type": "fan",
+            "state": {
+              "power": "off",
+              "speed": 1
+            }
+          },
+          {
+            "id": "dev_ac_pn",
+            "name": "Điều hòa phòng ngủ",
+            "room": "phòng ngủ",
+            "type": "climate",
+            "state": {
+              "mode": "cool",
+              "temperature": 25
+            }
+          }
+        ],
+        "scenes": []
+      },
+      "after": {
+        "devices": [
+          {
+            "id": "dev_light_pk",
+            "name": "Đèn phòng khách",
+            "room": "phòng khách",
+            "type": "light",
+            "state": {
+              "power": "on"
+            }
+          },
+          {
+            "id": "dev_fan_pk",
+            "name": "Quạt trần phòng khách",
+            "room": "phòng khách",
+            "type": "fan",
+            "state": {
+              "power": "on",
+              "speed": 3
+            }
+          },
+          {
+            "id": "dev_ac_pk",
+            "name": "Điều hòa phòng khách",
+            "room": "phòng khách",
+            "type": "climate",
+            "state": {
+              "mode": "off",
+              "temperature": 26
+            }
+          },
+          {
+            "id": "dev_fan_pn",
+            "name": "Quạt cây phòng ngủ",
+            "room": "phòng ngủ",
+            "type": "fan",
+            "state": {
+              "power": "off",
+              "speed": 1
+            }
+          },
+          {
+            "id": "dev_ac_pn",
+            "name": "Điều hòa phòng ngủ",
+            "room": "phòng ngủ",
+            "type": "climate",
+            "state": {
+              "mode": "cool",
+              "temperature": 25
+            }
+          }
+        ],
+        "scenes": []
+      }
+    }
+  },
+  "state_hash": "27839c1dfcf3750da266805395fc58f19a5fb1998ed2284bc1bc239a640c9f11",
+  "validation": {
+    "scenario_id": "pilot_021_smarthome_selective_fan",
+    "scenario_type": "multi_result_selection",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "smart_home"
+    ],
+    "state_hash": "27839c1dfcf3750da266805395fc58f19a5fb1998ed2284bc1bc239a640c9f11",
+    "errors": []
+  }
+}

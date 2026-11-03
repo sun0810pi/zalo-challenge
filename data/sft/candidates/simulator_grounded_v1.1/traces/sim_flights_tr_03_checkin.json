@@ -1,0 +1,204 @@
+{
+  "scenario_id": "sim_flights_tr_03_checkin",
+  "split": "train",
+  "template_id": "tpl_flights_train_checkin",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "flights"
+  ],
+  "installed_apps": [
+    "flights",
+    "calendar",
+    "ewallet"
+  ],
+  "objective": "Execute flight workflow on fl_qh_01.",
+  "expect_mutation": true,
+  "user_request": "Kiểm tra danh sách vé máy bay đã đặt của mình rồi làm thủ tục check-in online cho chuyến bay đi Nha Trang nhé.",
+  "serialized_user_prompt": "Kiểm tra danh sách vé máy bay đã đặt của mình rồi làm thủ tục check-in online cho chuyến bay đi Nha Trang nhé",
+  "current_time": "2026-11-23T08:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Đà Nẵng",
+  "user_profile": {
+    "name": "Lê Hoàng Nam",
+    "city": "Đà Nẵng",
+    "home_address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+    "work_address": "Khu Công nghệ thông tin tập trung, Liên Chiểu, Đà Nẵng"
+  },
+  "location": {
+    "lat": 16.0601,
+    "lng": 108.2122
+  },
+  "history": [],
+  "initial_state": {
+    "flights": {
+      "flights": [
+        {
+          "id": "fl_qh_01",
+          "origin": "HAN",
+          "destination": "CXR",
+          "date": "2026-11-24",
+          "depart": "09:00",
+          "arrive": "11:00",
+          "airline": "Bamboo Airways",
+          "price": 1250000,
+          "flight_no": "QH101"
+        }
+      ],
+      "bookings": [
+        {
+          "id": "bk_ci_01",
+          "flight_id": "fl_qh_01",
+          "passengers": 1,
+          "seat_class": "economy",
+          "status": "confirmed"
+        }
+      ]
+    },
+    "calendar": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "flights.my_bookings",
+      "arguments": {}
+    },
+    {
+      "name": "flights.check_in",
+      "arguments": {
+        "booking_id": "bk_ci_01"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "bookings": [
+        {
+          "id": "bk_ci_01",
+          "flight_id": "fl_qh_01",
+          "passengers": 1,
+          "seat_class": "economy",
+          "status": "confirmed",
+          "flight": {
+            "origin": "HAN",
+            "destination": "CXR",
+            "date": "2026-11-24",
+            "depart": "09:00",
+            "arrive": "11:00",
+            "airline": "Bamboo Airways"
+          }
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "booking": {
+        "id": "bk_ci_01",
+        "flight_id": "fl_qh_01",
+        "passengers": 1,
+        "seat_class": "economy",
+        "status": "confirmed",
+        "checked_in": true
+      }
+    }
+  ],
+  "final_state": {
+    "flights": {
+      "flights": [
+        {
+          "id": "fl_qh_01",
+          "origin": "HAN",
+          "destination": "CXR",
+          "date": "2026-11-24",
+          "depart": "09:00",
+          "arrive": "11:00",
+          "airline": "Bamboo Airways",
+          "price": 1250000,
+          "flight_no": "QH101"
+        }
+      ],
+      "bookings": [
+        {
+          "id": "bk_ci_01",
+          "flight_id": "fl_qh_01",
+          "passengers": 1,
+          "seat_class": "economy",
+          "status": "confirmed",
+          "checked_in": true
+        }
+      ]
+    },
+    "calendar": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "flights": {
+      "before": {
+        "flights": [
+          {
+            "id": "fl_qh_01",
+            "origin": "HAN",
+            "destination": "CXR",
+            "date": "2026-11-24",
+            "depart": "09:00",
+            "arrive": "11:00",
+            "airline": "Bamboo Airways",
+            "price": 1250000,
+            "flight_no": "QH101"
+          }
+        ],
+        "bookings": [
+          {
+            "id": "bk_ci_01",
+            "flight_id": "fl_qh_01",
+            "passengers": 1,
+            "seat_class": "economy",
+            "status": "confirmed"
+          }
+        ]
+      },
+      "after": {
+        "flights": [
+          {
+            "id": "fl_qh_01",
+            "origin": "HAN",
+            "destination": "CXR",
+            "date": "2026-11-24",
+            "depart": "09:00",
+            "arrive": "11:00",
+            "airline": "Bamboo Airways",
+            "price": 1250000,
+            "flight_no": "QH101"
+          }
+        ],
+        "bookings": [
+          {
+            "id": "bk_ci_01",
+            "flight_id": "fl_qh_01",
+            "passengers": 1,
+            "seat_class": "economy",
+            "status": "confirmed",
+            "checked_in": true
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "e25ef72c38da2970f5fa045d233e5f6fe3e75a38e0342aac2d07e5ac17c6704c",
+  "validation": {
+    "scenario_id": "sim_flights_tr_03_checkin",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "flights"
+    ],
+    "state_hash": "e25ef72c38da2970f5fa045d233e5f6fe3e75a38e0342aac2d07e5ac17c6704c",
+    "errors": []
+  }
+}

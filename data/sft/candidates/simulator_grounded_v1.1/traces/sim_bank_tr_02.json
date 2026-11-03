@@ -1,0 +1,206 @@
+{
+  "scenario_id": "sim_bank_tr_02",
+  "split": "train",
+  "template_id": "tpl_banking_train_transfer",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "banking"
+  ],
+  "installed_apps": [
+    "banking",
+    "ewallet",
+    "sms"
+  ],
+  "objective": "Read banking account/beneficiary IDs and execute transfer/savings of 6500000.",
+  "expect_mutation": true,
+  "user_request": "Tra cứu tài khoản ngân hàng và người thụ hưởng, sau đó chuyển 6 triệu 500 nghìn đồng cho Chú Hòa Chủ Nhà kèm lời nhắn 'Tiền thuê nhà tháng 11'.",
+  "serialized_user_prompt": "Tra cứu tài khoản ngân hàng và người thụ hưởng, sau đó chuyển 6 triệu 500 nghìn đồng cho Chú Hòa Chủ Nhà kèm lời nhắn 'Tiền thuê nhà tháng 11'",
+  "current_time": "2026-11-23T10:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "TP.HCM",
+  "user_profile": {
+    "name": "Trần Thu Hà",
+    "city": "TP.HCM",
+    "home_address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM",
+    "work_address": "Tòa nhà Bitexco, số 2 Hải Triều, Quận 1, TP.HCM"
+  },
+  "location": {
+    "lat": 10.7769,
+    "lng": 106.7009
+  },
+  "history": [],
+  "initial_state": {
+    "banking": {
+      "accounts": [
+        {
+          "id": "acc_main_02",
+          "name": "Tài khoản Thanh toán",
+          "balance": 25000000
+        }
+      ],
+      "beneficiaries": [
+        {
+          "id": "ben_land_02",
+          "name": "Chú Hòa Chủ Nhà",
+          "bank": "VCB",
+          "account_number": "0011223344"
+        }
+      ],
+      "transactions": [],
+      "savings": []
+    },
+    "ewallet": {},
+    "sms": {}
+  },
+  "tool_calls": [
+    {
+      "name": "banking.get_balance",
+      "arguments": {}
+    },
+    {
+      "name": "banking.list_beneficiaries",
+      "arguments": {}
+    },
+    {
+      "name": "banking.transfer",
+      "arguments": {
+        "from_account_id": "acc_main_02",
+        "beneficiary_id": "ben_land_02",
+        "amount": 6500000,
+        "note": "Tiền thuê nhà tháng 11"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "accounts": [
+        {
+          "id": "acc_main_02",
+          "name": "Tài khoản Thanh toán",
+          "balance": 25000000
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "beneficiaries": [
+        {
+          "id": "ben_land_02",
+          "name": "Chú Hòa Chủ Nhà",
+          "bank": "VCB",
+          "account_number": "0011223344"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "transaction": {
+        "id": "tx_01",
+        "account_id": "acc_main_02",
+        "beneficiary_id": "ben_land_02",
+        "amount": -6500000,
+        "note": "Tiền thuê nhà tháng 11"
+      },
+      "balance": 18500000
+    }
+  ],
+  "final_state": {
+    "banking": {
+      "accounts": [
+        {
+          "id": "acc_main_02",
+          "name": "Tài khoản Thanh toán",
+          "balance": 18500000
+        }
+      ],
+      "beneficiaries": [
+        {
+          "id": "ben_land_02",
+          "name": "Chú Hòa Chủ Nhà",
+          "bank": "VCB",
+          "account_number": "0011223344"
+        }
+      ],
+      "transactions": [
+        {
+          "id": "tx_01",
+          "account_id": "acc_main_02",
+          "beneficiary_id": "ben_land_02",
+          "amount": -6500000,
+          "note": "Tiền thuê nhà tháng 11"
+        }
+      ],
+      "savings": []
+    },
+    "ewallet": {},
+    "sms": {}
+  },
+  "state_diff": {
+    "banking": {
+      "before": {
+        "accounts": [
+          {
+            "id": "acc_main_02",
+            "name": "Tài khoản Thanh toán",
+            "balance": 25000000
+          }
+        ],
+        "beneficiaries": [
+          {
+            "id": "ben_land_02",
+            "name": "Chú Hòa Chủ Nhà",
+            "bank": "VCB",
+            "account_number": "0011223344"
+          }
+        ],
+        "transactions": [],
+        "savings": []
+      },
+      "after": {
+        "accounts": [
+          {
+            "id": "acc_main_02",
+            "name": "Tài khoản Thanh toán",
+            "balance": 18500000
+          }
+        ],
+        "beneficiaries": [
+          {
+            "id": "ben_land_02",
+            "name": "Chú Hòa Chủ Nhà",
+            "bank": "VCB",
+            "account_number": "0011223344"
+          }
+        ],
+        "transactions": [
+          {
+            "id": "tx_01",
+            "account_id": "acc_main_02",
+            "beneficiary_id": "ben_land_02",
+            "amount": -6500000,
+            "note": "Tiền thuê nhà tháng 11"
+          }
+        ],
+        "savings": []
+      }
+    }
+  },
+  "state_hash": "cac999ec0221ea19aa51746c4f3e96cd1d6cfea2fab3750d130e2ad518677a91",
+  "validation": {
+    "scenario_id": "sim_bank_tr_02",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "banking"
+    ],
+    "state_hash": "cac999ec0221ea19aa51746c4f3e96cd1d6cfea2fab3750d130e2ad518677a91",
+    "errors": []
+  }
+}

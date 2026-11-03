@@ -1,0 +1,3042 @@
+{
+  "benchmark_metadata": {
+    "split": "train (labeled training audio only; zero public_test labels used)",
+    "num_samples": 28,
+    "primary_asr": "models/whisper-large-v3-turbo (faster-whisper CT2)",
+    "secondary_asr": "Qwen/Qwen3-ASR-0.6B (qwen-asr)",
+    "device_measured": "cpu",
+    "secondary_asr_invocation_rate_pct": 96.43,
+    "conflict_ambiguity_preservation_count": 9,
+    "current_hybrid_regression_count": 5
+  },
+  "summary_metrics": {
+    "whisper_alone": {
+      "corpus_wer_pct": 33.64,
+      "corpus_cer_pct": 25.73,
+      "mean_sample_wer_pct": 32.6,
+      "mean_sample_cer_pct": 23.93,
+      "critical_entity_accuracy_pct": 82.14,
+      "number_date_time_accuracy_pct": 78.27,
+      "negation_intent_accuracy_pct": 82.14,
+      "downstream_tool_exec_accuracy_pct": 25.0,
+      "avg_latency_sec_cpu": 21.138
+    },
+    "qwen3_asr_alone": {
+      "corpus_wer_pct": 34.0,
+      "corpus_cer_pct": 24.42,
+      "mean_sample_wer_pct": 34.56,
+      "mean_sample_cer_pct": 24.76,
+      "critical_entity_accuracy_pct": 57.14,
+      "number_date_time_accuracy_pct": 64.58,
+      "negation_intent_accuracy_pct": 89.29,
+      "downstream_tool_exec_accuracy_pct": 14.29,
+      "avg_latency_sec_cpu": 9.701
+    },
+    "current_hybrid": {
+      "corpus_wer_pct": 33.64,
+      "corpus_cer_pct": 26.01,
+      "mean_sample_wer_pct": 32.8,
+      "mean_sample_cer_pct": 24.45,
+      "critical_entity_accuracy_pct": 80.36,
+      "number_date_time_accuracy_pct": 78.27,
+      "negation_intent_accuracy_pct": 82.14,
+      "downstream_tool_exec_accuracy_pct": 25.0,
+      "avg_latency_sec_cpu": 21.14
+    },
+    "uncertainty_fallback": {
+      "corpus_wer_pct": 26.36,
+      "corpus_cer_pct": 19.17,
+      "mean_sample_wer_pct": 26.41,
+      "mean_sample_cer_pct": 18.54,
+      "critical_entity_accuracy_pct": 83.93,
+      "number_date_time_accuracy_pct": 81.85,
+      "negation_intent_accuracy_pct": 85.71,
+      "downstream_tool_exec_accuracy_pct": 28.57,
+      "avg_latency_sec_cpu": 30.508
+    }
+  },
+  "category_breakdown": {
+    "regional_accents": {
+      "num_samples": 12,
+      "downstream_accuracy_pct": {
+        "whisper_alone": 16.67,
+        "qwen3_asr_alone": 8.33,
+        "current_hybrid": 16.67,
+        "uncertainty_fallback": 16.67
+      }
+    },
+    "proper_nouns": {
+      "num_samples": 17,
+      "downstream_accuracy_pct": {
+        "whisper_alone": 17.65,
+        "qwen3_asr_alone": 11.76,
+        "current_hybrid": 17.65,
+        "uncertainty_fallback": 23.53
+      }
+    },
+    "numbers_amounts": {
+      "num_samples": 15,
+      "downstream_accuracy_pct": {
+        "whisper_alone": 33.33,
+        "qwen3_asr_alone": 13.33,
+        "current_hybrid": 33.33,
+        "uncertainty_fallback": 40.0
+      }
+    },
+    "dates_and_time": {
+      "num_samples": 18,
+      "downstream_accuracy_pct": {
+        "whisper_alone": 27.78,
+        "qwen3_asr_alone": 11.11,
+        "current_hybrid": 27.78,
+        "uncertainty_fallback": 33.33
+      }
+    },
+    "negation_and_cancellation": {
+      "num_samples": 10,
+      "downstream_accuracy_pct": {
+        "whisper_alone": 30.0,
+        "qwen3_asr_alone": 10.0,
+        "current_hybrid": 30.0,
+        "uncertainty_fallback": 30.0
+      }
+    },
+    "multi_intent_requests": {
+      "num_samples": 13,
+      "downstream_accuracy_pct": {
+        "whisper_alone": 15.38,
+        "qwen3_asr_alone": 23.08,
+        "current_hybrid": 15.38,
+        "uncertainty_fallback": 23.08
+      }
+    },
+    "product_and_app_names": {
+      "num_samples": 10,
+      "downstream_accuracy_pct": {
+        "whisper_alone": 30.0,
+        "qwen3_asr_alone": 10.0,
+        "current_hybrid": 30.0,
+        "uncertainty_fallback": 30.0
+      }
+    }
+  },
+  "current_hybrid_regressions_fixed_by_fallback": [
+    {
+      "sample_id": "train_0002",
+      "ground_truth": "Nếu mai mưa thì hủy lịch đá bóng... À mà thôi, cứ để lịch đó, chỉ cần xem giúp mai có mưa không.",
+      "raw_whisper": "Hãy subscribe cho kênh Ghiền Mì Gõ Để không bỏ lỡ những video hấp dẫn",
+      "current_hybrid": "",
+      "fallback_corrected": "nếu mai mưa thì hủy lịch đá bóng à mà thôi tôi để lịch đó chỉ cần xem giúp mai có mưa không",
+      "false_entities": []
+    },
+    {
+      "sample_id": "train_0009",
+      "ground_truth": "Nạp dùm em Linh 50 ngàn cho số không chín năm không năm ba sáu không ba sáu bảy nha.",
+      "raw_whisper": "Đặt dùm Em Linh 50.000 cho số 0950536 0367 nha.",
+      "current_hybrid": "Đặt Em Linh 50.000 cho số 0950536 0367 nha",
+      "fallback_corrected": "Đặt dùm Em Linh 50.000 cho số 0950536 0367 nha",
+      "false_entities": []
+    },
+    {
+      "sample_id": "train_0015",
+      "ground_truth": "Chuyển tiền mạng tháng này cho chú Phạm Hùng nha, nếu tài khoản thanh toán không đủ thì lấy từ tiết kiệm dùm tôi hen.",
+      "raw_whisper": "Trợ lý ảo tiếng Việt LifeMate, Hà Nội. Từ khóa đơn, tiền điện thoại, hãy subscribe cho kênh Ghiền Mì Gõ Để không bỏ lỡ những video hấp dẫn",
+      "current_hybrid": "Trợ lý ảo tiếng Việt LifeMate, Hà Nội khóa đơn, tiền điện thoại",
+      "fallback_corrected": "Trên truyền mạng sáng nay do chú Phạm Hồng Nhã đã tài khoản thanh toán hôm nay sẽ lấy từ tiết kiệm nhóm tuổi em",
+      "false_entities": [
+        "Hà Nội"
+      ]
+    },
+    {
+      "sample_id": "train_0050",
+      "ground_truth": "Alô, cho em Linh hỏi giá vàng SJC hôm nay bao nhiêu dùm nha.",
+      "raw_whisper": "Alo, cho em Linh hỏi giá vàng, SJC, hôm nay có nhiều dùm nhau.",
+      "current_hybrid": "Alo, Em Linh hỏi giá vàng, SJC, hôm nay có nhiều dùm nhau",
+      "fallback_corrected": "Alo, cho em Linh hỏi giá vàng, SJC, hôm nay có nhiều dùm nhau",
+      "false_entities": []
+    },
+    {
+      "sample_id": "train_0020",
+      "ground_truth": "Ờ à, tắt hết đèn tầng 2 giúp em nhé, trừ phòng nào đang bật điều hoà thì cứ để nguyên.",
+      "raw_whisper": "Tắt khách đen tận 2 giúp em nhé. Phần nào đang bật điều hòa thì cứ để nguyên.",
+      "current_hybrid": "Tắt khách đen tận 2 giúp em nhé. Phần Đà Nẵng bật điều hòa thì cứ để nguyên",
+      "fallback_corrected": "Tắt khách đen tận 2 giúp em nhé. Phần nào đang bật điều hòa thì cứ để nguyên",
+      "false_entities": [
+        "Đà Nẵng"
+      ]
+    }
+  ],
+  "samples": [
+    {
+      "sample_id": "train_0001",
+      "audio_path": "audio/train_0001/train_0001.wav",
+      "categories": [
+        "regional_accents",
+        "proper_nouns",
+        "numbers_amounts",
+        "dates_and_time",
+        "negation_and_cancellation",
+        "multi_intent_requests"
+      ],
+      "ground_truth_transcript": "Nếu mai mưa thì dời chạy bộ muộn 1 tiếng, nhắn Sếp Dũng giờ mới; không mưa thì thôi.",
+      "raw_whisper_transcript": "Nếu mai mưa thì giờ chạy vỡ muộn một tiếng, nhắn xếp dũng giờ mới. Không mưa Thì thôi.",
+      "alternative_qwen3_asr_transcript": "Nếu mai mưa thì trời chạy vỗ muộn một tiếng, nhắn xếp dũng giờ mới. Không mưa thì thôi.",
+      "current_hybrid_transcript": "Nếu mai mưa thì giờ chạy vỡ muộn một tiếng, nhắn xếp dũng giờ mới. Không mưa Thì thôi",
+      "corrected_fallback_transcript": "Nếu mai mưa thì giờ chạy vỡ muộn một tiếng, nhắn xếp dũng giờ mới. Không mưa Thì thôi",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "critical_slot:negation_or_self_repair"
+      ],
+      "correction_reasons": [],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.3183,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 0.9914,
+        "whisper_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "ngay_mai",
+            "offset_1_tieng"
+          ],
+          "negation_cancellation": [
+            "keep_unchanged"
+          ],
+          "proper_nouns_entities": []
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "ngay_mai",
+            "offset_1_tieng"
+          ],
+          "negation_cancellation": [
+            "keep_unchanged"
+          ],
+          "proper_nouns_entities": []
+        },
+        "resolution": "dual_asr_verified"
+      },
+      "conflict_detected": false,
+      "ambiguous_slots": {},
+      "clarification_prompt": null,
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Nếu mai mưa thì giờ chạy vỡ muộn một tiếng, nhắn xếp dũng giờ mới. Không mưa Thì thôi.",
+          "wer": 0.2105,
+          "cer": 0.1429,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 0.6667,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 15.9428
+        },
+        "qwen3_asr_alone": {
+          "transcript": "Nếu mai mưa thì trời chạy vỗ muộn một tiếng, nhắn xếp dũng giờ mới. Không mưa thì thôi.",
+          "wer": 0.2105,
+          "cer": 0.127,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 0.6667,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 30.1936
+        },
+        "current_hybrid": {
+          "transcript": "Nếu mai mưa thì giờ chạy vỡ muộn một tiếng, nhắn xếp dũng giờ mới. Không mưa Thì thôi",
+          "wer": 0.2105,
+          "cer": 0.1429,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 0.6667,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 15.9446
+        },
+        "uncertainty_fallback": {
+          "transcript": "Nếu mai mưa thì giờ chạy vỡ muộn một tiếng, nhắn xếp dũng giờ mới. Không mưa Thì thôi",
+          "wer": 0.2105,
+          "cer": 0.1429,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 0.6667,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 46.1407
+        }
+      }
+    },
+    {
+      "sample_id": "train_0006",
+      "audio_path": "audio/train_0006/train_0006.wav",
+      "categories": [
+        "product_and_app_names",
+        "proper_nouns",
+        "numbers_amounts",
+        "dates_and_time"
+      ],
+      "ground_truth_transcript": "Nếu giá mua vào vàng SJC hôm nay dưới 123 triệu thì 9 giờ sáng mai nhắc tôi đi mua nhé.",
+      "raw_whisper_transcript": "Điều giá thu mua vào vàng, SJC hôm nay rưỡi 123 triệu khi tìm cho sáng mai nhắc tôi đi mua nhé.",
+      "alternative_qwen3_asr_transcript": "Điều giả thú múa và vàng, trí sĩ hôm nay rồi 128 triệu khi chỉnh đo sản mái ngắt tối đến muốn nhĩ.",
+      "current_hybrid_transcript": "Điều giá thu mua vào vàng, SJC hôm nay rưỡi 123 triệu khi tìm cho sáng mai nhắc tôi đi mua nhé",
+      "corrected_fallback_transcript": "Điều giá thu mua vào vàng, SJC hôm nay rưỡi 123 triệu khi tìm cho sáng mai nhắc tôi đi mua nhé",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "low_whisper_logprob(-0.400<-0.32)",
+        "critical_write_slot_verification"
+      ],
+      "correction_reasons": [
+        "preserved_ambiguity_on_conflict:numbers_amounts,dates_times"
+      ],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.3997,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 0.95,
+        "whisper_slots": {
+          "numbers_amounts": [
+            "123000000"
+          ],
+          "dates_times": [
+            "hom_nay",
+            "ngay_mai"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": [
+            "SJC"
+          ]
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [
+            "128000000"
+          ],
+          "dates_times": [
+            "hom_nay"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "resolution": "conflict_ambiguity_preserved"
+      },
+      "conflict_detected": true,
+      "ambiguous_slots": {
+        "numbers_amounts": {
+          "whisper": [
+            "123000000"
+          ],
+          "qwen3_asr": [
+            "128000000"
+          ]
+        },
+        "dates_times": {
+          "whisper": [
+            "hom_nay",
+            "ngay_mai"
+          ],
+          "qwen3_asr": [
+            "hom_nay"
+          ]
+        }
+      },
+      "clarification_prompt": "[ASR_AMBIGUITY_GUARD] Phát hiện xung đột nhận dạng giọng nói ở (số tiền/số lượng, thời gian/ngày giờ): Whisper='Điều giá thu mua vào vàng, SJC hôm nay rưỡi 123 triệu khi tìm cho sáng mai nhắc tôi đi mua nhé' vs Qwen3-ASR='Điều giả thú múa và vàng, trí sĩ hôm nay rồi 128 triệu khi chỉnh đo sản mái ngắt tối đến muốn nhĩ'. Không tự ý đoán giá trị khi gọi tool ghi (write); hãy ưu tiên kiểm tra ngữ cảnh hoặc hỏi lại người dùng (sys.ask_missing_info).",
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Điều giá thu mua vào vàng, SJC hôm nay rưỡi 123 triệu khi tìm cho sáng mai nhắc tôi đi mua nhé.",
+          "wer": 0.2857,
+          "cer": 0.2273,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.75,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 36.6253
+        },
+        "qwen3_asr_alone": {
+          "transcript": "Điều giả thú múa và vàng, trí sĩ hôm nay rồi 128 triệu khi chỉnh đo sản mái ngắt tối đến muốn nhĩ.",
+          "wer": 0.9048,
+          "cer": 0.5758,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 0.25,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 23.4652
+        },
+        "current_hybrid": {
+          "transcript": "Điều giá thu mua vào vàng, SJC hôm nay rưỡi 123 triệu khi tìm cho sáng mai nhắc tôi đi mua nhé",
+          "wer": 0.2857,
+          "cer": 0.2273,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.75,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 36.6281
+        },
+        "uncertainty_fallback": {
+          "transcript": "Điều giá thu mua vào vàng, SJC hôm nay rưỡi 123 triệu khi tìm cho sáng mai nhắc tôi đi mua nhé",
+          "wer": 0.2857,
+          "cer": 0.2273,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.75,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": true,
+          "latency_sec": 60.0928
+        }
+      }
+    },
+    {
+      "sample_id": "train_0008",
+      "audio_path": "audio/train_0008/train_0008.wav",
+      "categories": [
+        "regional_accents",
+        "numbers_amounts",
+        "dates_and_time",
+        "negation_and_cancellation"
+      ],
+      "ground_truth_transcript": "Cái còn lại nếu mai mưa thì dời muộn nửa tiếng, không mưa giữ nguyên.",
+      "raw_whisper_transcript": "Cái còn lại nếu mai mưa thì dời muộn nửa tiếng, không mưa giữ nguyên.",
+      "alternative_qwen3_asr_transcript": "Cái còn lại nếu may mưa thì rời muộn nửa tiếng, không mưa giữ nguyên.",
+      "current_hybrid_transcript": "Cái còn lại nếu mai mưa thì dời muộn nửa tiếng, không mưa giữ nguyên",
+      "corrected_fallback_transcript": "Cái còn lại nếu mai mưa thì dời muộn nửa tiếng, không mưa giữ nguyên",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "critical_slot:negation_or_self_repair",
+        "critical_write_slot_verification"
+      ],
+      "correction_reasons": [
+        "preserved_ambiguity_on_conflict:dates_times"
+      ],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.2836,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 0.9184,
+        "whisper_slots": {
+          "numbers_amounts": [
+            "0.5_half"
+          ],
+          "dates_times": [
+            "ngay_mai",
+            "offset_nua_tieng"
+          ],
+          "negation_cancellation": [
+            "keep_unchanged"
+          ],
+          "proper_nouns_entities": []
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [
+            "0.5_half"
+          ],
+          "dates_times": [
+            "offset_nua_tieng"
+          ],
+          "negation_cancellation": [
+            "keep_unchanged"
+          ],
+          "proper_nouns_entities": []
+        },
+        "resolution": "conflict_ambiguity_preserved"
+      },
+      "conflict_detected": true,
+      "ambiguous_slots": {
+        "dates_times": {
+          "whisper": [
+            "ngay_mai",
+            "offset_nua_tieng"
+          ],
+          "qwen3_asr": [
+            "offset_nua_tieng"
+          ]
+        }
+      },
+      "clarification_prompt": "[ASR_AMBIGUITY_GUARD] Phát hiện xung đột nhận dạng giọng nói ở (thời gian/ngày giờ): Whisper='Cái còn lại nếu mai mưa thì dời muộn nửa tiếng, không mưa giữ nguyên' vs Qwen3-ASR='Cái còn lại nếu may mưa thì rời muộn nửa tiếng, không mưa giữ nguyên'. Không tự ý đoán giá trị khi gọi tool ghi (write); hãy ưu tiên kiểm tra ngữ cảnh hoặc hỏi lại người dùng (sys.ask_missing_info).",
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Cái còn lại nếu mai mưa thì dời muộn nửa tiếng, không mưa giữ nguyên.",
+          "wer": 0.0,
+          "cer": 0.0,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 20.5104
+        },
+        "qwen3_asr_alone": {
+          "transcript": "Cái còn lại nếu may mưa thì rời muộn nửa tiếng, không mưa giữ nguyên.",
+          "wer": 0.1333,
+          "cer": 0.0377,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.6667,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 6.7461
+        },
+        "current_hybrid": {
+          "transcript": "Cái còn lại nếu mai mưa thì dời muộn nửa tiếng, không mưa giữ nguyên",
+          "wer": 0.0,
+          "cer": 0.0,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 20.5113
+        },
+        "uncertainty_fallback": {
+          "transcript": "Cái còn lại nếu mai mưa thì dời muộn nửa tiếng, không mưa giữ nguyên",
+          "wer": 0.0,
+          "cer": 0.0,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": true,
+          "latency_sec": 27.2582
+        }
+      }
+    },
+    {
+      "sample_id": "train_0013",
+      "audio_path": "audio/train_0013/train_0013.wav",
+      "categories": [
+        "regional_accents",
+        "product_and_app_names",
+        "proper_nouns",
+        "numbers_amounts",
+        "dates_and_time",
+        "negation_and_cancellation"
+      ],
+      "ground_truth_transcript": "Nếu mai mưa thì dời đá bóng sáng mai muộn 1 tiếng, nhắn SMS cho Lan báo giờ mới, không mưa thì thôi.",
+      "raw_whisper_transcript": "Nếu mai mưa thì giờ. Đã bóng sáng mai muộn một phía, nhắn SMS cho Lan bao giờ mới, không mưa gì thôi.",
+      "alternative_qwen3_asr_transcript": "nếu mai mưa thì chờ nhanh đá bóng sánh mai muộn một phiến, nhấn SMS cho Lam báo giờ mở không mưa gì thôi",
+      "current_hybrid_transcript": "Nếu mai mưa thì giờ. đá bóng sáng mai muộn một phía, nhắn SMS cho Lan bao giờ mới, không mưa gì thôi",
+      "corrected_fallback_transcript": "Nếu mai mưa thì giờ. đá bóng sáng mai muộn một phía, nhắn SMS cho Lan bao giờ mới, không mưa gì thôi",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "phonetic_or_entity_repair_triggered",
+        "critical_write_slot_verification"
+      ],
+      "correction_reasons": [
+        "phonetic_rule:đá bóng"
+      ],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.2904,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 1.0244,
+        "whisper_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "ngay_mai"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": [
+            "SMS"
+          ]
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "ngay_mai"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": [
+            "SMS"
+          ]
+        },
+        "resolution": "dual_asr_verified"
+      },
+      "conflict_detected": false,
+      "ambiguous_slots": {},
+      "clarification_prompt": null,
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Nếu mai mưa thì giờ. Đã bóng sáng mai muộn một phía, nhắn SMS cho Lan bao giờ mới, không mưa gì thôi.",
+          "wer": 0.2609,
+          "cer": 0.1733,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.3333,
+          "negation_intent_accuracy": 0.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 23.3749
+        },
+        "qwen3_asr_alone": {
+          "transcript": "nếu mai mưa thì chờ nhanh đá bóng sánh mai muộn một phiến, nhấn SMS cho Lam báo giờ mở không mưa gì thôi",
+          "wer": 0.3913,
+          "cer": 0.2533,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.3333,
+          "negation_intent_accuracy": 0.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 13.0931
+        },
+        "current_hybrid": {
+          "transcript": "Nếu mai mưa thì giờ. đá bóng sáng mai muộn một phía, nhắn SMS cho Lan bao giờ mới, không mưa gì thôi",
+          "wer": 0.2174,
+          "cer": 0.16,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.3333,
+          "negation_intent_accuracy": 0.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 23.3777
+        },
+        "uncertainty_fallback": {
+          "transcript": "Nếu mai mưa thì giờ. đá bóng sáng mai muộn một phía, nhắn SMS cho Lan bao giờ mới, không mưa gì thôi",
+          "wer": 0.2174,
+          "cer": 0.16,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.3333,
+          "negation_intent_accuracy": 0.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 36.4701
+        }
+      }
+    },
+    {
+      "sample_id": "train_0003",
+      "audio_path": "audio/train_0003/train_0003.wav",
+      "categories": [
+        "proper_nouns",
+        "numbers_amounts",
+        "dates_and_time",
+        "multi_intent_requests"
+      ],
+      "ground_truth_transcript": "Ơi, nạp giúp mình 50 nghìn điện thoại cho bác Ba với chuyển ví cho cô Mai số tiền điện tháng này nhé.",
+      "raw_whisper_transcript": "Ơi, nặng giúp mình 50.000 tiền điện thoại cho bác ba với chuyển ví cho con mai số tiền địa tháng này nhé!",
+      "alternative_qwen3_asr_transcript": "Ơi, làm cho mình năm mươi ngàn tiền điện thoại cho bác ba với chuyện ví cho cô mai số tiền điện hắn này nhé",
+      "current_hybrid_transcript": "Ơi, nặng giúp mình 50.000 tiền điện thoại cho bác ba với chuyển ví cho con mai số tiền địa tháng này nhé!",
+      "corrected_fallback_transcript": "Ơi, nặng giúp mình 50.000 tiền điện thoại cho bác ba với chuyển ví cho cô Mai số tiền điện tháng này nhé!",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "low_whisper_logprob(-0.394<-0.32)",
+        "phonetic_or_entity_repair_triggered",
+        "critical_write_slot_verification"
+      ],
+      "correction_reasons": [
+        "phonetic_rule:chuyển ví cho cô Mai",
+        "phonetic_rule:tiền điện tháng này"
+      ],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.3941,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 1.0472,
+        "whisper_slots": {
+          "numbers_amounts": [
+            "50000"
+          ],
+          "dates_times": [
+            "ngay_mai"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [
+            "50000"
+          ],
+          "dates_times": [
+            "ngay_mai"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "resolution": "dual_asr_verified"
+      },
+      "conflict_detected": false,
+      "ambiguous_slots": {},
+      "clarification_prompt": null,
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Ơi, nặng giúp mình 50.000 tiền điện thoại cho bác ba với chuyển ví cho con mai số tiền địa tháng này nhé!",
+          "wer": 0.2174,
+          "cer": 0.1818,
+          "critical_entity_accuracy": 0.5,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 20.8755
+        },
+        "qwen3_asr_alone": {
+          "transcript": "Ơi, làm cho mình năm mươi ngàn tiền điện thoại cho bác ba với chuyện ví cho cô mai số tiền điện hắn này nhé",
+          "wer": 0.3478,
+          "cer": 0.2987,
+          "critical_entity_accuracy": 0.5,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 8.1697
+        },
+        "current_hybrid": {
+          "transcript": "Ơi, nặng giúp mình 50.000 tiền điện thoại cho bác ba với chuyển ví cho con mai số tiền địa tháng này nhé!",
+          "wer": 0.2174,
+          "cer": 0.1818,
+          "critical_entity_accuracy": 0.5,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 20.8798
+        },
+        "uncertainty_fallback": {
+          "transcript": "Ơi, nặng giúp mình 50.000 tiền điện thoại cho bác ba với chuyển ví cho cô Mai số tiền điện tháng này nhé!",
+          "wer": 0.1304,
+          "cer": 0.1169,
+          "critical_entity_accuracy": 0.5,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 29.0482
+        }
+      }
+    },
+    {
+      "sample_id": "train_0002",
+      "audio_path": "audio/train_0002/train_0002.wav",
+      "categories": [
+        "dates_and_time",
+        "negation_and_cancellation"
+      ],
+      "ground_truth_transcript": "Nếu mai mưa thì hủy lịch đá bóng... À mà thôi, cứ để lịch đó, chỉ cần xem giúp mai có mưa không.",
+      "raw_whisper_transcript": "Hãy subscribe cho kênh Ghiền Mì Gõ Để không bỏ lỡ những video hấp dẫn",
+      "alternative_qwen3_asr_transcript": "nếu mai mưa thì hủy lịch đá bóng à mà thôi tôi để lịch đó chỉ cần xem giúp mai có mưa không",
+      "current_hybrid_transcript": "",
+      "corrected_fallback_transcript": "nếu mai mưa thì hủy lịch đá bóng à mà thôi tôi để lịch đó chỉ cần xem giúp mai có mưa không",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "empty_or_too_short_whisper_transcript",
+        "phonetic_or_entity_repair_triggered"
+      ],
+      "correction_reasons": [
+        "removed_whisper_subtitle_hallucination",
+        "qwen3_rescued_whisper_hallucination_or_empty"
+      ],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.2478,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 0.9175,
+        "whisper_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "ngay_mai"
+          ],
+          "negation_cancellation": [
+            "only_view_override",
+            "self_cancel_full"
+          ],
+          "proper_nouns_entities": []
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "ngay_mai"
+          ],
+          "negation_cancellation": [
+            "only_view_override",
+            "self_cancel_full"
+          ],
+          "proper_nouns_entities": []
+        },
+        "resolution": "dual_asr_verified"
+      },
+      "conflict_detected": false,
+      "ambiguous_slots": {},
+      "clarification_prompt": null,
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Hãy subscribe cho kênh Ghiền Mì Gõ Để không bỏ lỡ những video hấp dẫn",
+          "wer": 0.9565,
+          "cer": 0.8529,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.0,
+          "negation_intent_accuracy": 0.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 19.8102
+        },
+        "qwen3_asr_alone": {
+          "transcript": "nếu mai mưa thì hủy lịch đá bóng à mà thôi tôi để lịch đó chỉ cần xem giúp mai có mưa không",
+          "wer": 0.0435,
+          "cer": 0.0441,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 0.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 9.108
+        },
+        "current_hybrid": {
+          "transcript": "",
+          "wer": 1.0,
+          "cer": 1.0,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.0,
+          "negation_intent_accuracy": 0.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 19.8104
+        },
+        "uncertainty_fallback": {
+          "transcript": "nếu mai mưa thì hủy lịch đá bóng à mà thôi tôi để lịch đó chỉ cần xem giúp mai có mưa không",
+          "wer": 0.0435,
+          "cer": 0.0441,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 0.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 28.9184
+        }
+      }
+    },
+    {
+      "sample_id": "train_0009",
+      "audio_path": "audio/train_0009/train_0009.wav",
+      "categories": [
+        "regional_accents",
+        "proper_nouns",
+        "numbers_amounts"
+      ],
+      "ground_truth_transcript": "Nạp dùm em Linh 50 ngàn cho số không chín năm không năm ba sáu không ba sáu bảy nha.",
+      "raw_whisper_transcript": "Đặt dùm Em Linh 50.000 cho số 0950536 0367 nha.",
+      "alternative_qwen3_asr_transcript": "lật dừng em luôn năm mươi ngàn cho số không chín năm không năm ba sáu không ba sáu bảy nhà",
+      "current_hybrid_transcript": "Đặt Em Linh 50.000 cho số 0950536 0367 nha",
+      "corrected_fallback_transcript": "Đặt dùm Em Linh 50.000 cho số 0950536 0367 nha",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "low_whisper_logprob(-0.445<-0.32)",
+        "critical_write_slot_verification"
+      ],
+      "correction_reasons": [
+        "preserved_ambiguity_on_conflict:numbers_amounts"
+      ],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.4448,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 0.8548,
+        "whisper_slots": {
+          "numbers_amounts": [
+            "0367",
+            "0950536",
+            "50000"
+          ],
+          "dates_times": [],
+          "negation_cancellation": [],
+          "proper_nouns_entities": [
+            "Em Linh"
+          ]
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [
+            "50000",
+            "phone:09505360367"
+          ],
+          "dates_times": [],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "resolution": "conflict_ambiguity_preserved"
+      },
+      "conflict_detected": true,
+      "ambiguous_slots": {
+        "numbers_amounts": {
+          "whisper": [
+            "0367",
+            "0950536",
+            "50000"
+          ],
+          "qwen3_asr": [
+            "50000",
+            "phone:09505360367"
+          ]
+        }
+      },
+      "clarification_prompt": "[ASR_AMBIGUITY_GUARD] Phát hiện xung đột nhận dạng giọng nói ở (số tiền/số lượng): Whisper='Đặt dùm Em Linh 50.000 cho số 0950536 0367 nha' vs Qwen3-ASR='lật dừng em luôn năm mươi ngàn cho số không chín năm không năm ba sáu không ba sáu bảy nhà'. Không tự ý đoán giá trị khi gọi tool ghi (write); hãy ưu tiên kiểm tra ngữ cảnh hoặc hỏi lại người dùng (sys.ask_missing_info).",
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Đặt dùm Em Linh 50.000 cho số 0950536 0367 nha.",
+          "wer": 0.65,
+          "cer": 0.7031,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.5,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 16.1375
+        },
+        "qwen3_asr_alone": {
+          "transcript": "lật dừng em luôn năm mươi ngàn cho số không chín năm không năm ba sáu không ba sáu bảy nhà",
+          "wer": 0.3,
+          "cer": 0.25,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 7.1126
+        },
+        "current_hybrid": {
+          "transcript": "Đặt Em Linh 50.000 cho số 0950536 0367 nha",
+          "wer": 0.7,
+          "cer": 0.75,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.5,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 16.1386
+        },
+        "uncertainty_fallback": {
+          "transcript": "Đặt dùm Em Linh 50.000 cho số 0950536 0367 nha",
+          "wer": 0.65,
+          "cer": 0.7031,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.5,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": true,
+          "latency_sec": 23.2523
+        }
+      }
+    },
+    {
+      "sample_id": "train_0016",
+      "audio_path": "audio/train_0016/train_0016.wav",
+      "categories": [
+        "regional_accents",
+        "product_and_app_names",
+        "proper_nouns",
+        "dates_and_time",
+        "negation_and_cancellation",
+        "multi_intent_requests"
+      ],
+      "ground_truth_transcript": "Ờ à, nếu mai mưa thì dời lịch đá bóng sáng mai muộn hai tiếng với nhắn SMS cho Mẹ báo giờ mới, còn không mưa thì thôi nhé.",
+      "raw_whisper_transcript": "Nếu mai mưa thì giờ là trao bóng, sáng mai 1-2 tiếng với nhắn SMS cho mẹ lập báo giờ mới. Có không mưa đi thôi.",
+      "alternative_qwen3_asr_transcript": "Nếu mai mưa thì giờ là trao bóng, sáng mai muộn hai tiếng với nhánh 100m cho mẹ là báo giờ mới. Không mưa thì thôi.",
+      "current_hybrid_transcript": "Nếu mai mưa thì giờ là trao bóng, sáng mai 1-2 tiếng với nhắn SMS cho mẹ lập báo giờ mới. Có không mưa đi thôi",
+      "corrected_fallback_transcript": "Nếu mai mưa thì giờ là trao bóng, sáng mai 1-2 tiếng với nhắn SMS cho mẹ lập báo giờ mới. Có không mưa đi thôi",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "low_whisper_logprob(-0.449<-0.32)",
+        "critical_write_slot_verification"
+      ],
+      "correction_reasons": [
+        "preserved_ambiguity_on_conflict:negation_cancellation"
+      ],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.4493,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 1.037,
+        "whisper_slots": {
+          "numbers_amounts": [
+            "1",
+            "2_tiếng"
+          ],
+          "dates_times": [
+            "ngay_mai",
+            "offset_2_tieng"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": [
+            "SMS"
+          ]
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "ngay_mai",
+            "offset_2_tieng"
+          ],
+          "negation_cancellation": [
+            "keep_unchanged"
+          ],
+          "proper_nouns_entities": []
+        },
+        "resolution": "conflict_ambiguity_preserved"
+      },
+      "conflict_detected": true,
+      "ambiguous_slots": {
+        "negation_cancellation": {
+          "whisper": [],
+          "qwen3_asr": [
+            "keep_unchanged"
+          ]
+        }
+      },
+      "clarification_prompt": "[ASR_AMBIGUITY_GUARD] Phát hiện xung đột nhận dạng giọng nói ở (ý định hủy/xác nhận lệnh): Whisper='Nếu mai mưa thì giờ là trao bóng, sáng mai 1-2 tiếng với nhắn SMS cho mẹ lập báo giờ mới. Có không mưa đi thôi' vs Qwen3-ASR='Nếu mai mưa thì giờ là trao bóng, sáng mai muộn hai tiếng với nhánh 100m cho mẹ là báo giờ mới. Không mưa thì thôi'. Không tự ý đoán giá trị khi gọi tool ghi (write); hãy ưu tiên kiểm tra ngữ cảnh hoặc hỏi lại người dùng (sys.ask_missing_info).",
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Nếu mai mưa thì giờ là trao bóng, sáng mai 1-2 tiếng với nhắn SMS cho mẹ lập báo giờ mới. Có không mưa đi thôi.",
+          "wer": 0.3793,
+          "cer": 0.3077,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 0.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 16.9444
+        },
+        "qwen3_asr_alone": {
+          "transcript": "Nếu mai mưa thì giờ là trao bóng, sáng mai muộn hai tiếng với nhánh 100m cho mẹ là báo giờ mới. Không mưa thì thôi.",
+          "wer": 0.3448,
+          "cer": 0.2637,
+          "critical_entity_accuracy": 0.5,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 9.9327
+        },
+        "current_hybrid": {
+          "transcript": "Nếu mai mưa thì giờ là trao bóng, sáng mai 1-2 tiếng với nhắn SMS cho mẹ lập báo giờ mới. Có không mưa đi thôi",
+          "wer": 0.3793,
+          "cer": 0.3077,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 0.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 16.9475
+        },
+        "uncertainty_fallback": {
+          "transcript": "Nếu mai mưa thì giờ là trao bóng, sáng mai 1-2 tiếng với nhắn SMS cho mẹ lập báo giờ mới. Có không mưa đi thôi",
+          "wer": 0.3793,
+          "cer": 0.3077,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 0.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": true,
+          "latency_sec": 26.8799
+        }
+      }
+    },
+    {
+      "sample_id": "train_0005",
+      "audio_path": "audio/train_0005/train_0005.wav",
+      "categories": [
+        "proper_nouns",
+        "numbers_amounts",
+        "dates_and_time",
+        "multi_intent_requests"
+      ],
+      "ground_truth_transcript": "Trợ lý ơi, đặt giúp tôi xe bốn chỗ từ công ty đi họp phụ huynh chiều nay nhé, đặt ngay bây giờ luôn.",
+      "raw_whisper_transcript": "Trợ lý ơi, đặt giúp tôi xe vốn chỗ từ công ty đi học của Quen chiều nay nhé. Đặt ngay bây giờ luôn!",
+      "alternative_qwen3_asr_transcript": "Chả lý ơi, đã giúp tôi xe bốn chỗ từ công ty đi học của Quynh chiều nay nhé, đã ngay bây giờ luôn.",
+      "current_hybrid_transcript": "Trợ lý ơi, đặt giúp tôi xe vốn chỗ từ công ty đi học của Quen chiều nay nhé. Đặt ngay bây giờ luôn!",
+      "corrected_fallback_transcript": "Trợ lý ơi, đặt giúp tôi xe 4 chỗ từ công ty đi học của Quen chiều nay nhé. Đặt ngay bây giờ luôn!",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "phonetic_or_entity_repair_triggered",
+        "critical_write_slot_verification"
+      ],
+      "correction_reasons": [
+        "phonetic_rule:4 chỗ"
+      ],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.2479,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 1.0,
+        "whisper_slots": {
+          "numbers_amounts": [
+            "4_chỗ"
+          ],
+          "dates_times": [
+            "chieu_nay"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [
+            "4_chỗ"
+          ],
+          "dates_times": [
+            "chieu_nay"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "resolution": "dual_asr_verified"
+      },
+      "conflict_detected": false,
+      "ambiguous_slots": {},
+      "clarification_prompt": null,
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Trợ lý ơi, đặt giúp tôi xe vốn chỗ từ công ty đi học của Quen chiều nay nhé. Đặt ngay bây giờ luôn!",
+          "wer": 0.1667,
+          "cer": 0.1081,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.5,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 17.3829
+        },
+        "qwen3_asr_alone": {
+          "transcript": "Chả lý ơi, đã giúp tôi xe bốn chỗ từ công ty đi học của Quynh chiều nay nhé, đã ngay bây giờ luôn.",
+          "wer": 0.25,
+          "cer": 0.1622,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 7.7119
+        },
+        "current_hybrid": {
+          "transcript": "Trợ lý ơi, đặt giúp tôi xe vốn chỗ từ công ty đi học của Quen chiều nay nhé. Đặt ngay bây giờ luôn!",
+          "wer": 0.1667,
+          "cer": 0.1081,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.5,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 17.3858
+        },
+        "uncertainty_fallback": {
+          "transcript": "Trợ lý ơi, đặt giúp tôi xe 4 chỗ từ công ty đi học của Quen chiều nay nhé. Đặt ngay bây giờ luôn!",
+          "wer": 0.1667,
+          "cer": 0.1351,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 25.0974
+        }
+      }
+    },
+    {
+      "sample_id": "train_0004",
+      "audio_path": "audio/train_0004/train_0004.wav",
+      "categories": [
+        "numbers_amounts"
+      ],
+      "ground_truth_transcript": "Trợ lý ơi, giảm độ sáng đèn phòng ngủ nhỏ xuống còn một nửa nhé.",
+      "raw_whisper_transcript": "Trợ lý ơi, giảm đồ sáng điện phòng ngủ nhỏ xuống còn một nửa nhé.",
+      "alternative_qwen3_asr_transcript": "trải lý ơi giảm đồ sáng đèn phòng ngủ nhỏ xuống còn một nửa nhé",
+      "current_hybrid_transcript": "Trợ lý ơi, giảm đồ sáng điện phòng ngủ nhỏ xuống còn một nửa nhé",
+      "corrected_fallback_transcript": "Trợ lý ơi, giảm đồ sáng điện phòng ngủ nhỏ xuống còn một nửa nhé",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "critical_write_slot_verification"
+      ],
+      "correction_reasons": [],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.2149,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 0.8922,
+        "whisper_slots": {
+          "numbers_amounts": [
+            "0.5_half"
+          ],
+          "dates_times": [],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [
+            "0.5_half"
+          ],
+          "dates_times": [],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "resolution": "dual_asr_verified"
+      },
+      "conflict_detected": false,
+      "ambiguous_slots": {},
+      "clarification_prompt": null,
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Trợ lý ơi, giảm đồ sáng điện phòng ngủ nhỏ xuống còn một nửa nhé.",
+          "wer": 0.1333,
+          "cer": 0.0625,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 17.3134
+        },
+        "qwen3_asr_alone": {
+          "transcript": "trải lý ơi giảm đồ sáng đèn phòng ngủ nhỏ xuống còn một nửa nhé",
+          "wer": 0.1333,
+          "cer": 0.0625,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 4.1434
+        },
+        "current_hybrid": {
+          "transcript": "Trợ lý ơi, giảm đồ sáng điện phòng ngủ nhỏ xuống còn một nửa nhé",
+          "wer": 0.1333,
+          "cer": 0.0625,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 17.3149
+        },
+        "uncertainty_fallback": {
+          "transcript": "Trợ lý ơi, giảm đồ sáng điện phòng ngủ nhỏ xuống còn một nửa nhé",
+          "wer": 0.1333,
+          "cer": 0.0625,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 21.4584
+        }
+      }
+    },
+    {
+      "sample_id": "train_0007",
+      "audio_path": "audio/train_0007/train_0007.wav",
+      "categories": [
+        "numbers_amounts",
+        "dates_and_time",
+        "negation_and_cancellation"
+      ],
+      "ground_truth_transcript": "Đặt báo thức 5 giờ nhé, à không, 5 rưỡi sáng mai đó",
+      "raw_whisper_transcript": "Tập báo thức 5 giờ nhé! À không, 5 rưỡi sáng mai đó.",
+      "alternative_qwen3_asr_transcript": "đặt bao thức năm giờ nhé à không năm rưỡi sáng mai đó",
+      "current_hybrid_transcript": "Tập báo thức 5 giờ nhé! À không, 5 rưỡi sáng mai đó",
+      "corrected_fallback_transcript": "Tập báo thức 5 giờ nhé! À không, 5 rưỡi sáng mai đó",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "low_whisper_logprob(-0.332<-0.32)",
+        "critical_slot:negation_or_self_repair",
+        "critical_write_slot_verification"
+      ],
+      "correction_reasons": [],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.3315,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 0.8608,
+        "whisper_slots": {
+          "numbers_amounts": [
+            "5"
+          ],
+          "dates_times": [
+            "ngay_mai",
+            "time:5:00",
+            "time:5:30"
+          ],
+          "negation_cancellation": [
+            "self_repair_a_khong"
+          ],
+          "proper_nouns_entities": []
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "ngay_mai",
+            "time:5:00",
+            "time:5:30"
+          ],
+          "negation_cancellation": [
+            "self_repair_a_khong"
+          ],
+          "proper_nouns_entities": []
+        },
+        "resolution": "dual_asr_verified"
+      },
+      "conflict_detected": false,
+      "ambiguous_slots": {},
+      "clarification_prompt": null,
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Tập báo thức 5 giờ nhé! À không, 5 rưỡi sáng mai đó.",
+          "wer": 0.0769,
+          "cer": 0.0811,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 16.2054
+        },
+        "qwen3_asr_alone": {
+          "transcript": "đặt bao thức năm giờ nhé à không năm rưỡi sáng mai đó",
+          "wer": 0.2308,
+          "cer": 0.1892,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.75,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 7.1328
+        },
+        "current_hybrid": {
+          "transcript": "Tập báo thức 5 giờ nhé! À không, 5 rưỡi sáng mai đó",
+          "wer": 0.0769,
+          "cer": 0.0811,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 16.2068
+        },
+        "uncertainty_fallback": {
+          "transcript": "Tập báo thức 5 giờ nhé! À không, 5 rưỡi sáng mai đó",
+          "wer": 0.0769,
+          "cer": 0.0811,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 23.339
+        }
+      }
+    },
+    {
+      "sample_id": "train_0029",
+      "audio_path": "audio/train_0029/train_0029.wav",
+      "categories": [
+        "regional_accents",
+        "product_and_app_names",
+        "proper_nouns",
+        "numbers_amounts",
+        "dates_and_time"
+      ],
+      "ground_truth_transcript": "Nếu giá vàng SJC mua vào dưới 124 triệu thì nhắc mình 9 giờ sáng mai đi mua nha.",
+      "raw_whisper_transcript": "Nếu giá vàng, SJC mua vào dưới 124 triệu thì nhắc mình 9 giờ sáng mai đi mưa nha.",
+      "alternative_qwen3_asr_transcript": "Nếu giá vàng SDC mua vào dưới 1.24 triệu thì nhắc mình chỉnh giờ sáng mai đi mua nha",
+      "current_hybrid_transcript": "Nếu giá vàng, SJC mua vào dưới 124 triệu thì nhắc mình 9 giờ sáng mai đi mưa nha",
+      "corrected_fallback_transcript": "Nếu giá vàng, SJC mua vào dưới 124 triệu thì nhắc mình 9 giờ sáng mai đi mưa nha",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "critical_write_slot_verification"
+      ],
+      "correction_reasons": [
+        "preserved_ambiguity_on_conflict:dates_times"
+      ],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.2189,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 0.9174,
+        "whisper_slots": {
+          "numbers_amounts": [
+            "124000000"
+          ],
+          "dates_times": [
+            "ngay_mai",
+            "time:9:00"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": [
+            "SJC"
+          ]
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [
+            "124000000"
+          ],
+          "dates_times": [
+            "ngay_mai"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "resolution": "conflict_ambiguity_preserved"
+      },
+      "conflict_detected": true,
+      "ambiguous_slots": {
+        "dates_times": {
+          "whisper": [
+            "ngay_mai",
+            "time:9:00"
+          ],
+          "qwen3_asr": [
+            "ngay_mai"
+          ]
+        }
+      },
+      "clarification_prompt": "[ASR_AMBIGUITY_GUARD] Phát hiện xung đột nhận dạng giọng nói ở (thời gian/ngày giờ): Whisper='Nếu giá vàng, SJC mua vào dưới 124 triệu thì nhắc mình 9 giờ sáng mai đi mưa nha' vs Qwen3-ASR='Nếu giá vàng SDC mua vào dưới 1.24 triệu thì nhắc mình chỉnh giờ sáng mai đi mua nha'. Không tự ý đoán giá trị khi gọi tool ghi (write); hãy ưu tiên kiểm tra ngữ cảnh hoặc hỏi lại người dùng (sys.ask_missing_info).",
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Nếu giá vàng, SJC mua vào dưới 124 triệu thì nhắc mình 9 giờ sáng mai đi mưa nha.",
+          "wer": 0.0526,
+          "cer": 0.0164,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 19.9742
+        },
+        "qwen3_asr_alone": {
+          "transcript": "Nếu giá vàng SDC mua vào dưới 1.24 triệu thì nhắc mình chỉnh giờ sáng mai đi mua nha",
+          "wer": 0.2105,
+          "cer": 0.0984,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 0.6667,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 6.7262
+        },
+        "current_hybrid": {
+          "transcript": "Nếu giá vàng, SJC mua vào dưới 124 triệu thì nhắc mình 9 giờ sáng mai đi mưa nha",
+          "wer": 0.0526,
+          "cer": 0.0164,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 19.9763
+        },
+        "uncertainty_fallback": {
+          "transcript": "Nếu giá vàng, SJC mua vào dưới 124 triệu thì nhắc mình 9 giờ sáng mai đi mưa nha",
+          "wer": 0.0526,
+          "cer": 0.0164,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": true,
+          "latency_sec": 26.702
+        }
+      }
+    },
+    {
+      "sample_id": "train_0011",
+      "audio_path": "audio/train_0011/train_0011.wav",
+      "categories": [
+        "dates_and_time",
+        "negation_and_cancellation",
+        "multi_intent_requests"
+      ],
+      "ground_truth_transcript": "Nếu ví đủ thì trả điện và nhắn Bố là đã đóng, còn không thì trả ngân hàng và nhắc tôi tám giờ tối nay nạp tiền vào ví nhé.",
+      "raw_whisper_transcript": "Nếu ví đủ thì trả điện và nhắn bố là đã đóng, còn không thì trải ngân hàng và nhắc tôi 8 giờ tối nay nạp tiền vào ví nha.",
+      "alternative_qwen3_asr_transcript": "nếu vi đủ thì trả điện và nhắn búa là đã đóng còn không thì trao ngân hàng và nhắc tôi tám giờ tối nay nạp tiền vào ví nhà",
+      "current_hybrid_transcript": "Nếu ví đủ thì trả điện và nhắn bố là đã đóng, còn không thì trải ngân hàng và nhắc tôi 8 giờ tối nay nạp tiền vào ví nha",
+      "corrected_fallback_transcript": "Nếu ví đủ thì trả điện và nhắn bố là đã đóng, còn không thì trải ngân hàng và nhắc tôi 8 giờ tối nay nạp tiền vào ví nha",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "critical_slot:negation_or_self_repair"
+      ],
+      "correction_reasons": [],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.1715,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 1.1631,
+        "whisper_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "time:8:00",
+            "toi_nay"
+          ],
+          "negation_cancellation": [
+            "conditional_if_not"
+          ],
+          "proper_nouns_entities": []
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "time:8:00",
+            "toi_nay"
+          ],
+          "negation_cancellation": [
+            "conditional_if_not"
+          ],
+          "proper_nouns_entities": []
+        },
+        "resolution": "dual_asr_verified"
+      },
+      "conflict_detected": false,
+      "ambiguous_slots": {},
+      "clarification_prompt": null,
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Nếu ví đủ thì trả điện và nhắn bố là đã đóng, còn không thì trải ngân hàng và nhắc tôi 8 giờ tối nay nạp tiền vào ví nha.",
+          "wer": 0.1,
+          "cer": 0.0549,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 32.1113
+        },
+        "qwen3_asr_alone": {
+          "transcript": "nếu vi đủ thì trả điện và nhắn búa là đã đóng còn không thì trao ngân hàng và nhắc tôi tám giờ tối nay nạp tiền vào ví nhà",
+          "wer": 0.1333,
+          "cer": 0.0659,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 13.5373
+        },
+        "current_hybrid": {
+          "transcript": "Nếu ví đủ thì trả điện và nhắn bố là đã đóng, còn không thì trải ngân hàng và nhắc tôi 8 giờ tối nay nạp tiền vào ví nha",
+          "wer": 0.1,
+          "cer": 0.0549,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 32.114
+        },
+        "uncertainty_fallback": {
+          "transcript": "Nếu ví đủ thì trả điện và nhắn bố là đã đóng, còn không thì trải ngân hàng và nhắc tôi 8 giờ tối nay nạp tiền vào ví nha",
+          "wer": 0.1,
+          "cer": 0.0549,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 45.6495
+        }
+      }
+    },
+    {
+      "sample_id": "train_0014",
+      "audio_path": "audio/train_0014/train_0014.wav",
+      "categories": [
+        "regional_accents",
+        "numbers_amounts",
+        "multi_intent_requests"
+      ],
+      "ground_truth_transcript": "Tắt hết đèn tầng 2 dùm chị, phòng nào đang bật máy lạnh thì để nguyên nha.",
+      "raw_whisper_transcript": "Tết hết điện, tầng 2 dùng trị. Phòng nào đang bật máy lạnh thì để nguyên nhà.",
+      "alternative_qwen3_asr_transcript": "Tết khách điền sân hai dừng trị phòng nào đang bận mấy lạnh thì để lui nha",
+      "current_hybrid_transcript": "Tết hết điện, tầng 2 dùng trị. Phòng nào đang bật máy lạnh thì để nguyên nhà",
+      "corrected_fallback_transcript": "Tết hết điện, tầng 2 dùng trị. Phòng nào đang bật máy lạnh thì để nguyên nhà",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "low_whisper_logprob(-0.377<-0.32)",
+        "critical_write_slot_verification"
+      ],
+      "correction_reasons": [],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.3767,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 0.9196,
+        "whisper_slots": {
+          "numbers_amounts": [
+            "2"
+          ],
+          "dates_times": [],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "resolution": "dual_asr_verified"
+      },
+      "conflict_detected": false,
+      "ambiguous_slots": {},
+      "clarification_prompt": null,
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Tết hết điện, tầng 2 dùng trị. Phòng nào đang bật máy lạnh thì để nguyên nhà.",
+          "wer": 0.2941,
+          "cer": 0.1429,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 18.846
+        },
+        "qwen3_asr_alone": {
+          "transcript": "Tết khách điền sân hai dừng trị phòng nào đang bận mấy lạnh thì để lui nha",
+          "wer": 0.5882,
+          "cer": 0.4286,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 6.842
+        },
+        "current_hybrid": {
+          "transcript": "Tết hết điện, tầng 2 dùng trị. Phòng nào đang bật máy lạnh thì để nguyên nhà",
+          "wer": 0.2941,
+          "cer": 0.1429,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 18.847
+        },
+        "uncertainty_fallback": {
+          "transcript": "Tết hết điện, tầng 2 dùng trị. Phòng nào đang bật máy lạnh thì để nguyên nhà",
+          "wer": 0.2941,
+          "cer": 0.1429,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 25.689
+        }
+      }
+    },
+    {
+      "sample_id": "train_0034",
+      "audio_path": "audio/train_0034/train_0034.wav",
+      "categories": [
+        "product_and_app_names",
+        "proper_nouns",
+        "dates_and_time"
+      ],
+      "ground_truth_transcript": "Ờ à, nhắn qua Zalo cho bác Ba là tối nay ăn cơm ở nhà nhé.",
+      "raw_whisper_transcript": "Nhắn qua Zalo, sắp bác ba là tuổi nãy ăn cơm ở nhà nhé.",
+      "alternative_qwen3_asr_transcript": "và nhận quan gia lôi sắp bắt ba là tuổi nay ăn cưa về nhà nhé",
+      "current_hybrid_transcript": "Nhắn qua Zalo, sắp bác ba là tuổi nãy ăn cơm ở nhà nhé",
+      "corrected_fallback_transcript": "Nhắn qua Zalo, sắp bác ba là tuổi nãy ăn cơm ở nhà nhé",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "low_whisper_logprob(-0.525<-0.32)",
+        "critical_write_slot_verification"
+      ],
+      "correction_reasons": [],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.5255,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 0.8974,
+        "whisper_slots": {
+          "numbers_amounts": [],
+          "dates_times": [],
+          "negation_cancellation": [],
+          "proper_nouns_entities": [
+            "Zalo"
+          ]
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "resolution": "dual_asr_verified"
+      },
+      "conflict_detected": false,
+      "ambiguous_slots": {},
+      "clarification_prompt": null,
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Nhắn qua Zalo, sắp bác ba là tuổi nãy ăn cơm ở nhà nhé.",
+          "wer": 0.3125,
+          "cer": 0.1951,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 17.4375
+        },
+        "qwen3_asr_alone": {
+          "transcript": "và nhận quan gia lôi sắp bắt ba là tuổi nay ăn cưa về nhà nhé",
+          "wer": 0.625,
+          "cer": 0.439,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 0.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 5.5327
+        },
+        "current_hybrid": {
+          "transcript": "Nhắn qua Zalo, sắp bác ba là tuổi nãy ăn cơm ở nhà nhé",
+          "wer": 0.3125,
+          "cer": 0.1951,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 17.4381
+        },
+        "uncertainty_fallback": {
+          "transcript": "Nhắn qua Zalo, sắp bác ba là tuổi nãy ăn cơm ở nhà nhé",
+          "wer": 0.3125,
+          "cer": 0.1951,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 22.9707
+        }
+      }
+    },
+    {
+      "sample_id": "train_0012",
+      "audio_path": "audio/train_0012/train_0012.wav",
+      "categories": [
+        "proper_nouns",
+        "numbers_amounts",
+        "multi_intent_requests"
+      ],
+      "ground_truth_transcript": "Bạn ơi, chuyển cho chủ nhà Phạm Hùng hai triệu tám và nạp giúp sếp Dũng hai trăm nghìn nhé.",
+      "raw_whisper_transcript": "Bạn ơi, chuyển cho rũ nhà Phạm Hùng 2 triệu tém và nạp giúp sớm dụng 200 nghề nhé.",
+      "alternative_qwen3_asr_transcript": "Bạn ơ, chuyển cho chủ nhà phạm Hùng hai triệu tém và nạp. Nạp giúp xếp dũng hai trăm nghề nhé.",
+      "current_hybrid_transcript": "Bạn ơi, chuyển cho rũ nhà Phạm Hùng 2 triệu tém và nạp giúp sớm dụng 200 nghề nhé",
+      "corrected_fallback_transcript": "Bạn ơi, chuyển cho rũ nhà Phạm Hùng 2 triệu tém và nạp giúp sớm dụng 200 nghề nhé",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "critical_write_slot_verification"
+      ],
+      "correction_reasons": [],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.2983,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 0.9298,
+        "whisper_slots": {
+          "numbers_amounts": [
+            "200",
+            "2000000"
+          ],
+          "dates_times": [],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "resolution": "dual_asr_verified"
+      },
+      "conflict_detected": false,
+      "ambiguous_slots": {},
+      "clarification_prompt": null,
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Bạn ơi, chuyển cho rũ nhà Phạm Hùng 2 triệu tém và nạp giúp sớm dụng 200 nghề nhé.",
+          "wer": 0.4,
+          "cer": 0.2714,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 0.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 18.8402
+        },
+        "qwen3_asr_alone": {
+          "transcript": "Bạn ơ, chuyển cho chủ nhà phạm Hùng hai triệu tém và nạp. Nạp giúp xếp dũng hai trăm nghề nhé.",
+          "wer": 0.25,
+          "cer": 0.1143,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 0.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 9.6412
+        },
+        "current_hybrid": {
+          "transcript": "Bạn ơi, chuyển cho rũ nhà Phạm Hùng 2 triệu tém và nạp giúp sớm dụng 200 nghề nhé",
+          "wer": 0.4,
+          "cer": 0.2714,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 0.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 18.8411
+        },
+        "uncertainty_fallback": {
+          "transcript": "Bạn ơi, chuyển cho rũ nhà Phạm Hùng 2 triệu tém và nạp giúp sớm dụng 200 nghề nhé",
+          "wer": 0.4,
+          "cer": 0.2714,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 0.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 28.4821
+        }
+      }
+    },
+    {
+      "sample_id": "train_0015",
+      "audio_path": "audio/train_0015/train_0015.wav",
+      "categories": [
+        "regional_accents",
+        "multi_intent_requests"
+      ],
+      "ground_truth_transcript": "Chuyển tiền mạng tháng này cho chú Phạm Hùng nha, nếu tài khoản thanh toán không đủ thì lấy từ tiết kiệm dùm tôi hen.",
+      "raw_whisper_transcript": "Trợ lý ảo tiếng Việt LifeMate, Hà Nội. Từ khóa đơn, tiền điện thoại, hãy subscribe cho kênh Ghiền Mì Gõ Để không bỏ lỡ những video hấp dẫn",
+      "alternative_qwen3_asr_transcript": "Trên truyền mạng sáng nay do chú Phạm Hồng Nhã đã tài khoản thanh toán hôm nay sẽ lấy từ tiết kiệm nhóm tuổi em.",
+      "current_hybrid_transcript": "Trợ lý ảo tiếng Việt LifeMate, Hà Nội khóa đơn, tiền điện thoại",
+      "corrected_fallback_transcript": "Trên truyền mạng sáng nay do chú Phạm Hồng Nhã đã tài khoản thanh toán hôm nay sẽ lấy từ tiết kiệm nhóm tuổi em",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "low_whisper_logprob(-0.697<-0.32)",
+        "phonetic_or_entity_repair_triggered"
+      ],
+      "correction_reasons": [
+        "removed_whisper_subtitle_hallucination",
+        "removed_whisper_prompt_echo",
+        "qwen3_rescued_whisper_hallucination_or_empty"
+      ],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.697,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 1.0706,
+        "whisper_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "hom_nay",
+            "sang_nay"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "hom_nay",
+            "sang_nay"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "resolution": "dual_asr_verified"
+      },
+      "conflict_detected": false,
+      "ambiguous_slots": {},
+      "clarification_prompt": null,
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Trợ lý ảo tiếng Việt LifeMate, Hà Nội. Từ khóa đơn, tiền điện thoại, hãy subscribe cho kênh Ghiền Mì Gõ Để không bỏ lỡ những video hấp dẫn",
+          "wer": 1.16,
+          "cer": 0.956,
+          "critical_entity_accuracy": 0.5,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [
+            "Hà Nội"
+          ],
+          "safe_clarification_triggered": false,
+          "latency_sec": 21.077
+        },
+        "qwen3_asr_alone": {
+          "transcript": "Trên truyền mạng sáng nay do chú Phạm Hồng Nhã đã tài khoản thanh toán hôm nay sẽ lấy từ tiết kiệm nhóm tuổi em.",
+          "wer": 0.56,
+          "cer": 0.3626,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.5,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 8.4856
+        },
+        "current_hybrid": {
+          "transcript": "Trợ lý ảo tiếng Việt LifeMate, Hà Nội khóa đơn, tiền điện thoại",
+          "wer": 1.0,
+          "cer": 0.8132,
+          "critical_entity_accuracy": 0.5,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [
+            "Hà Nội"
+          ],
+          "safe_clarification_triggered": false,
+          "latency_sec": 21.0776
+        },
+        "uncertainty_fallback": {
+          "transcript": "Trên truyền mạng sáng nay do chú Phạm Hồng Nhã đã tài khoản thanh toán hôm nay sẽ lấy từ tiết kiệm nhóm tuổi em",
+          "wer": 0.56,
+          "cer": 0.3626,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.5,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 29.5629
+        }
+      }
+    },
+    {
+      "sample_id": "train_0039",
+      "audio_path": "audio/train_0039/train_0039.wav",
+      "categories": [
+        "product_and_app_names",
+        "proper_nouns",
+        "dates_and_time"
+      ],
+      "ground_truth_transcript": "Ờ, à, nhắn qua Zalo cho Minh là tối nay ăn cơm ở nhà nhé.",
+      "raw_whisper_transcript": "Ờ, ờ. Giá hôm qua Zalo cho mình là tối nay anh không ở nhà nhỉ?",
+      "alternative_qwen3_asr_transcript": "Ồ, à, sáng qua gia lô cho mình là tối nay anh không ở nhà gì.",
+      "current_hybrid_transcript": "Ờ, ờ. Giá hôm qua Zalo cho mình là tối nay anh không ở nhà nhỉ?",
+      "corrected_fallback_transcript": "Ờ, ờ. Giá hôm qua Zalo cho mình là tối nay anh không ở nhà nhỉ?",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "low_whisper_logprob(-0.459<-0.32)",
+        "critical_write_slot_verification"
+      ],
+      "correction_reasons": [],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.4593,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 0.8778,
+        "whisper_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "toi_nay"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": [
+            "Zalo"
+          ]
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "toi_nay"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": [
+            "Zalo"
+          ]
+        },
+        "resolution": "dual_asr_verified"
+      },
+      "conflict_detected": false,
+      "ambiguous_slots": {},
+      "clarification_prompt": null,
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Ờ, ờ. Giá hôm qua Zalo cho mình là tối nay anh không ở nhà nhỉ?",
+          "wer": 0.4667,
+          "cer": 0.375,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 17.0456
+        },
+        "qwen3_asr_alone": {
+          "transcript": "Ồ, à, sáng qua gia lô cho mình là tối nay anh không ở nhà gì.",
+          "wer": 0.5333,
+          "cer": 0.475,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 5.968
+        },
+        "current_hybrid": {
+          "transcript": "Ờ, ờ. Giá hôm qua Zalo cho mình là tối nay anh không ở nhà nhỉ?",
+          "wer": 0.4667,
+          "cer": 0.375,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 17.0479
+        },
+        "uncertainty_fallback": {
+          "transcript": "Ờ, ờ. Giá hôm qua Zalo cho mình là tối nay anh không ở nhà nhỉ?",
+          "wer": 0.4667,
+          "cer": 0.375,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 23.0154
+        }
+      }
+    },
+    {
+      "sample_id": "train_0050",
+      "audio_path": "audio/train_0050/train_0050.wav",
+      "categories": [
+        "regional_accents",
+        "product_and_app_names",
+        "proper_nouns",
+        "dates_and_time"
+      ],
+      "ground_truth_transcript": "Alô, cho em Linh hỏi giá vàng SJC hôm nay bao nhiêu dùm nha.",
+      "raw_whisper_transcript": "Alo, cho em Linh hỏi giá vàng, SJC, hôm nay có nhiều dùm nhau.",
+      "alternative_qwen3_asr_transcript": "Hello, cho em liên hệ giá vé FGC hôm nay có yêu gì không?",
+      "current_hybrid_transcript": "Alo, Em Linh hỏi giá vàng, SJC, hôm nay có nhiều dùm nhau",
+      "corrected_fallback_transcript": "Alo, cho em Linh hỏi giá vàng, SJC, hôm nay có nhiều dùm nhau",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "low_whisper_logprob(-0.464<-0.32)",
+        "critical_write_slot_verification"
+      ],
+      "correction_reasons": [],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.4636,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 0.8875,
+        "whisper_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "hom_nay"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": [
+            "Em Linh",
+            "SJC"
+          ]
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "hom_nay"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "resolution": "dual_asr_verified"
+      },
+      "conflict_detected": false,
+      "ambiguous_slots": {},
+      "clarification_prompt": null,
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Alo, cho em Linh hỏi giá vàng, SJC, hôm nay có nhiều dùm nhau.",
+          "wer": 0.2857,
+          "cer": 0.1333,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 20.9034
+        },
+        "qwen3_asr_alone": {
+          "transcript": "Hello, cho em liên hệ giá vé FGC hôm nay có yêu gì không?",
+          "wer": 0.6429,
+          "cer": 0.5556,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 5.4597
+        },
+        "current_hybrid": {
+          "transcript": "Alo, Em Linh hỏi giá vàng, SJC, hôm nay có nhiều dùm nhau",
+          "wer": 0.3571,
+          "cer": 0.1778,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 20.9048
+        },
+        "uncertainty_fallback": {
+          "transcript": "Alo, cho em Linh hỏi giá vàng, SJC, hôm nay có nhiều dùm nhau",
+          "wer": 0.2857,
+          "cer": 0.1333,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 26.3646
+        }
+      }
+    },
+    {
+      "sample_id": "train_0017",
+      "audio_path": "audio/train_0017/train_0017.wav",
+      "categories": [
+        "regional_accents"
+      ],
+      "ground_truth_transcript": "Ơi, chuyển sang kênh S+ Sport dùm em nha.",
+      "raw_whisper_transcript": "Ơ, chuyển sang kênh S-Sport chùm em nha.",
+      "alternative_qwen3_asr_transcript": "ôi chuyển sang kênh Aston Sport cho em nha",
+      "current_hybrid_transcript": "Ơ, chuyển sang kênh S-Sport chùm em nha",
+      "corrected_fallback_transcript": "Ơ, chuyển sang kênh S-Sport chùm em nha",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "low_whisper_logprob(-0.510<-0.32)"
+      ],
+      "correction_reasons": [],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.51,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 0.8333,
+        "whisper_slots": {
+          "numbers_amounts": [],
+          "dates_times": [],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "resolution": "dual_asr_verified"
+      },
+      "conflict_detected": false,
+      "ambiguous_slots": {},
+      "clarification_prompt": null,
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Ơ, chuyển sang kênh S-Sport chùm em nha.",
+          "wer": 0.3333,
+          "cer": 0.129,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 17.3879
+        },
+        "qwen3_asr_alone": {
+          "transcript": "ôi chuyển sang kênh Aston Sport cho em nha",
+          "wer": 0.3333,
+          "cer": 0.2581,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 4.056
+        },
+        "current_hybrid": {
+          "transcript": "Ơ, chuyển sang kênh S-Sport chùm em nha",
+          "wer": 0.3333,
+          "cer": 0.129,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 17.3888
+        },
+        "uncertainty_fallback": {
+          "transcript": "Ơ, chuyển sang kênh S-Sport chùm em nha",
+          "wer": 0.3333,
+          "cer": 0.129,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 21.4447
+        }
+      }
+    },
+    {
+      "sample_id": "train_0062",
+      "audio_path": "audio/train_0062/train_0062.wav",
+      "categories": [
+        "product_and_app_names",
+        "proper_nouns"
+      ],
+      "ground_truth_transcript": "Nhắn qua Zalo cho Minh là đến rồi thì gọi tôi nhé.",
+      "raw_whisper_transcript": "Nhắn que Zalo Cha Minh là đến rồi, thì gọi tôi nhé.",
+      "alternative_qwen3_asr_transcript": "Nhắn que zalo cho mình là đến rồi thì hỏi tôi nhí",
+      "current_hybrid_transcript": "Nhắn que Zalo Cha Minh là đến rồi, thì gọi tôi nhé",
+      "corrected_fallback_transcript": "Nhắn que Zalo Cha Minh là đến rồi, thì gọi tôi nhé",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "low_whisper_logprob(-0.389<-0.32)",
+        "critical_write_slot_verification"
+      ],
+      "correction_reasons": [],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.3893,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 0.8533,
+        "whisper_slots": {
+          "numbers_amounts": [],
+          "dates_times": [],
+          "negation_cancellation": [],
+          "proper_nouns_entities": [
+            "Zalo"
+          ]
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [],
+          "negation_cancellation": [],
+          "proper_nouns_entities": [
+            "Zalo"
+          ]
+        },
+        "resolution": "dual_asr_verified"
+      },
+      "conflict_detected": false,
+      "ambiguous_slots": {},
+      "clarification_prompt": null,
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Nhắn que Zalo Cha Minh là đến rồi, thì gọi tôi nhé.",
+          "wer": 0.1667,
+          "cer": 0.0526,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 17.3719
+        },
+        "qwen3_asr_alone": {
+          "transcript": "Nhắn que zalo cho mình là đến rồi thì hỏi tôi nhí",
+          "wer": 0.3333,
+          "cer": 0.1316,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 4.4315
+        },
+        "current_hybrid": {
+          "transcript": "Nhắn que Zalo Cha Minh là đến rồi, thì gọi tôi nhé",
+          "wer": 0.1667,
+          "cer": 0.0526,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 17.3733
+        },
+        "uncertainty_fallback": {
+          "transcript": "Nhắn que Zalo Cha Minh là đến rồi, thì gọi tôi nhé",
+          "wer": 0.1667,
+          "cer": 0.0526,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 21.8046
+        }
+      }
+    },
+    {
+      "sample_id": "train_0020",
+      "audio_path": "audio/train_0020/train_0020.wav",
+      "categories": [
+        "numbers_amounts",
+        "negation_and_cancellation",
+        "multi_intent_requests"
+      ],
+      "ground_truth_transcript": "Ờ à, tắt hết đèn tầng 2 giúp em nhé, trừ phòng nào đang bật điều hoà thì cứ để nguyên.",
+      "raw_whisper_transcript": "Tắt khách đen tận 2 giúp em nhé. Phần nào đang bật điều hòa thì cứ để nguyên.",
+      "alternative_qwen3_asr_transcript": "tắt hết đèn tầng hai giúp em nhé từ phòng nào đang bật điều hòa thì cứ để nguyên",
+      "current_hybrid_transcript": "Tắt khách đen tận 2 giúp em nhé. Phần Đà Nẵng bật điều hòa thì cứ để nguyên",
+      "corrected_fallback_transcript": "Tắt khách đen tận 2 giúp em nhé. Phần nào đang bật điều hòa thì cứ để nguyên",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "critical_slot:negation_or_self_repair",
+        "critical_write_slot_verification"
+      ],
+      "correction_reasons": [],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.2511,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 0.9273,
+        "whisper_slots": {
+          "numbers_amounts": [
+            "2"
+          ],
+          "dates_times": [],
+          "negation_cancellation": [
+            "keep_unchanged"
+          ],
+          "proper_nouns_entities": []
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [],
+          "negation_cancellation": [
+            "keep_unchanged"
+          ],
+          "proper_nouns_entities": []
+        },
+        "resolution": "dual_asr_verified"
+      },
+      "conflict_detected": false,
+      "ambiguous_slots": {},
+      "clarification_prompt": null,
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Tắt khách đen tận 2 giúp em nhé. Phần nào đang bật điều hòa thì cứ để nguyên.",
+          "wer": 0.381,
+          "cer": 0.254,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 19.8092
+        },
+        "qwen3_asr_alone": {
+          "transcript": "tắt hết đèn tầng hai giúp em nhé từ phòng nào đang bật điều hòa thì cứ để nguyên",
+          "wer": 0.2381,
+          "cer": 0.127,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 6.7803
+        },
+        "current_hybrid": {
+          "transcript": "Tắt khách đen tận 2 giúp em nhé. Phần Đà Nẵng bật điều hòa thì cứ để nguyên",
+          "wer": 0.4762,
+          "cer": 0.3175,
+          "critical_entity_accuracy": 0.5,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [
+            "Đà Nẵng"
+          ],
+          "safe_clarification_triggered": false,
+          "latency_sec": 19.8117
+        },
+        "uncertainty_fallback": {
+          "transcript": "Tắt khách đen tận 2 giúp em nhé. Phần nào đang bật điều hòa thì cứ để nguyên",
+          "wer": 0.381,
+          "cer": 0.254,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 26.5914
+        }
+      }
+    },
+    {
+      "sample_id": "train_0018",
+      "audio_path": "audio/train_0018/train_0018.wav",
+      "categories": [
+        "regional_accents",
+        "proper_nouns",
+        "multi_intent_requests"
+      ],
+      "ground_truth_transcript": "Gọi dùm tôi Bố nha.",
+      "raw_whisper_transcript": "Gợi dùm tôi bố nha.",
+      "alternative_qwen3_asr_transcript": "gọi dùm tôi bố nha",
+      "current_hybrid_transcript": "Gợi dùm tôi bố nha",
+      "corrected_fallback_transcript": "Gợi dùm tôi bố nha",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "low_whisper_logprob(-0.343<-0.32)"
+      ],
+      "correction_reasons": [],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.3425,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 0.7353,
+        "whisper_slots": {
+          "numbers_amounts": [],
+          "dates_times": [],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "resolution": "dual_asr_verified"
+      },
+      "conflict_detected": false,
+      "ambiguous_slots": {},
+      "clarification_prompt": null,
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Gợi dùm tôi bố nha.",
+          "wer": 0.2,
+          "cer": 0.0714,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 16.9644
+        },
+        "qwen3_asr_alone": {
+          "transcript": "gọi dùm tôi bố nha",
+          "wer": 0.0,
+          "cer": 0.0,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 3.2452
+        },
+        "current_hybrid": {
+          "transcript": "Gợi dùm tôi bố nha",
+          "wer": 0.2,
+          "cer": 0.0714,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 16.965
+        },
+        "uncertainty_fallback": {
+          "transcript": "Gợi dùm tôi bố nha",
+          "wer": 0.2,
+          "cer": 0.0714,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 20.2101
+        }
+      }
+    },
+    {
+      "sample_id": "train_0072",
+      "audio_path": "audio/train_0072/train_0072.wav",
+      "categories": [
+        "product_and_app_names",
+        "proper_nouns",
+        "numbers_amounts",
+        "dates_and_time",
+        "multi_intent_requests"
+      ],
+      "ground_truth_transcript": "Vàng SJC bán ra trên 127 triệu thì nhắc anh 9 giờ sáng mai đi bán vàng, không thì chuyển 2 triệu từ tài khoản thanh toán cho chủ nhà Phạm Hùng, tiền góp mua vàng.",
+      "raw_whisper_transcript": "Vàng SJC bán le trên 127 triệu, thì nếu ăn 9 giờ sáng mai đi bán vàng. Không thì chuyển 2 triệu từ tại gõ thanh toán cho chủ nhà Phạm Hùng tiền góp mua vàng",
+      "alternative_qwen3_asr_transcript": "vàng sgc bán ra trên một trăm hai mươi bảy triệu thì nếu ăn chính giờ sáng mai đi bán vàng không thì chuyển hai triệu từ tài khoản thanh toán cho chủ nhà Phạm Hùng trình góp mua vàng",
+      "current_hybrid_transcript": "Vàng SJC bán le trên 127 triệu, thì nếu ăn 9 giờ sáng mai đi bán vàng. Không thì chuyển 2 triệu từ tại gõ thanh toán cho chủ nhà Phạm Hùng tiền góp mua vàng",
+      "corrected_fallback_transcript": "Vàng SJC bán le trên 127 triệu, thì nếu ăn 9 giờ sáng mai đi bán vàng. Không thì chuyển 2 triệu từ tại gõ thanh toán cho chủ nhà Phạm Hùng tiền góp mua vàng",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "critical_write_slot_verification"
+      ],
+      "correction_reasons": [
+        "preserved_ambiguity_on_conflict:dates_times"
+      ],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.251,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 1.1488,
+        "whisper_slots": {
+          "numbers_amounts": [
+            "127000000",
+            "2000000"
+          ],
+          "dates_times": [
+            "ngay_mai",
+            "time:9:00"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": [
+            "SJC"
+          ]
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "ngay_mai"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "resolution": "conflict_ambiguity_preserved"
+      },
+      "conflict_detected": true,
+      "ambiguous_slots": {
+        "dates_times": {
+          "whisper": [
+            "ngay_mai",
+            "time:9:00"
+          ],
+          "qwen3_asr": [
+            "ngay_mai"
+          ]
+        }
+      },
+      "clarification_prompt": "[ASR_AMBIGUITY_GUARD] Phát hiện xung đột nhận dạng giọng nói ở (thời gian/ngày giờ): Whisper='Vàng SJC bán le trên 127 triệu, thì nếu ăn 9 giờ sáng mai đi bán vàng. Không thì chuyển 2 triệu từ tại gõ thanh toán cho chủ nhà Phạm Hùng tiền góp mua vàng' vs Qwen3-ASR='vàng sgc bán ra trên một trăm hai mươi bảy triệu thì nếu ăn chính giờ sáng mai đi bán vàng không thì chuyển hai triệu từ tài khoản thanh toán cho chủ nhà Phạm Hùng trình góp mua vàng'. Không tự ý đoán giá trị khi gọi tool ghi (write); hãy ưu tiên kiểm tra ngữ cảnh hoặc hỏi lại người dùng (sys.ask_missing_info).",
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Vàng SJC bán le trên 127 triệu, thì nếu ăn 9 giờ sáng mai đi bán vàng. Không thì chuyển 2 triệu từ tại gõ thanh toán cho chủ nhà Phạm Hùng tiền góp mua vàng",
+          "wer": 0.1389,
+          "cer": 0.1048,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 29.2311
+        },
+        "qwen3_asr_alone": {
+          "transcript": "vàng sgc bán ra trên một trăm hai mươi bảy triệu thì nếu ăn chính giờ sáng mai đi bán vàng không thì chuyển hai triệu từ tài khoản thanh toán cho chủ nhà Phạm Hùng trình góp mua vàng",
+          "wer": 0.3056,
+          "cer": 0.25,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 0.25,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 27.8787
+        },
+        "current_hybrid": {
+          "transcript": "Vàng SJC bán le trên 127 triệu, thì nếu ăn 9 giờ sáng mai đi bán vàng. Không thì chuyển 2 triệu từ tại gõ thanh toán cho chủ nhà Phạm Hùng tiền góp mua vàng",
+          "wer": 0.1389,
+          "cer": 0.1048,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 29.2404
+        },
+        "uncertainty_fallback": {
+          "transcript": "Vàng SJC bán le trên 127 triệu, thì nếu ăn 9 giờ sáng mai đi bán vàng. Không thì chuyển 2 triệu từ tại gõ thanh toán cho chủ nhà Phạm Hùng tiền góp mua vàng",
+          "wer": 0.1389,
+          "cer": 0.1048,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": true,
+          "latency_sec": 57.1134
+        }
+      }
+    },
+    {
+      "sample_id": "train_0025",
+      "audio_path": "audio/train_0025/train_0025.wav",
+      "categories": [
+        "proper_nouns",
+        "dates_and_time",
+        "negation_and_cancellation",
+        "multi_intent_requests"
+      ],
+      "ground_truth_transcript": "Nếu mai mưa thì huỷ lịch đá bóng sáng mai với gọi cho bạn Minh nhé, còn không mưa thì thôi ạ.",
+      "raw_whisper_transcript": "Nếu mai mưa thì bị dịch đá bóng, sáng mai kế lợi cho đàn ông anh nhé. Còn không mưa gì rồi em?",
+      "alternative_qwen3_asr_transcript": "Nếu mây mưa thì hãy trực đá bóng, xấy mây cứ lợi cho đàn ven dế. Còn không mưa thì thôi.",
+      "current_hybrid_transcript": "Nếu mai mưa thì bị dịch đá bóng, sáng mai kế lợi cho đàn ông anh nhé. Còn không mưa gì rồi em?",
+      "corrected_fallback_transcript": "Nếu mai mưa thì bị dịch đá bóng, sáng mai kế lợi cho đàn ông anh nhé. Còn không mưa gì rồi em?",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "low_whisper_logprob(-0.438<-0.32)"
+      ],
+      "correction_reasons": [
+        "preserved_ambiguity_on_conflict:negation_cancellation"
+      ],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.4377,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 0.9917,
+        "whisper_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "ngay_mai"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [],
+          "negation_cancellation": [
+            "keep_unchanged"
+          ],
+          "proper_nouns_entities": []
+        },
+        "resolution": "conflict_ambiguity_preserved"
+      },
+      "conflict_detected": true,
+      "ambiguous_slots": {
+        "negation_cancellation": {
+          "whisper": [],
+          "qwen3_asr": [
+            "keep_unchanged"
+          ]
+        }
+      },
+      "clarification_prompt": "[ASR_AMBIGUITY_GUARD] Phát hiện xung đột nhận dạng giọng nói ở (ý định hủy/xác nhận lệnh): Whisper='Nếu mai mưa thì bị dịch đá bóng, sáng mai kế lợi cho đàn ông anh nhé. Còn không mưa gì rồi em?' vs Qwen3-ASR='Nếu mây mưa thì hãy trực đá bóng, xấy mây cứ lợi cho đàn ven dế. Còn không mưa thì thôi'. Không tự ý đoán giá trị khi gọi tool ghi (write); hãy ưu tiên kiểm tra ngữ cảnh hoặc hỏi lại người dùng (sys.ask_missing_info).",
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Nếu mai mưa thì bị dịch đá bóng, sáng mai kế lợi cho đàn ông anh nhé. Còn không mưa gì rồi em?",
+          "wer": 0.4545,
+          "cer": 0.3143,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 0.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 37.7619
+        },
+        "qwen3_asr_alone": {
+          "transcript": "Nếu mây mưa thì hãy trực đá bóng, xấy mây cứ lợi cho đàn ven dế. Còn không mưa thì thôi.",
+          "wer": 0.5,
+          "cer": 0.4,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 0.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 12.0903
+        },
+        "current_hybrid": {
+          "transcript": "Nếu mai mưa thì bị dịch đá bóng, sáng mai kế lợi cho đàn ông anh nhé. Còn không mưa gì rồi em?",
+          "wer": 0.4545,
+          "cer": 0.3143,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 0.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 37.7643
+        },
+        "uncertainty_fallback": {
+          "transcript": "Nếu mai mưa thì bị dịch đá bóng, sáng mai kế lợi cho đàn ông anh nhé. Còn không mưa gì rồi em?",
+          "wer": 0.4545,
+          "cer": 0.3143,
+          "critical_entity_accuracy": 0.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 0.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": true,
+          "latency_sec": 49.8543
+        }
+      }
+    },
+    {
+      "sample_id": "train_0026",
+      "audio_path": "audio/train_0026/train_0026.wav",
+      "categories": [
+        "regional_accents",
+        "dates_and_time"
+      ],
+      "ground_truth_transcript": "Trợ lý ơi, dời lịch cà phê với gia đình mai muộn hơn một tiếng giúp mình nhé.",
+      "raw_whisper_transcript": "Trợ lý ơi, giờ lịch trà phê với gia đình mang mũ họp một tiếng giúp mình hiếm.",
+      "alternative_qwen3_asr_transcript": "Chờ đi ơi, về lịch cà phê với gia đình mang mũ họ một chiến giúp mình hiếm",
+      "current_hybrid_transcript": "Trợ lý ơi, giờ lịch trà phê với gia đình mang mũ họp một tiếng giúp mình hiếm",
+      "corrected_fallback_transcript": "Trợ lý ơi, giờ lịch trà phê với gia đình mang mũ họp một tiếng giúp mình hiếm",
+      "secondary_asr_invoked": false,
+      "trigger_reasons": [],
+      "correction_reasons": [],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.2993,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "offset_1_tieng"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "resolution": "primary_high_confidence"
+      },
+      "conflict_detected": false,
+      "ambiguous_slots": {},
+      "clarification_prompt": null,
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Trợ lý ơi, giờ lịch trà phê với gia đình mang mũ họp một tiếng giúp mình hiếm.",
+          "wer": 0.3333,
+          "cer": 0.2759,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.5,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 22.8144
+        },
+        "qwen3_asr_alone": {
+          "transcript": "Chờ đi ơi, về lịch cà phê với gia đình mang mũ họ một chiến giúp mình hiếm",
+          "wer": 0.4444,
+          "cer": 0.3793,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 9.3181
+        },
+        "current_hybrid": {
+          "transcript": "Trợ lý ơi, giờ lịch trà phê với gia đình mang mũ họp một tiếng giúp mình hiếm",
+          "wer": 0.3333,
+          "cer": 0.2759,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.5,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 22.8158
+        },
+        "uncertainty_fallback": {
+          "transcript": "Trợ lý ơi, giờ lịch trà phê với gia đình mang mũ họp một tiếng giúp mình hiếm",
+          "wer": 0.3333,
+          "cer": 0.2759,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.5,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 22.8153
+        }
+      }
+    },
+    {
+      "sample_id": "train_0074",
+      "audio_path": "audio/train_0074/train_0074.wav",
+      "categories": [
+        "product_and_app_names",
+        "proper_nouns",
+        "numbers_amounts",
+        "dates_and_time",
+        "multi_intent_requests"
+      ],
+      "ground_truth_transcript": "Nếu ví đủ thì trả tiền nước bằng ví và nhắn SMS cho cô giáo Mai là đóng rồi, còn thiếu thì trả bằng ngân hàng và 8 giờ tối nay nhắc tôi nạp ví.",
+      "raw_whisper_transcript": "Nếu mà ví đủ tiền thì chả, tiên nước bằng ví và nhắn SMS cho cô giáo mai là đóng rồi. Còn thiếu thì trả vào ngân hàng vào 8h tối nay nhắc tôi là ví.",
+      "alternative_qwen3_asr_transcript": "nếu mà ví đủ tiền thì trả tiền nước bằng ví và nhắn sms cho cô giáo mai là đóng rồi còn thiếu thì trả vào ngân hàng và tám giờ tối nay nhắc tôi là ví",
+      "current_hybrid_transcript": "Nếu mà ví đủ tiền thì chả, tiên nước bằng ví và nhắn SMS cho cô giáo mai là đóng rồi. Còn thiếu thì trả vào ngân hàng vào 8h tối nay nhắc tôi là ví",
+      "corrected_fallback_transcript": "Nếu mà ví đủ tiền thì chả, tiên nước bằng ví và nhắn SMS cho cô giáo mai là đóng rồi. Còn thiếu thì trả vào ngân hàng vào 8h tối nay nhắc tôi là ví",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "low_whisper_logprob(-0.368<-0.32)",
+        "critical_write_slot_verification"
+      ],
+      "correction_reasons": [
+        "preserved_ambiguity_on_conflict:dates_times"
+      ],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.3685,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 1.1687,
+        "whisper_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "ngay_mai",
+            "toi_nay"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": [
+            "SMS"
+          ]
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [
+            "ngay_mai",
+            "time:8:00",
+            "toi_nay"
+          ],
+          "negation_cancellation": [],
+          "proper_nouns_entities": [
+            "SMS"
+          ]
+        },
+        "resolution": "conflict_ambiguity_preserved"
+      },
+      "conflict_detected": true,
+      "ambiguous_slots": {
+        "dates_times": {
+          "whisper": [
+            "ngay_mai",
+            "toi_nay"
+          ],
+          "qwen3_asr": [
+            "ngay_mai",
+            "time:8:00",
+            "toi_nay"
+          ]
+        }
+      },
+      "clarification_prompt": "[ASR_AMBIGUITY_GUARD] Phát hiện xung đột nhận dạng giọng nói ở (thời gian/ngày giờ): Whisper='Nếu mà ví đủ tiền thì chả, tiên nước bằng ví và nhắn SMS cho cô giáo mai là đóng rồi. Còn thiếu thì trả vào ngân hàng vào 8h tối nay nhắc tôi là ví' vs Qwen3-ASR='nếu mà ví đủ tiền thì trả tiền nước bằng ví và nhắn sms cho cô giáo mai là đóng rồi còn thiếu thì trả vào ngân hàng và tám giờ tối nay nhắc tôi là ví'. Không tự ý đoán giá trị khi gọi tool ghi (write); hãy ưu tiên kiểm tra ngữ cảnh hoặc hỏi lại người dùng (sys.ask_missing_info).",
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "Nếu mà ví đủ tiền thì chả, tiên nước bằng ví và nhắn SMS cho cô giáo mai là đóng rồi. Còn thiếu thì trả vào ngân hàng vào 8h tối nay nhắc tôi là ví.",
+          "wer": 0.2571,
+          "cer": 0.1869,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.6667,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 26.8771
+        },
+        "qwen3_asr_alone": {
+          "transcript": "nếu mà ví đủ tiền thì trả tiền nước bằng ví và nhắn sms cho cô giáo mai là đóng rồi còn thiếu thì trả vào ngân hàng và tám giờ tối nay nhắc tôi là ví",
+          "wer": 0.1429,
+          "cer": 0.1495,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 1.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 10.476
+        },
+        "current_hybrid": {
+          "transcript": "Nếu mà ví đủ tiền thì chả, tiên nước bằng ví và nhắn SMS cho cô giáo mai là đóng rồi. Còn thiếu thì trả vào ngân hàng vào 8h tối nay nhắc tôi là ví",
+          "wer": 0.2571,
+          "cer": 0.1869,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.6667,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 26.8809
+        },
+        "uncertainty_fallback": {
+          "transcript": "Nếu mà ví đủ tiền thì chả, tiên nước bằng ví và nhắn SMS cho cô giáo mai là đóng rồi. Còn thiếu thì trả vào ngân hàng vào 8h tối nay nhắc tôi là ví",
+          "wer": 0.2571,
+          "cer": 0.1869,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 0.6667,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": true,
+          "latency_sec": 37.3643
+        }
+      }
+    },
+    {
+      "sample_id": "train_0036",
+      "audio_path": "audio/train_0036/train_0036.wav",
+      "categories": [
+        "negation_and_cancellation"
+      ],
+      "ground_truth_transcript": "Tắt đèn phòng làm việc đi à thôi khỏi, không cần.",
+      "raw_whisper_transcript": "tắt báo thức, không làm việc đi và khởi khỏi, không cần.",
+      "alternative_qwen3_asr_transcript": "chắc đèn không làm việc đi, áo khoác không tròn",
+      "current_hybrid_transcript": "tắt báo thức, không làm việc đi và khởi khỏi, không cần",
+      "corrected_fallback_transcript": "tắt báo thức, không làm việc đi và thôi khỏi, không cần",
+      "secondary_asr_invoked": true,
+      "trigger_reasons": [
+        "low_whisper_logprob(-0.642<-0.32)",
+        "phonetic_or_entity_repair_triggered",
+        "critical_slot:negation_or_self_repair"
+      ],
+      "correction_reasons": [
+        "phonetic_rule:thôi khỏi, không cần",
+        "preserved_ambiguity_on_conflict:negation_cancellation"
+      ],
+      "confidence_evidence": {
+        "whisper_avg_logprob": -0.6421,
+        "whisper_no_speech_prob": 0.0,
+        "whisper_compression_ratio": 1.0,
+        "whisper_slots": {
+          "numbers_amounts": [],
+          "dates_times": [],
+          "negation_cancellation": [
+            "self_cancel_full"
+          ],
+          "proper_nouns_entities": []
+        },
+        "qwen3_slots": {
+          "numbers_amounts": [],
+          "dates_times": [],
+          "negation_cancellation": [],
+          "proper_nouns_entities": []
+        },
+        "resolution": "conflict_ambiguity_preserved"
+      },
+      "conflict_detected": true,
+      "ambiguous_slots": {
+        "negation_cancellation": {
+          "whisper": [
+            "self_cancel_full"
+          ],
+          "qwen3_asr": []
+        }
+      },
+      "clarification_prompt": "[ASR_AMBIGUITY_GUARD] Phát hiện xung đột nhận dạng giọng nói ở (ý định hủy/xác nhận lệnh): Whisper='tắt báo thức, không làm việc đi và thôi khỏi, không cần' vs Qwen3-ASR='chắc đèn không làm việc đi, áo khoác không tròn'. Không tự ý đoán giá trị khi gọi tool ghi (write); hãy ưu tiên kiểm tra ngữ cảnh hoặc hỏi lại người dùng (sys.ask_missing_info).",
+      "metrics_by_system": {
+        "whisper_alone": {
+          "transcript": "tắt báo thức, không làm việc đi và khởi khỏi, không cần.",
+          "wer": 0.4545,
+          "cer": 0.3243,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 0.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 16.2856
+        },
+        "qwen3_asr_alone": {
+          "transcript": "chắc đèn không làm việc đi, áo khoác không tròn",
+          "wer": 0.5455,
+          "cer": 0.4324,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 0.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 4.3596
+        },
+        "current_hybrid": {
+          "transcript": "tắt báo thức, không làm việc đi và khởi khỏi, không cần",
+          "wer": 0.4545,
+          "cer": 0.3243,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 0.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": false,
+          "latency_sec": 16.2862
+        },
+        "uncertainty_fallback": {
+          "transcript": "tắt báo thức, không làm việc đi và thôi khỏi, không cần",
+          "wer": 0.3636,
+          "cer": 0.2703,
+          "critical_entity_accuracy": 1.0,
+          "number_date_time_accuracy": 1.0,
+          "negation_intent_accuracy": 1.0,
+          "downstream_tool_exec_accuracy": 0.0,
+          "false_entity_injections": [],
+          "safe_clarification_triggered": true,
+          "latency_sec": 20.6457
+        }
+      }
+    }
+  ]
+}

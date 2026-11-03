@@ -1,0 +1,259 @@
+{
+  "scenario_id": "sim_ecom_val_02_return",
+  "split": "val",
+  "template_id": "tpl_ecom_return_val",
+  "scenario_type": "multi_result_selection",
+  "primary_apps": [
+    "ecommerce"
+  ],
+  "installed_apps": [
+    "ecommerce",
+    "ewallet"
+  ],
+  "objective": "Inspect ecommerce orders and perform return on ord_ec_r3.",
+  "expect_mutation": true,
+  "user_request": "Tra cứu đơn hàng gương trang điểm đã nhận trên sàn rồi bấm yêu cầu trả hàng vì mặt gương bị nứt vỡ khi giao.",
+  "current_time": "2026-11-23T15:00:00+07:00",
+  "city": "Đà Nẵng",
+  "initial_state": {
+    "ecommerce": {
+      "products": [],
+      "cart": [],
+      "orders": [
+        {
+          "id": "ord_ec_r3",
+          "items": [
+            {
+              "product_id": "p_1",
+              "name": "Gương trang điểm để bàn",
+              "price": 320000,
+              "quantity": 1
+            }
+          ],
+          "total": 320000,
+          "status": "delivered"
+        },
+        {
+          "id": "ord_other_ship",
+          "items": [
+            {
+              "product_id": "p_2",
+              "name": "Ốp lưng điện thoại",
+              "price": 50000,
+              "quantity": 1
+            }
+          ],
+          "total": 50000,
+          "status": "shipping"
+        }
+      ],
+      "returns": []
+    },
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "ecommerce.order_status",
+      "arguments": {}
+    },
+    {
+      "name": "ecommerce.request_return",
+      "arguments": {
+        "order_id": "ord_ec_r3",
+        "reason": "damaged"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "orders": [
+        {
+          "id": "ord_ec_r3",
+          "items": [
+            {
+              "product_id": "p_1",
+              "name": "Gương trang điểm để bàn",
+              "price": 320000,
+              "quantity": 1
+            }
+          ],
+          "total": 320000,
+          "status": "delivered"
+        },
+        {
+          "id": "ord_other_ship",
+          "items": [
+            {
+              "product_id": "p_2",
+              "name": "Ốp lưng điện thoại",
+              "price": 50000,
+              "quantity": 1
+            }
+          ],
+          "total": 50000,
+          "status": "shipping"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "return": {
+        "id": "ret_01",
+        "status": "requested",
+        "order_id": "ord_ec_r3",
+        "reason": "damaged"
+      },
+      "order": {
+        "id": "ord_ec_r3",
+        "items": [
+          {
+            "product_id": "p_1",
+            "name": "Gương trang điểm để bàn",
+            "price": 320000,
+            "quantity": 1
+          }
+        ],
+        "total": 320000,
+        "status": "return_requested"
+      }
+    }
+  ],
+  "final_state": {
+    "ecommerce": {
+      "products": [],
+      "cart": [],
+      "orders": [
+        {
+          "id": "ord_ec_r3",
+          "items": [
+            {
+              "product_id": "p_1",
+              "name": "Gương trang điểm để bàn",
+              "price": 320000,
+              "quantity": 1
+            }
+          ],
+          "total": 320000,
+          "status": "return_requested"
+        },
+        {
+          "id": "ord_other_ship",
+          "items": [
+            {
+              "product_id": "p_2",
+              "name": "Ốp lưng điện thoại",
+              "price": 50000,
+              "quantity": 1
+            }
+          ],
+          "total": 50000,
+          "status": "shipping"
+        }
+      ],
+      "returns": [
+        {
+          "id": "ret_01",
+          "status": "requested",
+          "order_id": "ord_ec_r3",
+          "reason": "damaged"
+        }
+      ]
+    },
+    "ewallet": {}
+  },
+  "state_diff": {
+    "ecommerce": {
+      "before": {
+        "products": [],
+        "cart": [],
+        "orders": [
+          {
+            "id": "ord_ec_r3",
+            "items": [
+              {
+                "product_id": "p_1",
+                "name": "Gương trang điểm để bàn",
+                "price": 320000,
+                "quantity": 1
+              }
+            ],
+            "total": 320000,
+            "status": "delivered"
+          },
+          {
+            "id": "ord_other_ship",
+            "items": [
+              {
+                "product_id": "p_2",
+                "name": "Ốp lưng điện thoại",
+                "price": 50000,
+                "quantity": 1
+              }
+            ],
+            "total": 50000,
+            "status": "shipping"
+          }
+        ],
+        "returns": []
+      },
+      "after": {
+        "products": [],
+        "cart": [],
+        "orders": [
+          {
+            "id": "ord_ec_r3",
+            "items": [
+              {
+                "product_id": "p_1",
+                "name": "Gương trang điểm để bàn",
+                "price": 320000,
+                "quantity": 1
+              }
+            ],
+            "total": 320000,
+            "status": "return_requested"
+          },
+          {
+            "id": "ord_other_ship",
+            "items": [
+              {
+                "product_id": "p_2",
+                "name": "Ốp lưng điện thoại",
+                "price": 50000,
+                "quantity": 1
+              }
+            ],
+            "total": 50000,
+            "status": "shipping"
+          }
+        ],
+        "returns": [
+          {
+            "id": "ret_01",
+            "status": "requested",
+            "order_id": "ord_ec_r3",
+            "reason": "damaged"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "8c7dceb6f48516261ffc675c79c4d03171e847cefe89235af35e092440ee5bbb",
+  "validation": {
+    "scenario_id": "sim_ecom_val_02_return",
+    "scenario_type": "multi_result_selection",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "ecommerce"
+    ],
+    "state_hash": "8c7dceb6f48516261ffc675c79c4d03171e847cefe89235af35e092440ee5bbb",
+    "errors": []
+  }
+}

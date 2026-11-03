@@ -1,0 +1,160 @@
+{
+  "scenario_id": "sim_stocks_tr_01_buy",
+  "split": "train",
+  "template_id": "tpl_stocks_quote_buy_train",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "stocks"
+  ],
+  "installed_apps": [
+    "stocks",
+    "banking",
+    "ewallet"
+  ],
+  "objective": "Get quote for MWG and place buy order for 300 shares at 51200.",
+  "expect_mutation": true,
+  "user_request": "Kiểm tra thị giá mã cổ phiếu MWG hiện tại rồi đặt lệnh mua 300 cổ phiếu theo đúng mức giá đó giúp anh.",
+  "current_time": "2026-11-23T10:15:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "stocks": {
+      "quotes": [
+        {
+          "symbol": "MWG",
+          "name": "Thế Giới Di Động",
+          "price": 51200,
+          "change_pct": 1.4
+        }
+      ],
+      "holdings": [],
+      "orders": [],
+      "alerts": []
+    },
+    "banking": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "stocks.get_quote",
+      "arguments": {
+        "symbol": "MWG"
+      }
+    },
+    {
+      "name": "stocks.place_order",
+      "arguments": {
+        "symbol": "MWG",
+        "side": "buy",
+        "quantity": 300,
+        "price": 51200
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "quote": {
+        "symbol": "MWG",
+        "name": "Thế Giới Di Động",
+        "price": 51200,
+        "change_pct": 1.4
+      }
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "symbol": "MWG",
+        "side": "buy",
+        "quantity": 300,
+        "type": "limit",
+        "price": 51200,
+        "status": "placed"
+      }
+    }
+  ],
+  "final_state": {
+    "stocks": {
+      "quotes": [
+        {
+          "symbol": "MWG",
+          "name": "Thế Giới Di Động",
+          "price": 51200,
+          "change_pct": 1.4
+        }
+      ],
+      "holdings": [],
+      "orders": [
+        {
+          "id": "ord_01",
+          "symbol": "MWG",
+          "side": "buy",
+          "quantity": 300,
+          "type": "limit",
+          "price": 51200,
+          "status": "placed"
+        }
+      ],
+      "alerts": []
+    },
+    "banking": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "stocks": {
+      "before": {
+        "quotes": [
+          {
+            "symbol": "MWG",
+            "name": "Thế Giới Di Động",
+            "price": 51200,
+            "change_pct": 1.4
+          }
+        ],
+        "holdings": [],
+        "orders": [],
+        "alerts": []
+      },
+      "after": {
+        "quotes": [
+          {
+            "symbol": "MWG",
+            "name": "Thế Giới Di Động",
+            "price": 51200,
+            "change_pct": 1.4
+          }
+        ],
+        "holdings": [],
+        "orders": [
+          {
+            "id": "ord_01",
+            "symbol": "MWG",
+            "side": "buy",
+            "quantity": 300,
+            "type": "limit",
+            "price": 51200,
+            "status": "placed"
+          }
+        ],
+        "alerts": []
+      }
+    }
+  },
+  "state_hash": "e7d095b0de214a93463c0bdaeeacdb3d553eb784fcef130e0cbf54859a8191bf",
+  "validation": {
+    "scenario_id": "sim_stocks_tr_01_buy",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "stocks"
+    ],
+    "state_hash": "e7d095b0de214a93463c0bdaeeacdb3d553eb784fcef130e0cbf54859a8191bf",
+    "errors": []
+  }
+}

@@ -1,0 +1,283 @@
+{
+  "scenario_id": "sim_food_tr_02",
+  "split": "train",
+  "template_id": "tpl_food_order_train",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "food_delivery"
+  ],
+  "installed_apps": [
+    "food_delivery",
+    "ewallet",
+    "grocery"
+  ],
+  "objective": "List restaurants, get menu for rest_ct_02, and place order for 3x m_com_02.",
+  "expect_mutation": true,
+  "user_request": "Mở app đặt đồ ăn tìm quán Cơm Tấm Sài Gòn, lấy thực đơn của quán rồi đặt 3 suất Cơm tấm sườn bì chả giao đến địa chỉ nhà trả tiền mặt.",
+  "serialized_user_prompt": "Mở app đặt đồ ăn tìm quán Cơm Tấm Sài Gòn, lấy thực đơn của quán rồi đặt 3 suất Cơm tấm sườn bì chả giao đến địa chỉ nhà trả tiền mặt",
+  "current_time": "2026-11-23T11:30:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "TP.HCM",
+  "user_profile": {
+    "name": "Trần Thu Hà",
+    "city": "TP.HCM",
+    "home_address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM",
+    "work_address": "Tòa nhà Bitexco, số 2 Hải Triều, Quận 1, TP.HCM"
+  },
+  "location": {
+    "lat": 10.7769,
+    "lng": 106.7009
+  },
+  "history": [],
+  "initial_state": {
+    "food_delivery": {
+      "restaurants": [
+        {
+          "id": "rest_other_00",
+          "name": "Trà Sữa Tocotoco",
+          "rating": 4.4,
+          "menu": [
+            {
+              "id": "m_ts_00",
+              "name": "Trà sữa trân châu",
+              "price": 35000
+            }
+          ]
+        },
+        {
+          "id": "rest_ct_02",
+          "name": "Cơm Tấm Sài Gòn",
+          "rating": 4.8,
+          "menu": [
+            {
+              "id": "m_com_02",
+              "name": "Cơm tấm sườn bì chả",
+              "price": 55000
+            }
+          ]
+        }
+      ],
+      "orders": []
+    },
+    "ewallet": {},
+    "grocery": {}
+  },
+  "tool_calls": [
+    {
+      "name": "food_delivery.list_restaurants",
+      "arguments": {}
+    },
+    {
+      "name": "food_delivery.get_menu",
+      "arguments": {
+        "restaurant_id": "rest_ct_02"
+      }
+    },
+    {
+      "name": "food_delivery.place_order",
+      "arguments": {
+        "restaurant_id": "rest_ct_02",
+        "items": [
+          {
+            "item_id": "m_com_02",
+            "quantity": 3
+          }
+        ],
+        "address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM",
+        "payment": "cash"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "restaurants": [
+        {
+          "id": "rest_other_00",
+          "name": "Trà Sữa Tocotoco",
+          "rating": 4.4
+        },
+        {
+          "id": "rest_ct_02",
+          "name": "Cơm Tấm Sài Gòn",
+          "rating": 4.8
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "menu": [
+        {
+          "id": "m_com_02",
+          "name": "Cơm tấm sườn bì chả",
+          "price": 55000
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "restaurant_id": "rest_ct_02",
+        "items": [
+          {
+            "item_id": "m_com_02",
+            "name": "Cơm tấm sườn bì chả",
+            "quantity": 3,
+            "note": null
+          }
+        ],
+        "total": 165000,
+        "address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM",
+        "payment": "cash",
+        "status": "placed"
+      }
+    }
+  ],
+  "final_state": {
+    "food_delivery": {
+      "restaurants": [
+        {
+          "id": "rest_other_00",
+          "name": "Trà Sữa Tocotoco",
+          "rating": 4.4,
+          "menu": [
+            {
+              "id": "m_ts_00",
+              "name": "Trà sữa trân châu",
+              "price": 35000
+            }
+          ]
+        },
+        {
+          "id": "rest_ct_02",
+          "name": "Cơm Tấm Sài Gòn",
+          "rating": 4.8,
+          "menu": [
+            {
+              "id": "m_com_02",
+              "name": "Cơm tấm sườn bì chả",
+              "price": 55000
+            }
+          ]
+        }
+      ],
+      "orders": [
+        {
+          "id": "ord_01",
+          "restaurant_id": "rest_ct_02",
+          "items": [
+            {
+              "item_id": "m_com_02",
+              "name": "Cơm tấm sườn bì chả",
+              "quantity": 3,
+              "note": null
+            }
+          ],
+          "total": 165000,
+          "address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM",
+          "payment": "cash",
+          "status": "placed"
+        }
+      ]
+    },
+    "ewallet": {},
+    "grocery": {}
+  },
+  "state_diff": {
+    "food_delivery": {
+      "before": {
+        "restaurants": [
+          {
+            "id": "rest_other_00",
+            "name": "Trà Sữa Tocotoco",
+            "rating": 4.4,
+            "menu": [
+              {
+                "id": "m_ts_00",
+                "name": "Trà sữa trân châu",
+                "price": 35000
+              }
+            ]
+          },
+          {
+            "id": "rest_ct_02",
+            "name": "Cơm Tấm Sài Gòn",
+            "rating": 4.8,
+            "menu": [
+              {
+                "id": "m_com_02",
+                "name": "Cơm tấm sườn bì chả",
+                "price": 55000
+              }
+            ]
+          }
+        ],
+        "orders": []
+      },
+      "after": {
+        "restaurants": [
+          {
+            "id": "rest_other_00",
+            "name": "Trà Sữa Tocotoco",
+            "rating": 4.4,
+            "menu": [
+              {
+                "id": "m_ts_00",
+                "name": "Trà sữa trân châu",
+                "price": 35000
+              }
+            ]
+          },
+          {
+            "id": "rest_ct_02",
+            "name": "Cơm Tấm Sài Gòn",
+            "rating": 4.8,
+            "menu": [
+              {
+                "id": "m_com_02",
+                "name": "Cơm tấm sườn bì chả",
+                "price": 55000
+              }
+            ]
+          }
+        ],
+        "orders": [
+          {
+            "id": "ord_01",
+            "restaurant_id": "rest_ct_02",
+            "items": [
+              {
+                "item_id": "m_com_02",
+                "name": "Cơm tấm sườn bì chả",
+                "quantity": 3,
+                "note": null
+              }
+            ],
+            "total": 165000,
+            "address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM",
+            "payment": "cash",
+            "status": "placed"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "2df4b1470e73e38c3eefbed540011acddbd9349fa283089ddb0e6e57e89d035b",
+  "validation": {
+    "scenario_id": "sim_food_tr_02",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "food_delivery"
+    ],
+    "state_hash": "2df4b1470e73e38c3eefbed540011acddbd9349fa283089ddb0e6e57e89d035b",
+    "errors": []
+  }
+}

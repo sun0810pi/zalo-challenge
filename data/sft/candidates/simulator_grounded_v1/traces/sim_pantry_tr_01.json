@@ -1,0 +1,153 @@
+{
+  "scenario_id": "sim_pantry_tr_01",
+  "split": "train",
+  "template_id": "tpl_pantry_consume_train_True",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "pantry"
+  ],
+  "installed_apps": [
+    "pantry",
+    "grocery",
+    "recipes"
+  ],
+  "objective": "List pantry items; if stock (10) >= 4, consume 4.",
+  "expect_mutation": true,
+  "user_request": "Sáng nay nhà mình vừa chiên 4 quả trứng gà, cập nhật trừ số lượng trứng gà trong tủ bếp giúp anh.",
+  "current_time": "2026-11-22T11:00:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "pantry": {
+      "items": [
+        {
+          "id": "pan_egg_01",
+          "name": "trứng gà",
+          "stock": 10,
+          "unit": "quả"
+        },
+        {
+          "id": "pan_salt_99",
+          "name": "muối biển",
+          "stock": 2,
+          "unit": "gói"
+        }
+      ]
+    },
+    "grocery": {},
+    "recipes": {}
+  },
+  "tool_calls": [
+    {
+      "name": "pantry.list_items",
+      "arguments": {}
+    },
+    {
+      "name": "pantry.consume",
+      "arguments": {
+        "item_id": "pan_egg_01",
+        "quantity": 4
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "items": [
+        {
+          "id": "pan_egg_01",
+          "name": "trứng gà",
+          "stock": 10,
+          "unit": "quả"
+        },
+        {
+          "id": "pan_salt_99",
+          "name": "muối biển",
+          "stock": 2,
+          "unit": "gói"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "item": {
+        "id": "pan_egg_01",
+        "name": "trứng gà",
+        "stock": 6,
+        "unit": "quả"
+      }
+    }
+  ],
+  "final_state": {
+    "pantry": {
+      "items": [
+        {
+          "id": "pan_egg_01",
+          "name": "trứng gà",
+          "stock": 6,
+          "unit": "quả"
+        },
+        {
+          "id": "pan_salt_99",
+          "name": "muối biển",
+          "stock": 2,
+          "unit": "gói"
+        }
+      ]
+    },
+    "grocery": {},
+    "recipes": {}
+  },
+  "state_diff": {
+    "pantry": {
+      "before": {
+        "items": [
+          {
+            "id": "pan_egg_01",
+            "name": "trứng gà",
+            "stock": 10,
+            "unit": "quả"
+          },
+          {
+            "id": "pan_salt_99",
+            "name": "muối biển",
+            "stock": 2,
+            "unit": "gói"
+          }
+        ]
+      },
+      "after": {
+        "items": [
+          {
+            "id": "pan_egg_01",
+            "name": "trứng gà",
+            "stock": 6,
+            "unit": "quả"
+          },
+          {
+            "id": "pan_salt_99",
+            "name": "muối biển",
+            "stock": 2,
+            "unit": "gói"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "5f13dd848e1f74c8d171c341d367268b4bff48be1d8d48224634ca8c0293f429",
+  "validation": {
+    "scenario_id": "sim_pantry_tr_01",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "pantry"
+    ],
+    "state_hash": "5f13dd848e1f74c8d171c341d367268b4bff48be1d8d48224634ca8c0293f429",
+    "errors": []
+  }
+}

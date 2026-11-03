@@ -1,0 +1,142 @@
+{
+  "scenario_id": "pilot_012_grocery_ambiguous_ask",
+  "split": "train",
+  "template_id": "tpl_grocery_ambiguous_ask",
+  "scenario_type": "missing_info",
+  "primary_apps": [
+    "grocery",
+    "sys"
+  ],
+  "installed_apps": [
+    "grocery",
+    "notes"
+  ],
+  "objective": "Search eggs on grocery, see 2 distinct egg types (gà vs vịt), and call sys.ask_missing_info.",
+  "expect_mutation": false,
+  "user_request": "Đặt mua giúp chị 1 hộp trứng trên app đi chợ nhé.",
+  "serialized_user_prompt": "Đặt mua giúp chị 1 hộp trứng trên app đi chợ nhé",
+  "current_time": "2026-11-20T09:15:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "TP.HCM",
+  "user_profile": {
+    "name": "Trần Thu Hà",
+    "city": "TP.HCM",
+    "home_address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM",
+    "work_address": "Tòa nhà Bitexco, số 2 Hải Triều, Quận 1, TP.HCM"
+  },
+  "location": {
+    "lat": 10.7769,
+    "lng": 106.7009
+  },
+  "history": [],
+  "initial_state": {
+    "grocery": {
+      "products": [
+        {
+          "id": "gro_egg_01",
+          "name": "Trứng gà ta Ba Huân hộp 10 quả",
+          "price": 38000,
+          "unit": "hộp",
+          "category": "trứng",
+          "in_stock": true
+        },
+        {
+          "id": "gro_egg_02",
+          "name": "Trứng vịt sạch CP hộp 10 quả",
+          "price": 34000,
+          "unit": "hộp",
+          "category": "trứng",
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": []
+    },
+    "notes": {}
+  },
+  "tool_calls": [
+    {
+      "name": "grocery.search",
+      "arguments": {
+        "query": "trứng"
+      }
+    },
+    {
+      "name": "sys.ask_missing_info",
+      "arguments": {
+        "tool_name": "grocery.add_to_cart",
+        "params": [
+          "product_id"
+        ]
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "products": [
+        {
+          "id": "gro_egg_01",
+          "name": "Trứng gà ta Ba Huân hộp 10 quả",
+          "price": 38000,
+          "unit": "hộp",
+          "category": "trứng",
+          "in_stock": true
+        },
+        {
+          "id": "gro_egg_02",
+          "name": "Trứng vịt sạch CP hộp 10 quả",
+          "price": 34000,
+          "unit": "hộp",
+          "category": "trứng",
+          "in_stock": true
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "waiting_for_user": true
+    }
+  ],
+  "final_state": {
+    "grocery": {
+      "products": [
+        {
+          "id": "gro_egg_01",
+          "name": "Trứng gà ta Ba Huân hộp 10 quả",
+          "price": 38000,
+          "unit": "hộp",
+          "category": "trứng",
+          "in_stock": true
+        },
+        {
+          "id": "gro_egg_02",
+          "name": "Trứng vịt sạch CP hộp 10 quả",
+          "price": 34000,
+          "unit": "hộp",
+          "category": "trứng",
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": []
+    },
+    "notes": {}
+  },
+  "state_diff": {},
+  "state_hash": "dd673d74b39b49fed5e4fe5c953631901987fe29b16f1311cece59ed31337258",
+  "validation": {
+    "scenario_id": "pilot_012_grocery_ambiguous_ask",
+    "scenario_type": "missing_info",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "dd673d74b39b49fed5e4fe5c953631901987fe29b16f1311cece59ed31337258",
+    "errors": []
+  }
+}

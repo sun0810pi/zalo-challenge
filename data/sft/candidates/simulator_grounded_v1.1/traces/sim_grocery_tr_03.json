@@ -1,0 +1,216 @@
+{
+  "scenario_id": "sim_grocery_tr_03",
+  "split": "train",
+  "template_id": "tpl_grocery_buy_train",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "grocery"
+  ],
+  "installed_apps": [
+    "grocery",
+    "pantry",
+    "shopping_list"
+  ],
+  "objective": "Search cá hồi phi lê, add 1 of gro_sal_03 to cart, and checkout.",
+  "expect_mutation": true,
+  "user_request": "Tìm cá hồi phi lê trên app đi chợ, thêm 1 phần vào giỏ rồi đặt giao về nhà vào 17:30 giúp mình.",
+  "serialized_user_prompt": "Tìm cá hồi phi lê trên app đi chợ, thêm 1 phần vào giỏ rồi đặt giao về nhà vào 17:30 giúp mình",
+  "current_time": "2026-11-22T09:30:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Đà Nẵng",
+  "user_profile": {
+    "name": "Lê Hoàng Nam",
+    "city": "Đà Nẵng",
+    "home_address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+    "work_address": "Khu Công nghệ thông tin tập trung, Liên Chiểu, Đà Nẵng"
+  },
+  "location": {
+    "lat": 16.0601,
+    "lng": 108.2122
+  },
+  "history": [],
+  "initial_state": {
+    "grocery": {
+      "products": [
+        {
+          "id": "gro_sal_03",
+          "name": "Cá hồi Nauy phi lê tươi 300g",
+          "price": 175000,
+          "unit": "phần",
+          "category": "thực phẩm",
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": []
+    },
+    "pantry": {},
+    "shopping_list": {}
+  },
+  "tool_calls": [
+    {
+      "name": "grocery.search",
+      "arguments": {
+        "query": "cá hồi phi lê"
+      }
+    },
+    {
+      "name": "grocery.add_to_cart",
+      "arguments": {
+        "product_id": "gro_sal_03",
+        "quantity": 1
+      }
+    },
+    {
+      "name": "grocery.checkout",
+      "arguments": {
+        "address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+        "delivery_time": "17:30"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "products": [
+        {
+          "id": "gro_sal_03",
+          "name": "Cá hồi Nauy phi lê tươi 300g",
+          "price": 175000,
+          "unit": "phần",
+          "category": "thực phẩm",
+          "in_stock": true
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "cart": [
+        {
+          "product_id": "gro_sal_03",
+          "name": "Cá hồi Nauy phi lê tươi 300g",
+          "price": 175000,
+          "quantity": 1
+        }
+      ],
+      "cart_total": 175000
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "items": [
+          {
+            "product_id": "gro_sal_03",
+            "name": "Cá hồi Nauy phi lê tươi 300g",
+            "price": 175000,
+            "quantity": 1
+          }
+        ],
+        "total": 175000,
+        "status": "placed",
+        "address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+        "delivery_time": "17:30"
+      }
+    }
+  ],
+  "final_state": {
+    "grocery": {
+      "products": [
+        {
+          "id": "gro_sal_03",
+          "name": "Cá hồi Nauy phi lê tươi 300g",
+          "price": 175000,
+          "unit": "phần",
+          "category": "thực phẩm",
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": [
+        {
+          "id": "ord_01",
+          "items": [
+            {
+              "product_id": "gro_sal_03",
+              "name": "Cá hồi Nauy phi lê tươi 300g",
+              "price": 175000,
+              "quantity": 1
+            }
+          ],
+          "total": 175000,
+          "status": "placed",
+          "address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+          "delivery_time": "17:30"
+        }
+      ]
+    },
+    "pantry": {},
+    "shopping_list": {}
+  },
+  "state_diff": {
+    "grocery": {
+      "before": {
+        "products": [
+          {
+            "id": "gro_sal_03",
+            "name": "Cá hồi Nauy phi lê tươi 300g",
+            "price": 175000,
+            "unit": "phần",
+            "category": "thực phẩm",
+            "in_stock": true
+          }
+        ],
+        "cart": [],
+        "orders": []
+      },
+      "after": {
+        "products": [
+          {
+            "id": "gro_sal_03",
+            "name": "Cá hồi Nauy phi lê tươi 300g",
+            "price": 175000,
+            "unit": "phần",
+            "category": "thực phẩm",
+            "in_stock": true
+          }
+        ],
+        "cart": [],
+        "orders": [
+          {
+            "id": "ord_01",
+            "items": [
+              {
+                "product_id": "gro_sal_03",
+                "name": "Cá hồi Nauy phi lê tươi 300g",
+                "price": 175000,
+                "quantity": 1
+              }
+            ],
+            "total": 175000,
+            "status": "placed",
+            "address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+            "delivery_time": "17:30"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "1c3f0932f63d35e3de8d5bf49600b8a02c92b065dd671e1187707193d96e3308",
+  "validation": {
+    "scenario_id": "sim_grocery_tr_03",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "grocery"
+    ],
+    "state_hash": "1c3f0932f63d35e3de8d5bf49600b8a02c92b065dd671e1187707193d96e3308",
+    "errors": []
+  }
+}

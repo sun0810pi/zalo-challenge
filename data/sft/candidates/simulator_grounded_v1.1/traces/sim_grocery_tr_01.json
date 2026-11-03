@@ -1,0 +1,216 @@
+{
+  "scenario_id": "sim_grocery_tr_01",
+  "split": "train",
+  "template_id": "tpl_grocery_buy_train",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "grocery"
+  ],
+  "installed_apps": [
+    "grocery",
+    "pantry",
+    "shopping_list"
+  ],
+  "objective": "Search gạo ST25, add 1 of gro_rice_01 to cart, and checkout.",
+  "expect_mutation": true,
+  "user_request": "Tìm mua 1 túi gạo ST25 trên ứng dụng đi chợ rồi đặt giao về nhà lúc 18:00 chiều nay nhé.",
+  "serialized_user_prompt": "Tìm mua 1 túi gạo ST25 trên ứng dụng đi chợ rồi đặt giao về nhà lúc 18:00 chiều nay nhé",
+  "current_time": "2026-11-22T09:30:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Nguyễn Minh Quân",
+    "city": "Hà Nội",
+    "home_address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+    "work_address": "Tòa nhà Keangnam, Phạm Hùng, Nam Từ Liêm, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0245,
+    "lng": 105.8091
+  },
+  "history": [],
+  "initial_state": {
+    "grocery": {
+      "products": [
+        {
+          "id": "gro_rice_01",
+          "name": "Gạo ST25 Ông Cua túi 5kg",
+          "price": 185000,
+          "unit": "phần",
+          "category": "thực phẩm",
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": []
+    },
+    "pantry": {},
+    "shopping_list": {}
+  },
+  "tool_calls": [
+    {
+      "name": "grocery.search",
+      "arguments": {
+        "query": "gạo ST25"
+      }
+    },
+    {
+      "name": "grocery.add_to_cart",
+      "arguments": {
+        "product_id": "gro_rice_01",
+        "quantity": 1
+      }
+    },
+    {
+      "name": "grocery.checkout",
+      "arguments": {
+        "address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+        "delivery_time": "18:00"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "products": [
+        {
+          "id": "gro_rice_01",
+          "name": "Gạo ST25 Ông Cua túi 5kg",
+          "price": 185000,
+          "unit": "phần",
+          "category": "thực phẩm",
+          "in_stock": true
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "cart": [
+        {
+          "product_id": "gro_rice_01",
+          "name": "Gạo ST25 Ông Cua túi 5kg",
+          "price": 185000,
+          "quantity": 1
+        }
+      ],
+      "cart_total": 185000
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "items": [
+          {
+            "product_id": "gro_rice_01",
+            "name": "Gạo ST25 Ông Cua túi 5kg",
+            "price": 185000,
+            "quantity": 1
+          }
+        ],
+        "total": 185000,
+        "status": "placed",
+        "address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+        "delivery_time": "18:00"
+      }
+    }
+  ],
+  "final_state": {
+    "grocery": {
+      "products": [
+        {
+          "id": "gro_rice_01",
+          "name": "Gạo ST25 Ông Cua túi 5kg",
+          "price": 185000,
+          "unit": "phần",
+          "category": "thực phẩm",
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": [
+        {
+          "id": "ord_01",
+          "items": [
+            {
+              "product_id": "gro_rice_01",
+              "name": "Gạo ST25 Ông Cua túi 5kg",
+              "price": 185000,
+              "quantity": 1
+            }
+          ],
+          "total": 185000,
+          "status": "placed",
+          "address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+          "delivery_time": "18:00"
+        }
+      ]
+    },
+    "pantry": {},
+    "shopping_list": {}
+  },
+  "state_diff": {
+    "grocery": {
+      "before": {
+        "products": [
+          {
+            "id": "gro_rice_01",
+            "name": "Gạo ST25 Ông Cua túi 5kg",
+            "price": 185000,
+            "unit": "phần",
+            "category": "thực phẩm",
+            "in_stock": true
+          }
+        ],
+        "cart": [],
+        "orders": []
+      },
+      "after": {
+        "products": [
+          {
+            "id": "gro_rice_01",
+            "name": "Gạo ST25 Ông Cua túi 5kg",
+            "price": 185000,
+            "unit": "phần",
+            "category": "thực phẩm",
+            "in_stock": true
+          }
+        ],
+        "cart": [],
+        "orders": [
+          {
+            "id": "ord_01",
+            "items": [
+              {
+                "product_id": "gro_rice_01",
+                "name": "Gạo ST25 Ông Cua túi 5kg",
+                "price": 185000,
+                "quantity": 1
+              }
+            ],
+            "total": 185000,
+            "status": "placed",
+            "address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+            "delivery_time": "18:00"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "494804bf15d62ad6e85d715975ce62b949433f6155296ca6716f729a59ec313b",
+  "validation": {
+    "scenario_id": "sim_grocery_tr_01",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "grocery"
+    ],
+    "state_hash": "494804bf15d62ad6e85d715975ce62b949433f6155296ca6716f729a59ec313b",
+    "errors": []
+  }
+}

@@ -1,0 +1,271 @@
+{
+  "scenario_id": "sim_ecom_val_01_buy",
+  "split": "val",
+  "template_id": "tpl_ecom_search_add_checkout_val",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "ecommerce"
+  ],
+  "installed_apps": [
+    "ecommerce",
+    "ewallet",
+    "banking"
+  ],
+  "objective": "Search nồi chiên không dầu <= 1500000, select in_stock prod_nc_02, add 1 to cart, checkout.",
+  "expect_mutation": true,
+  "user_request": "Tìm nồi chiên không dầu tầm giá dưới 1 triệu rưỡi trên sàn thương mại điện tử, chọn loại còn hàng đặt 1 chiếc về nhà thanh toán chuyển khoản ngân hàng.",
+  "serialized_user_prompt": "Tìm nồi chiên không dầu tầm giá dưới 1 triệu rưỡi trên sàn thương mại điện tử, chọn loại còn hàng đặt 1 chiếc về nhà thanh toán chuyển khoản ngân hàng",
+  "current_time": "2026-11-22T14:20:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Phạm Thanh Thảo",
+    "city": "Hà Nội",
+    "home_address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+    "work_address": "Tòa nhà Lotte Center, 54 Liễu Giai, Ba Đình, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0069,
+    "lng": 105.8027
+  },
+  "history": [],
+  "initial_state": {
+    "ecommerce": {
+      "products": [
+        {
+          "id": "prod_oos_03",
+          "name": "Nồi chiên không dầu Bản Cũ",
+          "price": 1320000,
+          "seller": "Shop A",
+          "category": "gia dụng",
+          "rating": 4.2,
+          "in_stock": false
+        },
+        {
+          "id": "prod_nc_02",
+          "name": "Nồi chiên không dầu Philips 4.1L",
+          "price": 1350000,
+          "seller": "Official Store",
+          "category": "gia dụng",
+          "rating": 4.9,
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": [],
+      "returns": []
+    },
+    "ewallet": {},
+    "banking": {}
+  },
+  "tool_calls": [
+    {
+      "name": "ecommerce.search",
+      "arguments": {
+        "query": "nồi chiên không dầu",
+        "max_price": 1500000
+      }
+    },
+    {
+      "name": "ecommerce.add_to_cart",
+      "arguments": {
+        "product_id": "prod_nc_02",
+        "quantity": 1
+      }
+    },
+    {
+      "name": "ecommerce.checkout",
+      "arguments": {
+        "address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+        "payment": "bank"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "products": [
+        {
+          "id": "prod_oos_03",
+          "name": "Nồi chiên không dầu Bản Cũ",
+          "price": 1320000,
+          "seller": "Shop A",
+          "category": "gia dụng",
+          "rating": 4.2,
+          "in_stock": false
+        },
+        {
+          "id": "prod_nc_02",
+          "name": "Nồi chiên không dầu Philips 4.1L",
+          "price": 1350000,
+          "seller": "Official Store",
+          "category": "gia dụng",
+          "rating": 4.9,
+          "in_stock": true
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "cart": [
+        {
+          "product_id": "prod_nc_02",
+          "name": "Nồi chiên không dầu Philips 4.1L",
+          "price": 1350000,
+          "quantity": 1
+        }
+      ],
+      "cart_total": 1350000
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "items": [
+          {
+            "product_id": "prod_nc_02",
+            "name": "Nồi chiên không dầu Philips 4.1L",
+            "price": 1350000,
+            "quantity": 1
+          }
+        ],
+        "total": 1350000,
+        "status": "placed",
+        "address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+        "payment": "bank"
+      }
+    }
+  ],
+  "final_state": {
+    "ecommerce": {
+      "products": [
+        {
+          "id": "prod_oos_03",
+          "name": "Nồi chiên không dầu Bản Cũ",
+          "price": 1320000,
+          "seller": "Shop A",
+          "category": "gia dụng",
+          "rating": 4.2,
+          "in_stock": false
+        },
+        {
+          "id": "prod_nc_02",
+          "name": "Nồi chiên không dầu Philips 4.1L",
+          "price": 1350000,
+          "seller": "Official Store",
+          "category": "gia dụng",
+          "rating": 4.9,
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": [
+        {
+          "id": "ord_01",
+          "items": [
+            {
+              "product_id": "prod_nc_02",
+              "name": "Nồi chiên không dầu Philips 4.1L",
+              "price": 1350000,
+              "quantity": 1
+            }
+          ],
+          "total": 1350000,
+          "status": "placed",
+          "address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+          "payment": "bank"
+        }
+      ],
+      "returns": []
+    },
+    "ewallet": {},
+    "banking": {}
+  },
+  "state_diff": {
+    "ecommerce": {
+      "before": {
+        "products": [
+          {
+            "id": "prod_oos_03",
+            "name": "Nồi chiên không dầu Bản Cũ",
+            "price": 1320000,
+            "seller": "Shop A",
+            "category": "gia dụng",
+            "rating": 4.2,
+            "in_stock": false
+          },
+          {
+            "id": "prod_nc_02",
+            "name": "Nồi chiên không dầu Philips 4.1L",
+            "price": 1350000,
+            "seller": "Official Store",
+            "category": "gia dụng",
+            "rating": 4.9,
+            "in_stock": true
+          }
+        ],
+        "cart": [],
+        "orders": [],
+        "returns": []
+      },
+      "after": {
+        "products": [
+          {
+            "id": "prod_oos_03",
+            "name": "Nồi chiên không dầu Bản Cũ",
+            "price": 1320000,
+            "seller": "Shop A",
+            "category": "gia dụng",
+            "rating": 4.2,
+            "in_stock": false
+          },
+          {
+            "id": "prod_nc_02",
+            "name": "Nồi chiên không dầu Philips 4.1L",
+            "price": 1350000,
+            "seller": "Official Store",
+            "category": "gia dụng",
+            "rating": 4.9,
+            "in_stock": true
+          }
+        ],
+        "cart": [],
+        "orders": [
+          {
+            "id": "ord_01",
+            "items": [
+              {
+                "product_id": "prod_nc_02",
+                "name": "Nồi chiên không dầu Philips 4.1L",
+                "price": 1350000,
+                "quantity": 1
+              }
+            ],
+            "total": 1350000,
+            "status": "placed",
+            "address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+            "payment": "bank"
+          }
+        ],
+        "returns": []
+      }
+    }
+  },
+  "state_hash": "d3fb9f71af0c868190eee0f93ea0971aa534e5d8aefc507e10dbb2aecd17d845",
+  "validation": {
+    "scenario_id": "sim_ecom_val_01_buy",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "ecommerce"
+    ],
+    "state_hash": "d3fb9f71af0c868190eee0f93ea0971aa534e5d8aefc507e10dbb2aecd17d845",
+    "errors": []
+  }
+}

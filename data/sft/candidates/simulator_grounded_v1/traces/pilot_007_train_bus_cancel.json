@@ -1,0 +1,181 @@
+{
+  "scenario_id": "pilot_007_train_bus_cancel",
+  "split": "train",
+  "template_id": "tpl_train_bus_cancel",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "train_bus_tickets"
+  ],
+  "installed_apps": [
+    "train_bus_tickets",
+    "calendar"
+  ],
+  "objective": "Read bookings to obtain booking_id tk_dl_01 and cancel it.",
+  "expect_mutation": true,
+  "user_request": "Kiểm tra vé xe khách đã đặt của tôi rồi hủy vé đang ở trạng thái xác nhận nhé.",
+  "current_time": "2026-11-20T11:00:00+07:00",
+  "city": "TP.HCM",
+  "initial_state": {
+    "train_bus_tickets": {
+      "trips": [
+        {
+          "id": "trip_dl_01",
+          "type": "bus",
+          "operator": "Phương Trang",
+          "origin": "TP.HCM",
+          "destination": "Đà Lạt",
+          "date": "2026-11-24",
+          "depart": "22:00",
+          "arrive": "05:00",
+          "price": 310000,
+          "seats_left": 8
+        }
+      ],
+      "bookings": [
+        {
+          "id": "tk_dl_01",
+          "trip_id": "trip_dl_01",
+          "seats": 2,
+          "total": 620000,
+          "status": "confirmed"
+        }
+      ]
+    },
+    "calendar": {}
+  },
+  "tool_calls": [
+    {
+      "name": "train_bus_tickets.my_bookings",
+      "arguments": {}
+    },
+    {
+      "name": "train_bus_tickets.cancel",
+      "arguments": {
+        "booking_id": "tk_dl_01"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "bookings": [
+        {
+          "id": "tk_dl_01",
+          "trip_id": "trip_dl_01",
+          "seats": 2,
+          "total": 620000,
+          "status": "confirmed"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "booking": {
+        "id": "tk_dl_01",
+        "trip_id": "trip_dl_01",
+        "seats": 2,
+        "total": 620000,
+        "status": "cancelled"
+      }
+    }
+  ],
+  "final_state": {
+    "train_bus_tickets": {
+      "trips": [
+        {
+          "id": "trip_dl_01",
+          "type": "bus",
+          "operator": "Phương Trang",
+          "origin": "TP.HCM",
+          "destination": "Đà Lạt",
+          "date": "2026-11-24",
+          "depart": "22:00",
+          "arrive": "05:00",
+          "price": 310000,
+          "seats_left": 10
+        }
+      ],
+      "bookings": [
+        {
+          "id": "tk_dl_01",
+          "trip_id": "trip_dl_01",
+          "seats": 2,
+          "total": 620000,
+          "status": "cancelled"
+        }
+      ]
+    },
+    "calendar": {}
+  },
+  "state_diff": {
+    "train_bus_tickets": {
+      "before": {
+        "trips": [
+          {
+            "id": "trip_dl_01",
+            "type": "bus",
+            "operator": "Phương Trang",
+            "origin": "TP.HCM",
+            "destination": "Đà Lạt",
+            "date": "2026-11-24",
+            "depart": "22:00",
+            "arrive": "05:00",
+            "price": 310000,
+            "seats_left": 8
+          }
+        ],
+        "bookings": [
+          {
+            "id": "tk_dl_01",
+            "trip_id": "trip_dl_01",
+            "seats": 2,
+            "total": 620000,
+            "status": "confirmed"
+          }
+        ]
+      },
+      "after": {
+        "trips": [
+          {
+            "id": "trip_dl_01",
+            "type": "bus",
+            "operator": "Phương Trang",
+            "origin": "TP.HCM",
+            "destination": "Đà Lạt",
+            "date": "2026-11-24",
+            "depart": "22:00",
+            "arrive": "05:00",
+            "price": 310000,
+            "seats_left": 10
+          }
+        ],
+        "bookings": [
+          {
+            "id": "tk_dl_01",
+            "trip_id": "trip_dl_01",
+            "seats": 2,
+            "total": 620000,
+            "status": "cancelled"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "8eac1ea25f817691fecf21a997be42803b38b51a5da2a2fc0b5a4313af14ecaa",
+  "validation": {
+    "scenario_id": "pilot_007_train_bus_cancel",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "train_bus_tickets"
+    ],
+    "state_hash": "8eac1ea25f817691fecf21a997be42803b38b51a5da2a2fc0b5a4313af14ecaa",
+    "errors": []
+  }
+}

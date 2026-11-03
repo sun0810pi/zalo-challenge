@@ -1,0 +1,222 @@
+{
+  "scenario_id": "sim_recipes_tr_02",
+  "split": "train",
+  "template_id": "tpl_recipes_save_train_True",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "recipes"
+  ],
+  "installed_apps": [
+    "recipes",
+    "pantry",
+    "notes"
+  ],
+  "objective": "Search recipe bò sốt vang for 4 servings, optionally get details, and save rcp_bsv_02.",
+  "expect_mutation": true,
+  "user_request": "Tra cứu công thức bò sốt vang khẩu phần 4 người, mở xem chi tiết công thức rồi lưu vào mục yêu thích nhé.",
+  "serialized_user_prompt": "Tra cứu công thức bò sốt vang khẩu phần 4 người, mở xem chi tiết công thức rồi lưu vào mục yêu thích nhé",
+  "current_time": "2026-11-22T15:30:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "TP.HCM",
+  "user_profile": {
+    "name": "Trần Thu Hà",
+    "city": "TP.HCM",
+    "home_address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM",
+    "work_address": "Tòa nhà Bitexco, số 2 Hải Triều, Quận 1, TP.HCM"
+  },
+  "location": {
+    "lat": 10.7769,
+    "lng": 106.7009
+  },
+  "history": [],
+  "initial_state": {
+    "recipes": {
+      "recipes": [
+        {
+          "id": "rcp_bsv_02",
+          "name": "Bò sốt vang kiểu Pháp",
+          "servings": 2,
+          "steps": [
+            "Sơ chế",
+            "Nấu chín"
+          ],
+          "ingredients": [
+            {
+              "name": "thịt",
+              "quantity": 400,
+              "unit": "g"
+            }
+          ]
+        }
+      ],
+      "saved": []
+    },
+    "pantry": {},
+    "notes": {}
+  },
+  "tool_calls": [
+    {
+      "name": "recipes.search",
+      "arguments": {
+        "query": "bò sốt vang",
+        "servings": 4
+      }
+    },
+    {
+      "name": "recipes.get",
+      "arguments": {
+        "recipe_id": "rcp_bsv_02"
+      }
+    },
+    {
+      "name": "recipes.save",
+      "arguments": {
+        "recipe_id": "rcp_bsv_02"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "recipes": [
+        {
+          "id": "rcp_bsv_02",
+          "name": "Bò sốt vang kiểu Pháp",
+          "servings": 4,
+          "ingredients": [
+            {
+              "name": "thịt",
+              "quantity": 800,
+              "unit": "g"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "recipe": {
+        "id": "rcp_bsv_02",
+        "name": "Bò sốt vang kiểu Pháp",
+        "servings": 2,
+        "steps": [
+          "Sơ chế",
+          "Nấu chín"
+        ],
+        "ingredients": [
+          {
+            "name": "thịt",
+            "quantity": 400,
+            "unit": "g"
+          }
+        ]
+      },
+      "saved": false
+    },
+    {
+      "ok": true,
+      "saved": {
+        "id": "sav_01",
+        "recipe_id": "rcp_bsv_02"
+      }
+    }
+  ],
+  "final_state": {
+    "recipes": {
+      "recipes": [
+        {
+          "id": "rcp_bsv_02",
+          "name": "Bò sốt vang kiểu Pháp",
+          "servings": 2,
+          "steps": [
+            "Sơ chế",
+            "Nấu chín"
+          ],
+          "ingredients": [
+            {
+              "name": "thịt",
+              "quantity": 400,
+              "unit": "g"
+            }
+          ]
+        }
+      ],
+      "saved": [
+        {
+          "id": "sav_01",
+          "recipe_id": "rcp_bsv_02"
+        }
+      ]
+    },
+    "pantry": {},
+    "notes": {}
+  },
+  "state_diff": {
+    "recipes": {
+      "before": {
+        "recipes": [
+          {
+            "id": "rcp_bsv_02",
+            "name": "Bò sốt vang kiểu Pháp",
+            "servings": 2,
+            "steps": [
+              "Sơ chế",
+              "Nấu chín"
+            ],
+            "ingredients": [
+              {
+                "name": "thịt",
+                "quantity": 400,
+                "unit": "g"
+              }
+            ]
+          }
+        ],
+        "saved": []
+      },
+      "after": {
+        "recipes": [
+          {
+            "id": "rcp_bsv_02",
+            "name": "Bò sốt vang kiểu Pháp",
+            "servings": 2,
+            "steps": [
+              "Sơ chế",
+              "Nấu chín"
+            ],
+            "ingredients": [
+              {
+                "name": "thịt",
+                "quantity": 400,
+                "unit": "g"
+              }
+            ]
+          }
+        ],
+        "saved": [
+          {
+            "id": "sav_01",
+            "recipe_id": "rcp_bsv_02"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "a7f74e80de751c0df2198381fc95f31eca2b8ac600a8bb8b500e5c37f29ae6a1",
+  "validation": {
+    "scenario_id": "sim_recipes_tr_02",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "recipes"
+    ],
+    "state_hash": "a7f74e80de751c0df2198381fc95f31eca2b8ac600a8bb8b500e5c37f29ae6a1",
+    "errors": []
+  }
+}

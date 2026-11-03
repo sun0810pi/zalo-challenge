@@ -1,0 +1,193 @@
+{
+  "scenario_id": "sim_bank_val_01",
+  "split": "val",
+  "template_id": "tpl_banking_val_transfer",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "banking"
+  ],
+  "installed_apps": [
+    "banking",
+    "ewallet",
+    "sms"
+  ],
+  "objective": "Read banking account/beneficiary IDs and execute transfer/savings of 2000000.",
+  "expect_mutation": true,
+  "user_request": "Xem tài khoản ngân hàng và danh sách thụ hưởng rồi chuyển cho Em Trang 2 triệu đồng với nội dung 'Chúc mừng sinh nhật em' giúp chị.",
+  "current_time": "2026-11-23T10:00:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "banking": {
+      "accounts": [
+        {
+          "id": "acc_main_v1",
+          "name": "Tài khoản Thanh toán",
+          "balance": 18000000
+        }
+      ],
+      "beneficiaries": [
+        {
+          "id": "ben_sis_01",
+          "name": "Em Trang",
+          "bank": "VCB",
+          "account_number": "0011223344"
+        }
+      ],
+      "transactions": [],
+      "savings": []
+    },
+    "ewallet": {},
+    "sms": {}
+  },
+  "tool_calls": [
+    {
+      "name": "banking.get_balance",
+      "arguments": {}
+    },
+    {
+      "name": "banking.list_beneficiaries",
+      "arguments": {}
+    },
+    {
+      "name": "banking.transfer",
+      "arguments": {
+        "from_account_id": "acc_main_v1",
+        "beneficiary_id": "ben_sis_01",
+        "amount": 2000000,
+        "note": "Chúc mừng sinh nhật em"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "accounts": [
+        {
+          "id": "acc_main_v1",
+          "name": "Tài khoản Thanh toán",
+          "balance": 18000000
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "beneficiaries": [
+        {
+          "id": "ben_sis_01",
+          "name": "Em Trang",
+          "bank": "VCB",
+          "account_number": "0011223344"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "transaction": {
+        "id": "tx_01",
+        "account_id": "acc_main_v1",
+        "beneficiary_id": "ben_sis_01",
+        "amount": -2000000,
+        "note": "Chúc mừng sinh nhật em"
+      },
+      "balance": 16000000
+    }
+  ],
+  "final_state": {
+    "banking": {
+      "accounts": [
+        {
+          "id": "acc_main_v1",
+          "name": "Tài khoản Thanh toán",
+          "balance": 16000000
+        }
+      ],
+      "beneficiaries": [
+        {
+          "id": "ben_sis_01",
+          "name": "Em Trang",
+          "bank": "VCB",
+          "account_number": "0011223344"
+        }
+      ],
+      "transactions": [
+        {
+          "id": "tx_01",
+          "account_id": "acc_main_v1",
+          "beneficiary_id": "ben_sis_01",
+          "amount": -2000000,
+          "note": "Chúc mừng sinh nhật em"
+        }
+      ],
+      "savings": []
+    },
+    "ewallet": {},
+    "sms": {}
+  },
+  "state_diff": {
+    "banking": {
+      "before": {
+        "accounts": [
+          {
+            "id": "acc_main_v1",
+            "name": "Tài khoản Thanh toán",
+            "balance": 18000000
+          }
+        ],
+        "beneficiaries": [
+          {
+            "id": "ben_sis_01",
+            "name": "Em Trang",
+            "bank": "VCB",
+            "account_number": "0011223344"
+          }
+        ],
+        "transactions": [],
+        "savings": []
+      },
+      "after": {
+        "accounts": [
+          {
+            "id": "acc_main_v1",
+            "name": "Tài khoản Thanh toán",
+            "balance": 16000000
+          }
+        ],
+        "beneficiaries": [
+          {
+            "id": "ben_sis_01",
+            "name": "Em Trang",
+            "bank": "VCB",
+            "account_number": "0011223344"
+          }
+        ],
+        "transactions": [
+          {
+            "id": "tx_01",
+            "account_id": "acc_main_v1",
+            "beneficiary_id": "ben_sis_01",
+            "amount": -2000000,
+            "note": "Chúc mừng sinh nhật em"
+          }
+        ],
+        "savings": []
+      }
+    }
+  },
+  "state_hash": "516f9d9605053819d11c3193241d5a5495414d85fc259c002a05ee699260d48d",
+  "validation": {
+    "scenario_id": "sim_bank_val_01",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "banking"
+    ],
+    "state_hash": "516f9d9605053819d11c3193241d5a5495414d85fc259c002a05ee699260d48d",
+    "errors": []
+  }
+}

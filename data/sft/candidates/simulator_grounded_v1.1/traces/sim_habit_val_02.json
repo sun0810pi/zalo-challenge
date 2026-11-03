@@ -1,0 +1,182 @@
+{
+  "scenario_id": "sim_habit_val_02",
+  "split": "val",
+  "template_id": "tpl_habit_log_val",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "habit_tracker"
+  ],
+  "installed_apps": [
+    "habit_tracker",
+    "reminders",
+    "calendar"
+  ],
+  "objective": "List habits, select habit_wt_02, and log completion on 2026-11-22.",
+  "expect_mutation": true,
+  "user_request": "Ghi nhận mình đã hoàn thành thói quen uống đủ 2 lít nước lọc trong ngày hôm nay nhé.",
+  "serialized_user_prompt": "Ghi nhận mình đã hoàn thành thói quen uống đủ 2 lít nước lọc trong ngày hôm nay nhé",
+  "current_time": "2026-11-22T20:30:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Nguyễn Minh Quân",
+    "city": "Hà Nội",
+    "home_address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+    "work_address": "Tòa nhà Keangnam, Phạm Hùng, Nam Từ Liêm, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0245,
+    "lng": 105.8091
+  },
+  "history": [],
+  "initial_state": {
+    "habit_tracker": {
+      "habits": [
+        {
+          "id": "habit_dummy_00",
+          "name": "Đạp xe buổi sáng",
+          "streak": 2,
+          "last_logged": "2026-11-20"
+        },
+        {
+          "id": "habit_wt_02",
+          "name": "Uống đủ 2 lít nước lọc",
+          "streak": 5,
+          "last_logged": "2026-11-21"
+        }
+      ],
+      "logs": []
+    },
+    "reminders": {},
+    "calendar": {}
+  },
+  "tool_calls": [
+    {
+      "name": "habit_tracker.list_habits",
+      "arguments": {}
+    },
+    {
+      "name": "habit_tracker.log",
+      "arguments": {
+        "habit_id": "habit_wt_02",
+        "date": "2026-11-22"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "habits": [
+        {
+          "id": "habit_dummy_00",
+          "name": "Đạp xe buổi sáng",
+          "streak": 2,
+          "last_logged": "2026-11-20"
+        },
+        {
+          "id": "habit_wt_02",
+          "name": "Uống đủ 2 lít nước lọc",
+          "streak": 5,
+          "last_logged": "2026-11-21"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "log": {
+        "id": "log_01",
+        "habit_id": "habit_wt_02",
+        "date": "2026-11-22"
+      },
+      "streak": 6
+    }
+  ],
+  "final_state": {
+    "habit_tracker": {
+      "habits": [
+        {
+          "id": "habit_dummy_00",
+          "name": "Đạp xe buổi sáng",
+          "streak": 2,
+          "last_logged": "2026-11-20"
+        },
+        {
+          "id": "habit_wt_02",
+          "name": "Uống đủ 2 lít nước lọc",
+          "streak": 6,
+          "last_logged": "2026-11-22"
+        }
+      ],
+      "logs": [
+        {
+          "id": "log_01",
+          "habit_id": "habit_wt_02",
+          "date": "2026-11-22"
+        }
+      ]
+    },
+    "reminders": {},
+    "calendar": {}
+  },
+  "state_diff": {
+    "habit_tracker": {
+      "before": {
+        "habits": [
+          {
+            "id": "habit_dummy_00",
+            "name": "Đạp xe buổi sáng",
+            "streak": 2,
+            "last_logged": "2026-11-20"
+          },
+          {
+            "id": "habit_wt_02",
+            "name": "Uống đủ 2 lít nước lọc",
+            "streak": 5,
+            "last_logged": "2026-11-21"
+          }
+        ],
+        "logs": []
+      },
+      "after": {
+        "habits": [
+          {
+            "id": "habit_dummy_00",
+            "name": "Đạp xe buổi sáng",
+            "streak": 2,
+            "last_logged": "2026-11-20"
+          },
+          {
+            "id": "habit_wt_02",
+            "name": "Uống đủ 2 lít nước lọc",
+            "streak": 6,
+            "last_logged": "2026-11-22"
+          }
+        ],
+        "logs": [
+          {
+            "id": "log_01",
+            "habit_id": "habit_wt_02",
+            "date": "2026-11-22"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "79fcc65861baa92aa1d1c771bfcb3bcebb8c8664b7d3f5fa80feb8056be80098",
+  "validation": {
+    "scenario_id": "sim_habit_val_02",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "habit_tracker"
+    ],
+    "state_hash": "79fcc65861baa92aa1d1c771bfcb3bcebb8c8664b7d3f5fa80feb8056be80098",
+    "errors": []
+  }
+}

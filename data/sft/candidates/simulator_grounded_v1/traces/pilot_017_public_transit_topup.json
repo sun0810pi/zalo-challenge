@@ -1,0 +1,190 @@
+{
+  "scenario_id": "pilot_017_public_transit_topup",
+  "split": "train",
+  "template_id": "tpl_public_transit_topup",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "public_transit"
+  ],
+  "installed_apps": [
+    "public_transit",
+    "maps",
+    "ewallet"
+  ],
+  "objective": "Find transit route from Nhổn to Ga Hà Nội and top up transit card by 100,000 VND.",
+  "expect_mutation": true,
+  "user_request": "Tra cứu tuyến tàu điện từ Nhổn đi Ga Hà Nội rồi nạp thêm 100 nghìn đồng vào thẻ vé giao thông công cộng giúp tôi.",
+  "current_time": "2026-11-20T07:30:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "public_transit": {
+      "card_balance": 25000,
+      "routes": [
+        {
+          "id": "metro_03",
+          "name": "Tuyến Metro số 3 Nhổn - Ga Hà Nội",
+          "type": "metro",
+          "stops": [
+            "Nhổn",
+            "Cầu Giấy",
+            "Kim Mã",
+            "Cát Linh",
+            "Ga Hà Nội"
+          ],
+          "fare": 12000,
+          "duration_min": 24,
+          "headway_min": 10
+        }
+      ],
+      "departures": [],
+      "topups": []
+    },
+    "maps": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "public_transit.find_routes",
+      "arguments": {
+        "origin": "Nhổn",
+        "destination": "Ga Hà Nội"
+      }
+    },
+    {
+      "name": "public_transit.topup_card",
+      "arguments": {
+        "amount": 100000
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "routes": [
+        {
+          "route_id": "metro_03",
+          "name": "Tuyến Metro số 3 Nhổn - Ga Hà Nội",
+          "type": "metro",
+          "board_at": "Nhổn",
+          "alight_at": "Ga Hà Nội",
+          "stops_count": 4,
+          "duration_min": 24,
+          "fare": 12000,
+          "headway_min": 10
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "topup": {
+        "id": "top_01",
+        "amount": 100000,
+        "status": "done"
+      },
+      "card_balance": 125000
+    }
+  ],
+  "final_state": {
+    "public_transit": {
+      "card_balance": 125000,
+      "routes": [
+        {
+          "id": "metro_03",
+          "name": "Tuyến Metro số 3 Nhổn - Ga Hà Nội",
+          "type": "metro",
+          "stops": [
+            "Nhổn",
+            "Cầu Giấy",
+            "Kim Mã",
+            "Cát Linh",
+            "Ga Hà Nội"
+          ],
+          "fare": 12000,
+          "duration_min": 24,
+          "headway_min": 10
+        }
+      ],
+      "departures": [],
+      "topups": [
+        {
+          "id": "top_01",
+          "amount": 100000,
+          "status": "done"
+        }
+      ]
+    },
+    "maps": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "public_transit": {
+      "before": {
+        "card_balance": 25000,
+        "routes": [
+          {
+            "id": "metro_03",
+            "name": "Tuyến Metro số 3 Nhổn - Ga Hà Nội",
+            "type": "metro",
+            "stops": [
+              "Nhổn",
+              "Cầu Giấy",
+              "Kim Mã",
+              "Cát Linh",
+              "Ga Hà Nội"
+            ],
+            "fare": 12000,
+            "duration_min": 24,
+            "headway_min": 10
+          }
+        ],
+        "departures": [],
+        "topups": []
+      },
+      "after": {
+        "card_balance": 125000,
+        "routes": [
+          {
+            "id": "metro_03",
+            "name": "Tuyến Metro số 3 Nhổn - Ga Hà Nội",
+            "type": "metro",
+            "stops": [
+              "Nhổn",
+              "Cầu Giấy",
+              "Kim Mã",
+              "Cát Linh",
+              "Ga Hà Nội"
+            ],
+            "fare": 12000,
+            "duration_min": 24,
+            "headway_min": 10
+          }
+        ],
+        "departures": [],
+        "topups": [
+          {
+            "id": "top_01",
+            "amount": 100000,
+            "status": "done"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "481ec6c122cd153199e6ce2fa6e5840e09ccb5552af70f1250762718dd7c8853",
+  "validation": {
+    "scenario_id": "pilot_017_public_transit_topup",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "public_transit"
+    ],
+    "state_hash": "481ec6c122cd153199e6ce2fa6e5840e09ccb5552af70f1250762718dd7c8853",
+    "errors": []
+  }
+}

@@ -1,0 +1,283 @@
+{
+  "scenario_id": "sim_food_tr_03",
+  "split": "train",
+  "template_id": "tpl_food_order_train",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "food_delivery"
+  ],
+  "installed_apps": [
+    "food_delivery",
+    "ewallet",
+    "grocery"
+  ],
+  "objective": "List restaurants, get menu for rest_bc_03, and place order for 2x m_bun_03.",
+  "expect_mutation": true,
+  "user_request": "Tìm nhà hàng Bún Chả Hương Liên, tra cứu menu rồi đặt 2 phần Bún chả đặc biệt giao về nhà thanh toán bằng ví điện tử.",
+  "serialized_user_prompt": "Tìm nhà hàng Bún Chả Hương Liên, tra cứu menu rồi đặt 2 phần Bún chả đặc biệt giao về nhà thanh toán bằng ví điện tử",
+  "current_time": "2026-11-23T11:30:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Đà Nẵng",
+  "user_profile": {
+    "name": "Lê Hoàng Nam",
+    "city": "Đà Nẵng",
+    "home_address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+    "work_address": "Khu Công nghệ thông tin tập trung, Liên Chiểu, Đà Nẵng"
+  },
+  "location": {
+    "lat": 16.0601,
+    "lng": 108.2122
+  },
+  "history": [],
+  "initial_state": {
+    "food_delivery": {
+      "restaurants": [
+        {
+          "id": "rest_other_00",
+          "name": "Trà Sữa Tocotoco",
+          "rating": 4.4,
+          "menu": [
+            {
+              "id": "m_ts_00",
+              "name": "Trà sữa trân châu",
+              "price": 35000
+            }
+          ]
+        },
+        {
+          "id": "rest_bc_03",
+          "name": "Bún Chả Hương Liên",
+          "rating": 4.8,
+          "menu": [
+            {
+              "id": "m_bun_03",
+              "name": "Bún chả đặc biệt",
+              "price": 60000
+            }
+          ]
+        }
+      ],
+      "orders": []
+    },
+    "ewallet": {},
+    "grocery": {}
+  },
+  "tool_calls": [
+    {
+      "name": "food_delivery.list_restaurants",
+      "arguments": {}
+    },
+    {
+      "name": "food_delivery.get_menu",
+      "arguments": {
+        "restaurant_id": "rest_bc_03"
+      }
+    },
+    {
+      "name": "food_delivery.place_order",
+      "arguments": {
+        "restaurant_id": "rest_bc_03",
+        "items": [
+          {
+            "item_id": "m_bun_03",
+            "quantity": 2
+          }
+        ],
+        "address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+        "payment": "ewallet"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "restaurants": [
+        {
+          "id": "rest_other_00",
+          "name": "Trà Sữa Tocotoco",
+          "rating": 4.4
+        },
+        {
+          "id": "rest_bc_03",
+          "name": "Bún Chả Hương Liên",
+          "rating": 4.8
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "menu": [
+        {
+          "id": "m_bun_03",
+          "name": "Bún chả đặc biệt",
+          "price": 60000
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "restaurant_id": "rest_bc_03",
+        "items": [
+          {
+            "item_id": "m_bun_03",
+            "name": "Bún chả đặc biệt",
+            "quantity": 2,
+            "note": null
+          }
+        ],
+        "total": 120000,
+        "address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+        "payment": "ewallet",
+        "status": "placed"
+      }
+    }
+  ],
+  "final_state": {
+    "food_delivery": {
+      "restaurants": [
+        {
+          "id": "rest_other_00",
+          "name": "Trà Sữa Tocotoco",
+          "rating": 4.4,
+          "menu": [
+            {
+              "id": "m_ts_00",
+              "name": "Trà sữa trân châu",
+              "price": 35000
+            }
+          ]
+        },
+        {
+          "id": "rest_bc_03",
+          "name": "Bún Chả Hương Liên",
+          "rating": 4.8,
+          "menu": [
+            {
+              "id": "m_bun_03",
+              "name": "Bún chả đặc biệt",
+              "price": 60000
+            }
+          ]
+        }
+      ],
+      "orders": [
+        {
+          "id": "ord_01",
+          "restaurant_id": "rest_bc_03",
+          "items": [
+            {
+              "item_id": "m_bun_03",
+              "name": "Bún chả đặc biệt",
+              "quantity": 2,
+              "note": null
+            }
+          ],
+          "total": 120000,
+          "address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+          "payment": "ewallet",
+          "status": "placed"
+        }
+      ]
+    },
+    "ewallet": {},
+    "grocery": {}
+  },
+  "state_diff": {
+    "food_delivery": {
+      "before": {
+        "restaurants": [
+          {
+            "id": "rest_other_00",
+            "name": "Trà Sữa Tocotoco",
+            "rating": 4.4,
+            "menu": [
+              {
+                "id": "m_ts_00",
+                "name": "Trà sữa trân châu",
+                "price": 35000
+              }
+            ]
+          },
+          {
+            "id": "rest_bc_03",
+            "name": "Bún Chả Hương Liên",
+            "rating": 4.8,
+            "menu": [
+              {
+                "id": "m_bun_03",
+                "name": "Bún chả đặc biệt",
+                "price": 60000
+              }
+            ]
+          }
+        ],
+        "orders": []
+      },
+      "after": {
+        "restaurants": [
+          {
+            "id": "rest_other_00",
+            "name": "Trà Sữa Tocotoco",
+            "rating": 4.4,
+            "menu": [
+              {
+                "id": "m_ts_00",
+                "name": "Trà sữa trân châu",
+                "price": 35000
+              }
+            ]
+          },
+          {
+            "id": "rest_bc_03",
+            "name": "Bún Chả Hương Liên",
+            "rating": 4.8,
+            "menu": [
+              {
+                "id": "m_bun_03",
+                "name": "Bún chả đặc biệt",
+                "price": 60000
+              }
+            ]
+          }
+        ],
+        "orders": [
+          {
+            "id": "ord_01",
+            "restaurant_id": "rest_bc_03",
+            "items": [
+              {
+                "item_id": "m_bun_03",
+                "name": "Bún chả đặc biệt",
+                "quantity": 2,
+                "note": null
+              }
+            ],
+            "total": 120000,
+            "address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+            "payment": "ewallet",
+            "status": "placed"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "383a8c5be92e85ca0ae8748d94012915fadb7446943eee0f9d345f93a180f9fd",
+  "validation": {
+    "scenario_id": "sim_food_tr_03",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "food_delivery"
+    ],
+    "state_hash": "383a8c5be92e85ca0ae8748d94012915fadb7446943eee0f9d345f93a180f9fd",
+    "errors": []
+  }
+}

@@ -1,0 +1,244 @@
+{
+  "scenario_id": "sim_tb_tr_05_cal",
+  "split": "train",
+  "template_id": "tpl_tb_book_calendar_train",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "train_bus_tickets",
+    "calendar"
+  ],
+  "installed_apps": [
+    "train_bus_tickets",
+    "calendar",
+    "reminders"
+  ],
+  "objective": "Search & book trip_cal_01, then create calendar event using the trip's actual date and depart time.",
+  "expect_mutation": true,
+  "user_request": "Đặt 1 vé tàu hỏa từ Hà Nội đi Hải Phòng ngày 2026-11-25 rồi tạo sự kiện lịch cho chuyến tàu đó giúp tôi.",
+  "serialized_user_prompt": "Đặt 1 vé tàu hỏa từ Hà Nội đi Hải Phòng ngày 2026-11-25 rồi tạo sự kiện lịch cho chuyến tàu đó giúp tôi.",
+  "current_time": "2026-11-21T10:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Nguyễn Minh Quân",
+    "city": "Hà Nội",
+    "home_address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+    "work_address": "Tòa nhà Keangnam, Phạm Hùng, Nam Từ Liêm, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0245,
+    "lng": 105.8091
+  },
+  "history": [],
+  "initial_state": {
+    "train_bus_tickets": {
+      "trips": [
+        {
+          "id": "trip_cal_01",
+          "type": "train",
+          "operator": "Tàu Chất Lượng Cao",
+          "origin": "Hà Nội",
+          "destination": "Hải Phòng",
+          "date": "2026-11-25",
+          "depart": "07:00",
+          "arrive": "11:30",
+          "price": 220000,
+          "seats_left": 12
+        }
+      ],
+      "bookings": []
+    },
+    "calendar": {
+      "events": []
+    },
+    "reminders": {}
+  },
+  "tool_calls": [
+    {
+      "name": "train_bus_tickets.search",
+      "arguments": {
+        "origin": "Hà Nội",
+        "destination": "Hải Phòng",
+        "date": "2026-11-25",
+        "type": "train"
+      }
+    },
+    {
+      "name": "train_bus_tickets.book",
+      "arguments": {
+        "trip_id": "trip_cal_01",
+        "seats": 1
+      }
+    },
+    {
+      "name": "calendar.create_event",
+      "arguments": {
+        "title": "Chuyến train Hà Nội - Hải Phòng",
+        "start": "2026-11-25T07:00:00+07:00",
+        "location": "Hà Nội"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "trips": [
+        {
+          "id": "trip_cal_01",
+          "type": "train",
+          "operator": "Tàu Chất Lượng Cao",
+          "origin": "Hà Nội",
+          "destination": "Hải Phòng",
+          "date": "2026-11-25",
+          "depart": "07:00",
+          "arrive": "11:30",
+          "price": 220000,
+          "seats_left": 12
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "booking": {
+        "id": "tk_01",
+        "trip_id": "trip_cal_01",
+        "seats": 1,
+        "total": 220000,
+        "status": "confirmed"
+      }
+    },
+    {
+      "ok": true,
+      "id": "evt_01",
+      "item": {
+        "id": "evt_01",
+        "status": "confirmed",
+        "title": "Chuyến train Hà Nội - Hải Phòng",
+        "start": "2026-11-25T07:00:00+07:00",
+        "end": "2026-11-25T08:00:00+07:00",
+        "location": "Hà Nội"
+      }
+    }
+  ],
+  "final_state": {
+    "train_bus_tickets": {
+      "trips": [
+        {
+          "id": "trip_cal_01",
+          "type": "train",
+          "operator": "Tàu Chất Lượng Cao",
+          "origin": "Hà Nội",
+          "destination": "Hải Phòng",
+          "date": "2026-11-25",
+          "depart": "07:00",
+          "arrive": "11:30",
+          "price": 220000,
+          "seats_left": 11
+        }
+      ],
+      "bookings": [
+        {
+          "id": "tk_01",
+          "trip_id": "trip_cal_01",
+          "seats": 1,
+          "total": 220000,
+          "status": "confirmed"
+        }
+      ]
+    },
+    "calendar": {
+      "events": [
+        {
+          "id": "evt_01",
+          "status": "confirmed",
+          "title": "Chuyến train Hà Nội - Hải Phòng",
+          "start": "2026-11-25T07:00:00+07:00",
+          "end": "2026-11-25T08:00:00+07:00",
+          "location": "Hà Nội"
+        }
+      ]
+    },
+    "reminders": {}
+  },
+  "state_diff": {
+    "train_bus_tickets": {
+      "before": {
+        "trips": [
+          {
+            "id": "trip_cal_01",
+            "type": "train",
+            "operator": "Tàu Chất Lượng Cao",
+            "origin": "Hà Nội",
+            "destination": "Hải Phòng",
+            "date": "2026-11-25",
+            "depart": "07:00",
+            "arrive": "11:30",
+            "price": 220000,
+            "seats_left": 12
+          }
+        ],
+        "bookings": []
+      },
+      "after": {
+        "trips": [
+          {
+            "id": "trip_cal_01",
+            "type": "train",
+            "operator": "Tàu Chất Lượng Cao",
+            "origin": "Hà Nội",
+            "destination": "Hải Phòng",
+            "date": "2026-11-25",
+            "depart": "07:00",
+            "arrive": "11:30",
+            "price": 220000,
+            "seats_left": 11
+          }
+        ],
+        "bookings": [
+          {
+            "id": "tk_01",
+            "trip_id": "trip_cal_01",
+            "seats": 1,
+            "total": 220000,
+            "status": "confirmed"
+          }
+        ]
+      }
+    },
+    "calendar": {
+      "before": {
+        "events": []
+      },
+      "after": {
+        "events": [
+          {
+            "id": "evt_01",
+            "status": "confirmed",
+            "title": "Chuyến train Hà Nội - Hải Phòng",
+            "start": "2026-11-25T07:00:00+07:00",
+            "end": "2026-11-25T08:00:00+07:00",
+            "location": "Hà Nội"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "ca87725485bc9eed8d0a9fb40a6b4f7c3b1105144724817edb7e2eb1e71642bf",
+  "validation": {
+    "scenario_id": "sim_tb_tr_05_cal",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "calendar",
+      "train_bus_tickets"
+    ],
+    "state_hash": "ca87725485bc9eed8d0a9fb40a6b4f7c3b1105144724817edb7e2eb1e71642bf",
+    "errors": []
+  }
+}

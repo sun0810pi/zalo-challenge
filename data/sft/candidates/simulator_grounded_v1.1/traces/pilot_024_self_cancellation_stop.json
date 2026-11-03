@@ -1,0 +1,92 @@
+{
+  "scenario_id": "pilot_024_self_cancellation_stop",
+  "split": "train",
+  "template_id": "tpl_self_cancellation_stop",
+  "scenario_type": "cancellation",
+  "primary_apps": [
+    "train_bus_tickets"
+  ],
+  "installed_apps": [
+    "train_bus_tickets",
+    "parking",
+    "calendar"
+  ],
+  "objective": "Recognize self-cancellation at the end of user utterance and emit 0 tool calls.",
+  "expect_mutation": false,
+  "user_request": "Tìm đặt cho anh 2 vé xe khách đi Đà Lạt tối thứ Sáu này nhé. À mà thôi, vừa nghe báo đồng nghiệp cho đi nhờ xe riêng rồi, cứ để nguyên không cần đặt nữa.",
+  "serialized_user_prompt": "Tìm đặt cho anh 2 vé xe khách đi Đà Lạt tối thứ Sáu này nhé. À mà thôi, vừa nghe báo đồng nghiệp cho đi nhờ xe riêng rồi, cứ để nguyên không cần đặt nữa",
+  "current_time": "2026-11-20T11:30:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Đà Nẵng",
+  "user_profile": {
+    "name": "Lê Hoàng Nam",
+    "city": "Đà Nẵng",
+    "home_address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+    "work_address": "Khu Công nghệ thông tin tập trung, Liên Chiểu, Đà Nẵng"
+  },
+  "location": {
+    "lat": 16.0601,
+    "lng": 108.2122
+  },
+  "history": [],
+  "initial_state": {
+    "train_bus_tickets": {
+      "trips": [
+        {
+          "id": "trip_dl_09",
+          "type": "bus",
+          "operator": "Thành Bưởi",
+          "origin": "TP.HCM",
+          "destination": "Đà Lạt",
+          "date": "2026-11-20",
+          "depart": "23:00",
+          "arrive": "05:30",
+          "price": 300000,
+          "seats_left": 10
+        }
+      ],
+      "bookings": []
+    },
+    "parking": {},
+    "calendar": {}
+  },
+  "tool_calls": [],
+  "tool_results": [],
+  "final_state": {
+    "train_bus_tickets": {
+      "trips": [
+        {
+          "id": "trip_dl_09",
+          "type": "bus",
+          "operator": "Thành Bưởi",
+          "origin": "TP.HCM",
+          "destination": "Đà Lạt",
+          "date": "2026-11-20",
+          "depart": "23:00",
+          "arrive": "05:30",
+          "price": 300000,
+          "seats_left": 10
+        }
+      ],
+      "bookings": []
+    },
+    "parking": {},
+    "calendar": {}
+  },
+  "state_diff": {},
+  "state_hash": "d20a88e8786b40ab8a3156f31c61cbef4807b8b4e2dbea1284811d6d2415f70c",
+  "validation": {
+    "scenario_id": "pilot_024_self_cancellation_stop",
+    "scenario_type": "cancellation",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "d20a88e8786b40ab8a3156f31c61cbef4807b8b4e2dbea1284811d6d2415f70c",
+    "errors": []
+  }
+}

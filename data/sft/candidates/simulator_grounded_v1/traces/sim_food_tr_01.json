@@ -1,0 +1,270 @@
+{
+  "scenario_id": "sim_food_tr_01",
+  "split": "train",
+  "template_id": "tpl_food_order_train",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "food_delivery"
+  ],
+  "installed_apps": [
+    "food_delivery",
+    "ewallet",
+    "grocery"
+  ],
+  "objective": "List restaurants, get menu for rest_pt_01, and place order for 2x m_pho_01.",
+  "expect_mutation": true,
+  "user_request": "Tìm quán Phở Thìn trên ứng dụng gọi đồ ăn, xem thực đơn rồi đặt 2 bát Phở bò tái lăn giao về nhà, thanh toán qua ví điện tử nhé.",
+  "current_time": "2026-11-23T11:30:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "food_delivery": {
+      "restaurants": [
+        {
+          "id": "rest_other_00",
+          "name": "Trà Sữa Tocotoco",
+          "rating": 4.4,
+          "menu": [
+            {
+              "id": "m_ts_00",
+              "name": "Trà sữa trân châu",
+              "price": 35000
+            }
+          ]
+        },
+        {
+          "id": "rest_pt_01",
+          "name": "Phở Thìn",
+          "rating": 4.8,
+          "menu": [
+            {
+              "id": "m_pho_01",
+              "name": "Phở bò tái lăn",
+              "price": 65000
+            }
+          ]
+        }
+      ],
+      "orders": []
+    },
+    "ewallet": {},
+    "grocery": {}
+  },
+  "tool_calls": [
+    {
+      "name": "food_delivery.list_restaurants",
+      "arguments": {}
+    },
+    {
+      "name": "food_delivery.get_menu",
+      "arguments": {
+        "restaurant_id": "rest_pt_01"
+      }
+    },
+    {
+      "name": "food_delivery.place_order",
+      "arguments": {
+        "restaurant_id": "rest_pt_01",
+        "items": [
+          {
+            "item_id": "m_pho_01",
+            "quantity": 2
+          }
+        ],
+        "address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+        "payment": "ewallet"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "restaurants": [
+        {
+          "id": "rest_other_00",
+          "name": "Trà Sữa Tocotoco",
+          "rating": 4.4
+        },
+        {
+          "id": "rest_pt_01",
+          "name": "Phở Thìn",
+          "rating": 4.8
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "menu": [
+        {
+          "id": "m_pho_01",
+          "name": "Phở bò tái lăn",
+          "price": 65000
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "restaurant_id": "rest_pt_01",
+        "items": [
+          {
+            "item_id": "m_pho_01",
+            "name": "Phở bò tái lăn",
+            "quantity": 2,
+            "note": null
+          }
+        ],
+        "total": 130000,
+        "address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+        "payment": "ewallet",
+        "status": "placed"
+      }
+    }
+  ],
+  "final_state": {
+    "food_delivery": {
+      "restaurants": [
+        {
+          "id": "rest_other_00",
+          "name": "Trà Sữa Tocotoco",
+          "rating": 4.4,
+          "menu": [
+            {
+              "id": "m_ts_00",
+              "name": "Trà sữa trân châu",
+              "price": 35000
+            }
+          ]
+        },
+        {
+          "id": "rest_pt_01",
+          "name": "Phở Thìn",
+          "rating": 4.8,
+          "menu": [
+            {
+              "id": "m_pho_01",
+              "name": "Phở bò tái lăn",
+              "price": 65000
+            }
+          ]
+        }
+      ],
+      "orders": [
+        {
+          "id": "ord_01",
+          "restaurant_id": "rest_pt_01",
+          "items": [
+            {
+              "item_id": "m_pho_01",
+              "name": "Phở bò tái lăn",
+              "quantity": 2,
+              "note": null
+            }
+          ],
+          "total": 130000,
+          "address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+          "payment": "ewallet",
+          "status": "placed"
+        }
+      ]
+    },
+    "ewallet": {},
+    "grocery": {}
+  },
+  "state_diff": {
+    "food_delivery": {
+      "before": {
+        "restaurants": [
+          {
+            "id": "rest_other_00",
+            "name": "Trà Sữa Tocotoco",
+            "rating": 4.4,
+            "menu": [
+              {
+                "id": "m_ts_00",
+                "name": "Trà sữa trân châu",
+                "price": 35000
+              }
+            ]
+          },
+          {
+            "id": "rest_pt_01",
+            "name": "Phở Thìn",
+            "rating": 4.8,
+            "menu": [
+              {
+                "id": "m_pho_01",
+                "name": "Phở bò tái lăn",
+                "price": 65000
+              }
+            ]
+          }
+        ],
+        "orders": []
+      },
+      "after": {
+        "restaurants": [
+          {
+            "id": "rest_other_00",
+            "name": "Trà Sữa Tocotoco",
+            "rating": 4.4,
+            "menu": [
+              {
+                "id": "m_ts_00",
+                "name": "Trà sữa trân châu",
+                "price": 35000
+              }
+            ]
+          },
+          {
+            "id": "rest_pt_01",
+            "name": "Phở Thìn",
+            "rating": 4.8,
+            "menu": [
+              {
+                "id": "m_pho_01",
+                "name": "Phở bò tái lăn",
+                "price": 65000
+              }
+            ]
+          }
+        ],
+        "orders": [
+          {
+            "id": "ord_01",
+            "restaurant_id": "rest_pt_01",
+            "items": [
+              {
+                "item_id": "m_pho_01",
+                "name": "Phở bò tái lăn",
+                "quantity": 2,
+                "note": null
+              }
+            ],
+            "total": 130000,
+            "address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+            "payment": "ewallet",
+            "status": "placed"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "d7de718f693274ea7995f0569b6a344f25c1a0a41e07dd8381c4e73c0e8de852",
+  "validation": {
+    "scenario_id": "sim_food_tr_01",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "food_delivery"
+    ],
+    "state_hash": "d7de718f693274ea7995f0569b6a344f25c1a0a41e07dd8381c4e73c0e8de852",
+    "errors": []
+  }
+}

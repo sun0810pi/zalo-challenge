@@ -1,0 +1,272 @@
+{
+  "scenario_id": "pilot_002_parking_end_active",
+  "split": "train",
+  "template_id": "tpl_parking_end_active",
+  "scenario_type": "multi_result_selection",
+  "primary_apps": [
+    "parking"
+  ],
+  "installed_apps": [
+    "parking",
+    "ewallet",
+    "ride_hailing"
+  ],
+  "objective": "Find the non-ended parking session at Nguyễn Huệ and end it.",
+  "expect_mutation": true,
+  "user_request": "Kiểm tra các phiên đỗ xe của chị rồi kết thúc phiên đang đỗ ở bãi xe Nguyễn Huệ nhé.",
+  "serialized_user_prompt": "Kiểm tra các phiên đỗ xe của chị rồi kết thúc phiên đang đỗ ở bãi xe Nguyễn Huệ nhé",
+  "current_time": "2026-11-20T16:30:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "TP.HCM",
+  "user_profile": {
+    "name": "Trần Thu Hà",
+    "city": "TP.HCM",
+    "home_address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM",
+    "work_address": "Tòa nhà Bitexco, số 2 Hải Triều, Quận 1, TP.HCM"
+  },
+  "location": {
+    "lat": 10.7769,
+    "lng": 106.7009
+  },
+  "history": [],
+  "initial_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_nh_01",
+          "name": "Bãi xe Lê Lợi",
+          "address": "45 Lê Lợi",
+          "area": "Quận 1",
+          "price_per_hour": 30000,
+          "available_spots": 5
+        },
+        {
+          "id": "lot_nh_02",
+          "name": "Bãi xe Nguyễn Huệ",
+          "address": "88 Nguyễn Huệ",
+          "area": "Quận 1",
+          "price_per_hour": 35000,
+          "available_spots": 2
+        }
+      ],
+      "sessions": [
+        {
+          "id": "park_11",
+          "lot_id": "lot_nh_01",
+          "from_time": "2026-11-19T09:00:00+07:00",
+          "hours": 2,
+          "end_time": "2026-11-19T11:00:00+07:00",
+          "total": 60000,
+          "status": "ended"
+        },
+        {
+          "id": "park_12",
+          "lot_id": "lot_nh_02",
+          "from_time": "2026-11-20T14:00:00+07:00",
+          "hours": 3,
+          "end_time": "2026-11-20T17:00:00+07:00",
+          "total": 105000,
+          "status": "reserved"
+        }
+      ]
+    },
+    "ewallet": {},
+    "ride_hailing": {}
+  },
+  "tool_calls": [
+    {
+      "name": "parking.list_sessions",
+      "arguments": {}
+    },
+    {
+      "name": "parking.end_session",
+      "arguments": {
+        "session_id": "park_12"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "sessions": [
+        {
+          "id": "park_11",
+          "lot_id": "lot_nh_01",
+          "from_time": "2026-11-19T09:00:00+07:00",
+          "hours": 2,
+          "end_time": "2026-11-19T11:00:00+07:00",
+          "total": 60000,
+          "status": "ended",
+          "lot_name": "Bãi xe Lê Lợi"
+        },
+        {
+          "id": "park_12",
+          "lot_id": "lot_nh_02",
+          "from_time": "2026-11-20T14:00:00+07:00",
+          "hours": 3,
+          "end_time": "2026-11-20T17:00:00+07:00",
+          "total": 105000,
+          "status": "reserved",
+          "lot_name": "Bãi xe Nguyễn Huệ"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "session": {
+        "id": "park_12",
+        "lot_id": "lot_nh_02",
+        "from_time": "2026-11-20T14:00:00+07:00",
+        "hours": 3,
+        "end_time": "2026-11-20T17:00:00+07:00",
+        "total": 105000,
+        "status": "ended"
+      }
+    }
+  ],
+  "final_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_nh_01",
+          "name": "Bãi xe Lê Lợi",
+          "address": "45 Lê Lợi",
+          "area": "Quận 1",
+          "price_per_hour": 30000,
+          "available_spots": 5
+        },
+        {
+          "id": "lot_nh_02",
+          "name": "Bãi xe Nguyễn Huệ",
+          "address": "88 Nguyễn Huệ",
+          "area": "Quận 1",
+          "price_per_hour": 35000,
+          "available_spots": 3
+        }
+      ],
+      "sessions": [
+        {
+          "id": "park_11",
+          "lot_id": "lot_nh_01",
+          "from_time": "2026-11-19T09:00:00+07:00",
+          "hours": 2,
+          "end_time": "2026-11-19T11:00:00+07:00",
+          "total": 60000,
+          "status": "ended"
+        },
+        {
+          "id": "park_12",
+          "lot_id": "lot_nh_02",
+          "from_time": "2026-11-20T14:00:00+07:00",
+          "hours": 3,
+          "end_time": "2026-11-20T17:00:00+07:00",
+          "total": 105000,
+          "status": "ended"
+        }
+      ]
+    },
+    "ewallet": {},
+    "ride_hailing": {}
+  },
+  "state_diff": {
+    "parking": {
+      "before": {
+        "lots": [
+          {
+            "id": "lot_nh_01",
+            "name": "Bãi xe Lê Lợi",
+            "address": "45 Lê Lợi",
+            "area": "Quận 1",
+            "price_per_hour": 30000,
+            "available_spots": 5
+          },
+          {
+            "id": "lot_nh_02",
+            "name": "Bãi xe Nguyễn Huệ",
+            "address": "88 Nguyễn Huệ",
+            "area": "Quận 1",
+            "price_per_hour": 35000,
+            "available_spots": 2
+          }
+        ],
+        "sessions": [
+          {
+            "id": "park_11",
+            "lot_id": "lot_nh_01",
+            "from_time": "2026-11-19T09:00:00+07:00",
+            "hours": 2,
+            "end_time": "2026-11-19T11:00:00+07:00",
+            "total": 60000,
+            "status": "ended"
+          },
+          {
+            "id": "park_12",
+            "lot_id": "lot_nh_02",
+            "from_time": "2026-11-20T14:00:00+07:00",
+            "hours": 3,
+            "end_time": "2026-11-20T17:00:00+07:00",
+            "total": 105000,
+            "status": "reserved"
+          }
+        ]
+      },
+      "after": {
+        "lots": [
+          {
+            "id": "lot_nh_01",
+            "name": "Bãi xe Lê Lợi",
+            "address": "45 Lê Lợi",
+            "area": "Quận 1",
+            "price_per_hour": 30000,
+            "available_spots": 5
+          },
+          {
+            "id": "lot_nh_02",
+            "name": "Bãi xe Nguyễn Huệ",
+            "address": "88 Nguyễn Huệ",
+            "area": "Quận 1",
+            "price_per_hour": 35000,
+            "available_spots": 3
+          }
+        ],
+        "sessions": [
+          {
+            "id": "park_11",
+            "lot_id": "lot_nh_01",
+            "from_time": "2026-11-19T09:00:00+07:00",
+            "hours": 2,
+            "end_time": "2026-11-19T11:00:00+07:00",
+            "total": 60000,
+            "status": "ended"
+          },
+          {
+            "id": "park_12",
+            "lot_id": "lot_nh_02",
+            "from_time": "2026-11-20T14:00:00+07:00",
+            "hours": 3,
+            "end_time": "2026-11-20T17:00:00+07:00",
+            "total": 105000,
+            "status": "ended"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "dc7e8791a2ed1cf17ff2c0cc3b6e81c94a6710a44423b3eecef8668e2d1e0f48",
+  "validation": {
+    "scenario_id": "pilot_002_parking_end_active",
+    "scenario_type": "multi_result_selection",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "parking"
+    ],
+    "state_hash": "dc7e8791a2ed1cf17ff2c0cc3b6e81c94a6710a44423b3eecef8668e2d1e0f48",
+    "errors": []
+  }
+}

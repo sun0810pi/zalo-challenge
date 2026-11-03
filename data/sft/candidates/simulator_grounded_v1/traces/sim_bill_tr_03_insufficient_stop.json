@@ -1,0 +1,104 @@
+{
+  "scenario_id": "sim_bill_tr_03_insufficient_stop",
+  "split": "train",
+  "template_id": "tpl_bill_arith_train_none",
+  "scenario_type": "negative_condition",
+  "primary_apps": [
+    "bill_payment",
+    "ewallet"
+  ],
+  "installed_apps": [
+    "bill_payment",
+    "ewallet",
+    "banking",
+    "sms"
+  ],
+  "objective": "Check electricity bill (780000) and wallet balance (210000) -> action=none.",
+  "expect_mutation": false,
+  "user_request": "Kiểm tra hóa đơn tiền điện và số dư ví điện tử giúp chị, nếu số dư ví đủ tiền thì mới thanh toán, còn không đủ thì thôi để mai chị nạp thêm tiền sau.",
+  "current_time": "2026-11-23T09:00:00+07:00",
+  "city": "Đà Nẵng",
+  "initial_state": {
+    "bill_payment": {
+      "bills": [
+        {
+          "id": "bill_el_03",
+          "type": "electricity",
+          "amount": 780000,
+          "paid": false
+        }
+      ],
+      "autopays": []
+    },
+    "ewallet": {
+      "balance": 210000,
+      "transactions": []
+    },
+    "banking": {},
+    "sms": {}
+  },
+  "tool_calls": [
+    {
+      "name": "bill_payment.list_bills",
+      "arguments": {
+        "type": "electricity"
+      }
+    },
+    {
+      "name": "ewallet.get_balance",
+      "arguments": {}
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "bills": [
+        {
+          "id": "bill_el_03",
+          "type": "electricity",
+          "amount": 780000,
+          "paid": false
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "balance": 210000
+    }
+  ],
+  "final_state": {
+    "bill_payment": {
+      "bills": [
+        {
+          "id": "bill_el_03",
+          "type": "electricity",
+          "amount": 780000,
+          "paid": false
+        }
+      ],
+      "autopays": []
+    },
+    "ewallet": {
+      "balance": 210000,
+      "transactions": []
+    },
+    "banking": {},
+    "sms": {}
+  },
+  "state_diff": {},
+  "state_hash": "460d7330299deac7a1b26b331948ee2648ca107541452855569f2478f0f269cc",
+  "validation": {
+    "scenario_id": "sim_bill_tr_03_insufficient_stop",
+    "scenario_type": "negative_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "460d7330299deac7a1b26b331948ee2648ca107541452855569f2478f0f269cc",
+    "errors": []
+  }
+}

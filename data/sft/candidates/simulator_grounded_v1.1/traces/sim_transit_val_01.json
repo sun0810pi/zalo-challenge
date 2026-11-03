@@ -1,0 +1,263 @@
+{
+  "scenario_id": "sim_transit_val_01",
+  "split": "val",
+  "template_id": "tpl_transit_val_True",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "public_transit"
+  ],
+  "installed_apps": [
+    "public_transit",
+    "maps",
+    "ewallet"
+  ],
+  "objective": "Find transit routes from Yên Nghĩa to Thái Hà, optionally check departures, and topup 100000.",
+  "expect_mutation": true,
+  "user_request": "Tìm tuyến tàu điện từ Yên Nghĩa đi Thái Hà, xem giờ tàu sắp chạy tại trạm Yên Nghĩa rồi nạp 100 nghìn vào thẻ vé giúp chị.",
+  "serialized_user_prompt": "Tìm tuyến tàu điện từ Yên Nghĩa đi Thái Hà, xem giờ tàu sắp chạy tại trạm Yên Nghĩa rồi nạp 100 nghìn vào thẻ vé giúp chị",
+  "current_time": "2026-11-22T08:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Phạm Thanh Thảo",
+    "city": "Hà Nội",
+    "home_address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+    "work_address": "Tòa nhà Lotte Center, 54 Liễu Giai, Ba Đình, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0069,
+    "lng": 105.8027
+  },
+  "history": [],
+  "initial_state": {
+    "public_transit": {
+      "card_balance": 15000,
+      "routes": [
+        {
+          "id": "rt_tr_04",
+          "name": "Tuyến Yên Nghĩa - Thái Hà",
+          "type": "metro",
+          "stops": [
+            "Yên Nghĩa",
+            "Trạm Trung Gian",
+            "Thái Hà"
+          ],
+          "fare": 10000,
+          "duration_min": 25,
+          "headway_min": 8
+        }
+      ],
+      "departures": [
+        {
+          "stop": "Yên Nghĩa",
+          "route": "rt_tr_04",
+          "time": "08:10"
+        },
+        {
+          "stop": "Yên Nghĩa",
+          "route": "rt_tr_04",
+          "time": "08:18"
+        }
+      ],
+      "topups": []
+    },
+    "maps": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "public_transit.find_routes",
+      "arguments": {
+        "origin": "Yên Nghĩa",
+        "destination": "Thái Hà"
+      }
+    },
+    {
+      "name": "public_transit.next_departures",
+      "arguments": {
+        "stop": "Yên Nghĩa",
+        "route": "rt_tr_04"
+      }
+    },
+    {
+      "name": "public_transit.topup_card",
+      "arguments": {
+        "amount": 100000
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "routes": [
+        {
+          "route_id": "rt_tr_04",
+          "name": "Tuyến Yên Nghĩa - Thái Hà",
+          "type": "metro",
+          "board_at": "Yên Nghĩa",
+          "alight_at": "Thái Hà",
+          "stops_count": 2,
+          "duration_min": 24,
+          "fare": 10000,
+          "headway_min": 8
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "departures": [
+        {
+          "stop": "Yên Nghĩa",
+          "route": "rt_tr_04",
+          "time": "08:10",
+          "route_name": "Tuyến Yên Nghĩa - Thái Hà"
+        },
+        {
+          "stop": "Yên Nghĩa",
+          "route": "rt_tr_04",
+          "time": "08:18",
+          "route_name": "Tuyến Yên Nghĩa - Thái Hà"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "topup": {
+        "id": "top_01",
+        "amount": 100000,
+        "status": "done"
+      },
+      "card_balance": 115000
+    }
+  ],
+  "final_state": {
+    "public_transit": {
+      "card_balance": 115000,
+      "routes": [
+        {
+          "id": "rt_tr_04",
+          "name": "Tuyến Yên Nghĩa - Thái Hà",
+          "type": "metro",
+          "stops": [
+            "Yên Nghĩa",
+            "Trạm Trung Gian",
+            "Thái Hà"
+          ],
+          "fare": 10000,
+          "duration_min": 25,
+          "headway_min": 8
+        }
+      ],
+      "departures": [
+        {
+          "stop": "Yên Nghĩa",
+          "route": "rt_tr_04",
+          "time": "08:10"
+        },
+        {
+          "stop": "Yên Nghĩa",
+          "route": "rt_tr_04",
+          "time": "08:18"
+        }
+      ],
+      "topups": [
+        {
+          "id": "top_01",
+          "amount": 100000,
+          "status": "done"
+        }
+      ]
+    },
+    "maps": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "public_transit": {
+      "before": {
+        "card_balance": 15000,
+        "routes": [
+          {
+            "id": "rt_tr_04",
+            "name": "Tuyến Yên Nghĩa - Thái Hà",
+            "type": "metro",
+            "stops": [
+              "Yên Nghĩa",
+              "Trạm Trung Gian",
+              "Thái Hà"
+            ],
+            "fare": 10000,
+            "duration_min": 25,
+            "headway_min": 8
+          }
+        ],
+        "departures": [
+          {
+            "stop": "Yên Nghĩa",
+            "route": "rt_tr_04",
+            "time": "08:10"
+          },
+          {
+            "stop": "Yên Nghĩa",
+            "route": "rt_tr_04",
+            "time": "08:18"
+          }
+        ],
+        "topups": []
+      },
+      "after": {
+        "card_balance": 115000,
+        "routes": [
+          {
+            "id": "rt_tr_04",
+            "name": "Tuyến Yên Nghĩa - Thái Hà",
+            "type": "metro",
+            "stops": [
+              "Yên Nghĩa",
+              "Trạm Trung Gian",
+              "Thái Hà"
+            ],
+            "fare": 10000,
+            "duration_min": 25,
+            "headway_min": 8
+          }
+        ],
+        "departures": [
+          {
+            "stop": "Yên Nghĩa",
+            "route": "rt_tr_04",
+            "time": "08:10"
+          },
+          {
+            "stop": "Yên Nghĩa",
+            "route": "rt_tr_04",
+            "time": "08:18"
+          }
+        ],
+        "topups": [
+          {
+            "id": "top_01",
+            "amount": 100000,
+            "status": "done"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "c50942c668453ff27096e5222ee76ea07ad13c1c7a6dc565240a76d650771187",
+  "validation": {
+    "scenario_id": "sim_transit_val_01",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "public_transit"
+    ],
+    "state_hash": "c50942c668453ff27096e5222ee76ea07ad13c1c7a6dc565240a76d650771187",
+    "errors": []
+  }
+}

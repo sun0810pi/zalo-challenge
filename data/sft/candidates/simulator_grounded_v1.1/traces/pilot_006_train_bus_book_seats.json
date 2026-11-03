@@ -1,0 +1,255 @@
+{
+  "scenario_id": "pilot_006_train_bus_book_seats",
+  "split": "train",
+  "template_id": "tpl_train_bus_book_seats",
+  "scenario_type": "multi_result_selection",
+  "primary_apps": [
+    "train_bus_tickets"
+  ],
+  "installed_apps": [
+    "train_bus_tickets",
+    "flights",
+    "calendar",
+    "ewallet"
+  ],
+  "objective": "Search train trips to Hải Phòng, skip trip with only 2 seats_left, book 3 seats on trip_hp_02.",
+  "expect_mutation": true,
+  "user_request": "Tìm vé tàu hỏa từ Hà Nội đi Hải Phòng ngày 2026-11-22, chọn chuyến còn đủ chỗ cho 3 người rồi đặt 3 vé giúp mình.",
+  "serialized_user_prompt": "Tìm vé tàu hỏa từ Hà Nội đi Hải Phòng ngày 2026-11-22, chọn chuyến còn đủ chỗ cho 3 người rồi đặt 3 vé giúp mình.",
+  "current_time": "2026-11-20T09:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Nguyễn Minh Quân",
+    "city": "Hà Nội",
+    "home_address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+    "work_address": "Tòa nhà Keangnam, Phạm Hùng, Nam Từ Liêm, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0245,
+    "lng": 105.8091
+  },
+  "history": [],
+  "initial_state": {
+    "train_bus_tickets": {
+      "trips": [
+        {
+          "id": "trip_hp_01",
+          "type": "train",
+          "operator": "Đường sắt VN HP1",
+          "origin": "Hà Nội",
+          "destination": "Hải Phòng",
+          "date": "2026-11-22",
+          "depart": "06:00",
+          "arrive": "08:30",
+          "price": 120000,
+          "seats_left": 2
+        },
+        {
+          "id": "trip_hp_02",
+          "type": "train",
+          "operator": "Đường sắt VN LP3",
+          "origin": "Hà Nội",
+          "destination": "Hải Phòng",
+          "date": "2026-11-22",
+          "depart": "09:20",
+          "arrive": "12:00",
+          "price": 120000,
+          "seats_left": 14
+        }
+      ],
+      "bookings": []
+    },
+    "flights": {},
+    "calendar": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "train_bus_tickets.search",
+      "arguments": {
+        "origin": "Hà Nội",
+        "destination": "Hải Phòng",
+        "date": "2026-11-22",
+        "type": "train"
+      }
+    },
+    {
+      "name": "train_bus_tickets.book",
+      "arguments": {
+        "trip_id": "trip_hp_02",
+        "seats": 3
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "trips": [
+        {
+          "id": "trip_hp_01",
+          "type": "train",
+          "operator": "Đường sắt VN HP1",
+          "origin": "Hà Nội",
+          "destination": "Hải Phòng",
+          "date": "2026-11-22",
+          "depart": "06:00",
+          "arrive": "08:30",
+          "price": 120000,
+          "seats_left": 2
+        },
+        {
+          "id": "trip_hp_02",
+          "type": "train",
+          "operator": "Đường sắt VN LP3",
+          "origin": "Hà Nội",
+          "destination": "Hải Phòng",
+          "date": "2026-11-22",
+          "depart": "09:20",
+          "arrive": "12:00",
+          "price": 120000,
+          "seats_left": 14
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "booking": {
+        "id": "tk_01",
+        "trip_id": "trip_hp_02",
+        "seats": 3,
+        "total": 360000,
+        "status": "confirmed"
+      }
+    }
+  ],
+  "final_state": {
+    "train_bus_tickets": {
+      "trips": [
+        {
+          "id": "trip_hp_01",
+          "type": "train",
+          "operator": "Đường sắt VN HP1",
+          "origin": "Hà Nội",
+          "destination": "Hải Phòng",
+          "date": "2026-11-22",
+          "depart": "06:00",
+          "arrive": "08:30",
+          "price": 120000,
+          "seats_left": 2
+        },
+        {
+          "id": "trip_hp_02",
+          "type": "train",
+          "operator": "Đường sắt VN LP3",
+          "origin": "Hà Nội",
+          "destination": "Hải Phòng",
+          "date": "2026-11-22",
+          "depart": "09:20",
+          "arrive": "12:00",
+          "price": 120000,
+          "seats_left": 11
+        }
+      ],
+      "bookings": [
+        {
+          "id": "tk_01",
+          "trip_id": "trip_hp_02",
+          "seats": 3,
+          "total": 360000,
+          "status": "confirmed"
+        }
+      ]
+    },
+    "flights": {},
+    "calendar": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "train_bus_tickets": {
+      "before": {
+        "trips": [
+          {
+            "id": "trip_hp_01",
+            "type": "train",
+            "operator": "Đường sắt VN HP1",
+            "origin": "Hà Nội",
+            "destination": "Hải Phòng",
+            "date": "2026-11-22",
+            "depart": "06:00",
+            "arrive": "08:30",
+            "price": 120000,
+            "seats_left": 2
+          },
+          {
+            "id": "trip_hp_02",
+            "type": "train",
+            "operator": "Đường sắt VN LP3",
+            "origin": "Hà Nội",
+            "destination": "Hải Phòng",
+            "date": "2026-11-22",
+            "depart": "09:20",
+            "arrive": "12:00",
+            "price": 120000,
+            "seats_left": 14
+          }
+        ],
+        "bookings": []
+      },
+      "after": {
+        "trips": [
+          {
+            "id": "trip_hp_01",
+            "type": "train",
+            "operator": "Đường sắt VN HP1",
+            "origin": "Hà Nội",
+            "destination": "Hải Phòng",
+            "date": "2026-11-22",
+            "depart": "06:00",
+            "arrive": "08:30",
+            "price": 120000,
+            "seats_left": 2
+          },
+          {
+            "id": "trip_hp_02",
+            "type": "train",
+            "operator": "Đường sắt VN LP3",
+            "origin": "Hà Nội",
+            "destination": "Hải Phòng",
+            "date": "2026-11-22",
+            "depart": "09:20",
+            "arrive": "12:00",
+            "price": 120000,
+            "seats_left": 11
+          }
+        ],
+        "bookings": [
+          {
+            "id": "tk_01",
+            "trip_id": "trip_hp_02",
+            "seats": 3,
+            "total": 360000,
+            "status": "confirmed"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "7e5a4179234025088d69a65d2d36a50acecb14b6cd4c710ea222598d953596d8",
+  "validation": {
+    "scenario_id": "pilot_006_train_bus_book_seats",
+    "scenario_type": "multi_result_selection",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "train_bus_tickets"
+    ],
+    "state_hash": "7e5a4179234025088d69a65d2d36a50acecb14b6cd4c710ea222598d953596d8",
+    "errors": []
+  }
+}

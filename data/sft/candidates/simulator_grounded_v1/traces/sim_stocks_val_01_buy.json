@@ -1,0 +1,160 @@
+{
+  "scenario_id": "sim_stocks_val_01_buy",
+  "split": "val",
+  "template_id": "tpl_stocks_quote_buy_val",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "stocks"
+  ],
+  "installed_apps": [
+    "stocks",
+    "banking",
+    "ewallet"
+  ],
+  "objective": "Get quote for MBB and place buy order for 600 shares at 24600.",
+  "expect_mutation": true,
+  "user_request": "Báo giá mã MBB hiện tại rồi đặt mua giúp chị 600 cổ phiếu MBB theo giá thị trường vừa xem.",
+  "current_time": "2026-11-23T10:15:00+07:00",
+  "city": "Đà Nẵng",
+  "initial_state": {
+    "stocks": {
+      "quotes": [
+        {
+          "symbol": "MBB",
+          "name": "Ngân hàng Quân Đội",
+          "price": 24600,
+          "change_pct": 1.4
+        }
+      ],
+      "holdings": [],
+      "orders": [],
+      "alerts": []
+    },
+    "banking": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "stocks.get_quote",
+      "arguments": {
+        "symbol": "MBB"
+      }
+    },
+    {
+      "name": "stocks.place_order",
+      "arguments": {
+        "symbol": "MBB",
+        "side": "buy",
+        "quantity": 600,
+        "price": 24600
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "quote": {
+        "symbol": "MBB",
+        "name": "Ngân hàng Quân Đội",
+        "price": 24600,
+        "change_pct": 1.4
+      }
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "symbol": "MBB",
+        "side": "buy",
+        "quantity": 600,
+        "type": "limit",
+        "price": 24600,
+        "status": "placed"
+      }
+    }
+  ],
+  "final_state": {
+    "stocks": {
+      "quotes": [
+        {
+          "symbol": "MBB",
+          "name": "Ngân hàng Quân Đội",
+          "price": 24600,
+          "change_pct": 1.4
+        }
+      ],
+      "holdings": [],
+      "orders": [
+        {
+          "id": "ord_01",
+          "symbol": "MBB",
+          "side": "buy",
+          "quantity": 600,
+          "type": "limit",
+          "price": 24600,
+          "status": "placed"
+        }
+      ],
+      "alerts": []
+    },
+    "banking": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "stocks": {
+      "before": {
+        "quotes": [
+          {
+            "symbol": "MBB",
+            "name": "Ngân hàng Quân Đội",
+            "price": 24600,
+            "change_pct": 1.4
+          }
+        ],
+        "holdings": [],
+        "orders": [],
+        "alerts": []
+      },
+      "after": {
+        "quotes": [
+          {
+            "symbol": "MBB",
+            "name": "Ngân hàng Quân Đội",
+            "price": 24600,
+            "change_pct": 1.4
+          }
+        ],
+        "holdings": [],
+        "orders": [
+          {
+            "id": "ord_01",
+            "symbol": "MBB",
+            "side": "buy",
+            "quantity": 600,
+            "type": "limit",
+            "price": 24600,
+            "status": "placed"
+          }
+        ],
+        "alerts": []
+      }
+    }
+  },
+  "state_hash": "4d920d4797d511565ff556896972e829ccad6019d1bb3e4986a8fb5240bd2472",
+  "validation": {
+    "scenario_id": "sim_stocks_val_01_buy",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "stocks"
+    ],
+    "state_hash": "4d920d4797d511565ff556896972e829ccad6019d1bb3e4986a8fb5240bd2472",
+    "errors": []
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "scenario_id": "sim_parking_tr_06_ask_time",
+  "split": "train",
+  "template_id": "tpl_parking_ask_time_train",
+  "scenario_type": "missing_info",
+  "primary_apps": [
+    "parking",
+    "sys"
+  ],
+  "installed_apps": [
+    "parking",
+    "maps"
+  ],
+  "objective": "Find parking lot near Bitexco, then ask user for missing required parameters from_time and hours.",
+  "expect_mutation": false,
+  "user_request": "Tìm bãi đỗ xe gần tòa nhà Bitexco rồi đặt giữ chỗ trước giúp anh nhé.",
+  "serialized_user_prompt": "Tìm bãi đỗ xe gần tòa nhà Bitexco rồi đặt giữ chỗ trước giúp anh nhé",
+  "current_time": "2026-11-21T10:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "TP.HCM",
+  "user_profile": {
+    "name": "Trần Thu Hà",
+    "city": "TP.HCM",
+    "home_address": "128 Nguyễn Thị Minh Khai, Quận 3, TP.HCM",
+    "work_address": "Tòa nhà Bitexco, số 2 Hải Triều, Quận 1, TP.HCM"
+  },
+  "location": {
+    "lat": 10.7769,
+    "lng": 106.7009
+  },
+  "history": [],
+  "initial_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_btx_01",
+          "name": "Bãi đỗ xe Hải Triều Bitexco",
+          "address": "2 Hải Triều, Quận 1",
+          "area": "Quận 1",
+          "price_per_hour": 40000,
+          "available_spots": 10
+        }
+      ],
+      "sessions": []
+    },
+    "maps": {}
+  },
+  "tool_calls": [
+    {
+      "name": "parking.find",
+      "arguments": {
+        "near": "Bitexco"
+      }
+    },
+    {
+      "name": "sys.ask_missing_info",
+      "arguments": {
+        "tool_name": "parking.reserve",
+        "params": [
+          "from_time",
+          "hours"
+        ]
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "lots": [
+        {
+          "id": "lot_btx_01",
+          "name": "Bãi đỗ xe Hải Triều Bitexco",
+          "address": "2 Hải Triều, Quận 1",
+          "area": "Quận 1",
+          "price_per_hour": 40000,
+          "available_spots": 10
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "waiting_for_user": true
+    }
+  ],
+  "final_state": {
+    "parking": {
+      "lots": [
+        {
+          "id": "lot_btx_01",
+          "name": "Bãi đỗ xe Hải Triều Bitexco",
+          "address": "2 Hải Triều, Quận 1",
+          "area": "Quận 1",
+          "price_per_hour": 40000,
+          "available_spots": 10
+        }
+      ],
+      "sessions": []
+    },
+    "maps": {}
+  },
+  "state_diff": {},
+  "state_hash": "dee77e4cf936102f2c04ff59e3615901f58ef6492a5f376034a2ccc9d694f631",
+  "validation": {
+    "scenario_id": "sim_parking_tr_06_ask_time",
+    "scenario_type": "missing_info",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "dee77e4cf936102f2c04ff59e3615901f58ef6492a5f376034a2ccc9d694f631",
+    "errors": []
+  }
+}

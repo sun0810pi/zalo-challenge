@@ -1,0 +1,106 @@
+{
+  "scenario_id": "sim_habit_tr_06_already_logged",
+  "split": "train",
+  "template_id": "tpl_habit_already_logged_train",
+  "scenario_type": "negative_condition",
+  "primary_apps": [
+    "habit_tracker"
+  ],
+  "installed_apps": [
+    "habit_tracker",
+    "reminders"
+  ],
+  "objective": "Check habits; last_logged is already 2026-11-22, so stop without calling habit_tracker.log.",
+  "expect_mutation": false,
+  "user_request": "Kiểm tra xem hôm nay 2026-11-22 mình đã ghi nhận thói quen chạy bộ buổi sáng chưa, nếu chưa ghi thì đánh dấu hoàn thành giúp mình, ghi rồi thì thôi.",
+  "serialized_user_prompt": "Kiểm tra xem hôm nay 2026-11-22 mình đã ghi nhận thói quen chạy bộ buổi sáng chưa, nếu chưa ghi thì đánh dấu hoàn thành giúp mình, ghi rồi thì thôi",
+  "current_time": "2026-11-22T21:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Nguyễn Minh Quân",
+    "city": "Hà Nội",
+    "home_address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+    "work_address": "Tòa nhà Keangnam, Phạm Hùng, Nam Từ Liêm, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0245,
+    "lng": 105.8091
+  },
+  "history": [],
+  "initial_state": {
+    "habit_tracker": {
+      "habits": [
+        {
+          "id": "habit_run_99",
+          "name": "Chạy bộ buổi sáng",
+          "streak": 8,
+          "last_logged": "2026-11-22"
+        }
+      ],
+      "logs": [
+        {
+          "id": "log_01",
+          "habit_id": "habit_run_99",
+          "date": "2026-11-22"
+        }
+      ]
+    },
+    "reminders": {}
+  },
+  "tool_calls": [
+    {
+      "name": "habit_tracker.list_habits",
+      "arguments": {}
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "habits": [
+        {
+          "id": "habit_run_99",
+          "name": "Chạy bộ buổi sáng",
+          "streak": 8,
+          "last_logged": "2026-11-22"
+        }
+      ]
+    }
+  ],
+  "final_state": {
+    "habit_tracker": {
+      "habits": [
+        {
+          "id": "habit_run_99",
+          "name": "Chạy bộ buổi sáng",
+          "streak": 8,
+          "last_logged": "2026-11-22"
+        }
+      ],
+      "logs": [
+        {
+          "id": "log_01",
+          "habit_id": "habit_run_99",
+          "date": "2026-11-22"
+        }
+      ]
+    },
+    "reminders": {}
+  },
+  "state_diff": {},
+  "state_hash": "a4d28abe3081ffb20ed2df2c2bbcee2e758e6c28700268d702831a953a401b9f",
+  "validation": {
+    "scenario_id": "sim_habit_tr_06_already_logged",
+    "scenario_type": "negative_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "a4d28abe3081ffb20ed2df2c2bbcee2e758e6c28700268d702831a953a401b9f",
+    "errors": []
+  }
+}

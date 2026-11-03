@@ -22,6 +22,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.prompt_builder import build_initial_messages
+from scripts.data.new_apps_data_builder import get_all_new_app_samples
 
 NEGATION_KEYWORDS = [
     "à mà thôi",
@@ -1065,15 +1066,16 @@ def main() -> None:
             train_rows.append(traj)
             train_raw_samples.append(s)
 
-    # 1. Add schema-transfer & reasoning archetype trajectories (oversampled 2x so unseen apps have strong gradient signal)
+    # 1. Add schema-transfer & reasoning archetype trajectories for all 11 new apps
     if public_catalog_tools_map:
-        transfer_samples = build_schema_transfer_samples(public_catalog_tools_map)
+        transfer_samples = get_all_new_app_samples(public_catalog_tools_map, seed=args.seed)
         for ts in transfer_samples:
             traj_row = {
                 "id": ts["id"],
                 "messages": build_reasoning_trajectory(ts, public_catalog_tools_map),
             }
             train_rows.append(traj_row)
+            # Add a duplicate for stronger gradient signal on newly introduced tools
             train_rows.append({"id": f"{ts['id']}_dup", "messages": traj_row["messages"]})
 
     # 2. Add in-context ASR-noise recovery trajectories

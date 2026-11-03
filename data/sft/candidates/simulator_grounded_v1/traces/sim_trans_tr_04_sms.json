@@ -1,0 +1,166 @@
+{
+  "scenario_id": "sim_trans_tr_04_sms",
+  "split": "train",
+  "template_id": "tpl_translator_sms_train",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "translator",
+    "contacts",
+    "sms"
+  ],
+  "installed_apps": [
+    "translator",
+    "sms",
+    "contacts"
+  ],
+  "objective": "Translate text to ja and forward result to sms.",
+  "expect_mutation": true,
+  "user_request": "Dịch câu 'Chuyến bay của tôi hạ cánh lúc 6 giờ chiều nay' sang tiếng Nhật (ja) rồi nhắn SMS cho đối tác Kenji trong danh bạ nhé.",
+  "current_time": "2026-11-23T09:30:00+07:00",
+  "city": "Đà Nẵng",
+  "initial_state": {
+    "translator": {
+      "dictionary": [
+        {
+          "text": "Chuyến bay của tôi hạ cánh lúc 6 giờ chiều nay",
+          "to_lang": "ja",
+          "translation": "私のフライトは今日の午後6時に着陸します"
+        }
+      ]
+    },
+    "sms": {
+      "messages": []
+    },
+    "contacts": {
+      "contacts": [
+        {
+          "id": "ct_target_01",
+          "name": "Kenji",
+          "phone": "0909123456",
+          "relation": "đối tác"
+        }
+      ]
+    }
+  },
+  "tool_calls": [
+    {
+      "name": "translator.translate",
+      "arguments": {
+        "text": "Chuyến bay của tôi hạ cánh lúc 6 giờ chiều nay",
+        "to_lang": "ja"
+      }
+    },
+    {
+      "name": "contacts.search",
+      "arguments": {
+        "query": "Kenji"
+      }
+    },
+    {
+      "name": "sms.send",
+      "arguments": {
+        "contact_id": "ct_target_01",
+        "phone_number": "0909123456",
+        "content": "私のフライトは今日の午後6時に着陸します"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "text": "Chuyến bay của tôi hạ cánh lúc 6 giờ chiều nay",
+      "from_lang": null,
+      "to_lang": "ja",
+      "translation": "私のフライトは今日の午後6時に着陸します",
+      "translated": "私のフライトは今日の午後6時に着陸します"
+    },
+    {
+      "ok": true,
+      "contacts": [
+        {
+          "id": "ct_target_01",
+          "name": "Kenji",
+          "phone": "0909123456",
+          "relation": "đối tác"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "message": {
+        "id": "msg_01",
+        "contact_id": "ct_target_01",
+        "phone_number": "0909123456",
+        "direction": "outgoing",
+        "content": "私のフライトは今日の午後6時に着陸します"
+      }
+    }
+  ],
+  "final_state": {
+    "translator": {
+      "dictionary": [
+        {
+          "text": "Chuyến bay của tôi hạ cánh lúc 6 giờ chiều nay",
+          "to_lang": "ja",
+          "translation": "私のフライトは今日の午後6時に着陸します"
+        }
+      ]
+    },
+    "sms": {
+      "messages": [
+        {
+          "id": "msg_01",
+          "contact_id": "ct_target_01",
+          "phone_number": "0909123456",
+          "direction": "outgoing",
+          "content": "私のフライトは今日の午後6時に着陸します"
+        }
+      ]
+    },
+    "contacts": {
+      "contacts": [
+        {
+          "id": "ct_target_01",
+          "name": "Kenji",
+          "phone": "0909123456",
+          "relation": "đối tác"
+        }
+      ]
+    }
+  },
+  "state_diff": {
+    "sms": {
+      "before": {
+        "messages": []
+      },
+      "after": {
+        "messages": [
+          {
+            "id": "msg_01",
+            "contact_id": "ct_target_01",
+            "phone_number": "0909123456",
+            "direction": "outgoing",
+            "content": "私のフライトは今日の午後6時に着陸します"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "eb0e510195ad4048243f5b20f078132d26634d137a96ddc485f7136a64c8363c",
+  "validation": {
+    "scenario_id": "sim_trans_tr_04_sms",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "sms"
+    ],
+    "state_hash": "eb0e510195ad4048243f5b20f078132d26634d137a96ddc485f7136a64c8363c",
+    "errors": []
+  }
+}

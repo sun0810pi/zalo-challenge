@@ -1,0 +1,169 @@
+{
+  "scenario_id": "pilot_019_habit_tracker_log",
+  "split": "train",
+  "template_id": "tpl_habit_tracker_log",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "habit_tracker"
+  ],
+  "installed_apps": [
+    "habit_tracker",
+    "reminders",
+    "tasks"
+  ],
+  "objective": "List habits, find habit_read_02, and log completion for 2026-11-20.",
+  "expect_mutation": true,
+  "user_request": "Đánh dấu hoàn thành thói quen đọc sách 30 phút cho ngày hôm nay giúp mình.",
+  "current_time": "2026-11-20T21:00:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "habit_tracker": {
+      "habits": [
+        {
+          "id": "habit_water_01",
+          "name": "Uống đủ 2 lít nước",
+          "streak": 4,
+          "last_logged": "2026-11-19"
+        },
+        {
+          "id": "habit_read_02",
+          "name": "Đọc sách 30 phút",
+          "streak": 6,
+          "last_logged": "2026-11-19"
+        }
+      ],
+      "logs": []
+    },
+    "reminders": {},
+    "tasks": {}
+  },
+  "tool_calls": [
+    {
+      "name": "habit_tracker.list_habits",
+      "arguments": {}
+    },
+    {
+      "name": "habit_tracker.log",
+      "arguments": {
+        "habit_id": "habit_read_02",
+        "date": "2026-11-20"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "habits": [
+        {
+          "id": "habit_water_01",
+          "name": "Uống đủ 2 lít nước",
+          "streak": 4,
+          "last_logged": "2026-11-19"
+        },
+        {
+          "id": "habit_read_02",
+          "name": "Đọc sách 30 phút",
+          "streak": 6,
+          "last_logged": "2026-11-19"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "log": {
+        "id": "log_01",
+        "habit_id": "habit_read_02",
+        "date": "2026-11-20"
+      },
+      "streak": 7
+    }
+  ],
+  "final_state": {
+    "habit_tracker": {
+      "habits": [
+        {
+          "id": "habit_water_01",
+          "name": "Uống đủ 2 lít nước",
+          "streak": 4,
+          "last_logged": "2026-11-19"
+        },
+        {
+          "id": "habit_read_02",
+          "name": "Đọc sách 30 phút",
+          "streak": 7,
+          "last_logged": "2026-11-20"
+        }
+      ],
+      "logs": [
+        {
+          "id": "log_01",
+          "habit_id": "habit_read_02",
+          "date": "2026-11-20"
+        }
+      ]
+    },
+    "reminders": {},
+    "tasks": {}
+  },
+  "state_diff": {
+    "habit_tracker": {
+      "before": {
+        "habits": [
+          {
+            "id": "habit_water_01",
+            "name": "Uống đủ 2 lít nước",
+            "streak": 4,
+            "last_logged": "2026-11-19"
+          },
+          {
+            "id": "habit_read_02",
+            "name": "Đọc sách 30 phút",
+            "streak": 6,
+            "last_logged": "2026-11-19"
+          }
+        ],
+        "logs": []
+      },
+      "after": {
+        "habits": [
+          {
+            "id": "habit_water_01",
+            "name": "Uống đủ 2 lít nước",
+            "streak": 4,
+            "last_logged": "2026-11-19"
+          },
+          {
+            "id": "habit_read_02",
+            "name": "Đọc sách 30 phút",
+            "streak": 7,
+            "last_logged": "2026-11-20"
+          }
+        ],
+        "logs": [
+          {
+            "id": "log_01",
+            "habit_id": "habit_read_02",
+            "date": "2026-11-20"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "bbc3c787ad023008f21d5b7531ff3f33e5e169211195ef336351510823992bce",
+  "validation": {
+    "scenario_id": "pilot_019_habit_tracker_log",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "habit_tracker"
+    ],
+    "state_hash": "bbc3c787ad023008f21d5b7531ff3f33e5e169211195ef336351510823992bce",
+    "errors": []
+  }
+}

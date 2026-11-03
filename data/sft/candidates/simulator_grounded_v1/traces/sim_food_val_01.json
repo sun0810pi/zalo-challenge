@@ -1,0 +1,270 @@
+{
+  "scenario_id": "sim_food_val_01",
+  "split": "val",
+  "template_id": "tpl_food_order_val",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "food_delivery"
+  ],
+  "installed_apps": [
+    "food_delivery",
+    "ewallet",
+    "grocery"
+  ],
+  "objective": "List restaurants, get menu for rest_mq_01, and place order for 2x m_mi_01.",
+  "expect_mutation": true,
+  "user_request": "Tìm quán Mì Quảng Bà Mua trên ứng dụng đặt món, xem thực đơn và đặt 2 tô Mì Quảng tôm thịt giao về nhà thanh toán tiền mặt nhé.",
+  "current_time": "2026-11-23T11:30:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "food_delivery": {
+      "restaurants": [
+        {
+          "id": "rest_other_00",
+          "name": "Trà Sữa Tocotoco",
+          "rating": 4.4,
+          "menu": [
+            {
+              "id": "m_ts_00",
+              "name": "Trà sữa trân châu",
+              "price": 35000
+            }
+          ]
+        },
+        {
+          "id": "rest_mq_01",
+          "name": "Mì Quảng Bà Mua",
+          "rating": 4.8,
+          "menu": [
+            {
+              "id": "m_mi_01",
+              "name": "Mì Quảng tôm thịt",
+              "price": 50000
+            }
+          ]
+        }
+      ],
+      "orders": []
+    },
+    "ewallet": {},
+    "grocery": {}
+  },
+  "tool_calls": [
+    {
+      "name": "food_delivery.list_restaurants",
+      "arguments": {}
+    },
+    {
+      "name": "food_delivery.get_menu",
+      "arguments": {
+        "restaurant_id": "rest_mq_01"
+      }
+    },
+    {
+      "name": "food_delivery.place_order",
+      "arguments": {
+        "restaurant_id": "rest_mq_01",
+        "items": [
+          {
+            "item_id": "m_mi_01",
+            "quantity": 2
+          }
+        ],
+        "address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+        "payment": "cash"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "restaurants": [
+        {
+          "id": "rest_other_00",
+          "name": "Trà Sữa Tocotoco",
+          "rating": 4.4
+        },
+        {
+          "id": "rest_mq_01",
+          "name": "Mì Quảng Bà Mua",
+          "rating": 4.8
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "menu": [
+        {
+          "id": "m_mi_01",
+          "name": "Mì Quảng tôm thịt",
+          "price": 50000
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "restaurant_id": "rest_mq_01",
+        "items": [
+          {
+            "item_id": "m_mi_01",
+            "name": "Mì Quảng tôm thịt",
+            "quantity": 2,
+            "note": null
+          }
+        ],
+        "total": 100000,
+        "address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+        "payment": "cash",
+        "status": "placed"
+      }
+    }
+  ],
+  "final_state": {
+    "food_delivery": {
+      "restaurants": [
+        {
+          "id": "rest_other_00",
+          "name": "Trà Sữa Tocotoco",
+          "rating": 4.4,
+          "menu": [
+            {
+              "id": "m_ts_00",
+              "name": "Trà sữa trân châu",
+              "price": 35000
+            }
+          ]
+        },
+        {
+          "id": "rest_mq_01",
+          "name": "Mì Quảng Bà Mua",
+          "rating": 4.8,
+          "menu": [
+            {
+              "id": "m_mi_01",
+              "name": "Mì Quảng tôm thịt",
+              "price": 50000
+            }
+          ]
+        }
+      ],
+      "orders": [
+        {
+          "id": "ord_01",
+          "restaurant_id": "rest_mq_01",
+          "items": [
+            {
+              "item_id": "m_mi_01",
+              "name": "Mì Quảng tôm thịt",
+              "quantity": 2,
+              "note": null
+            }
+          ],
+          "total": 100000,
+          "address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+          "payment": "cash",
+          "status": "placed"
+        }
+      ]
+    },
+    "ewallet": {},
+    "grocery": {}
+  },
+  "state_diff": {
+    "food_delivery": {
+      "before": {
+        "restaurants": [
+          {
+            "id": "rest_other_00",
+            "name": "Trà Sữa Tocotoco",
+            "rating": 4.4,
+            "menu": [
+              {
+                "id": "m_ts_00",
+                "name": "Trà sữa trân châu",
+                "price": 35000
+              }
+            ]
+          },
+          {
+            "id": "rest_mq_01",
+            "name": "Mì Quảng Bà Mua",
+            "rating": 4.8,
+            "menu": [
+              {
+                "id": "m_mi_01",
+                "name": "Mì Quảng tôm thịt",
+                "price": 50000
+              }
+            ]
+          }
+        ],
+        "orders": []
+      },
+      "after": {
+        "restaurants": [
+          {
+            "id": "rest_other_00",
+            "name": "Trà Sữa Tocotoco",
+            "rating": 4.4,
+            "menu": [
+              {
+                "id": "m_ts_00",
+                "name": "Trà sữa trân châu",
+                "price": 35000
+              }
+            ]
+          },
+          {
+            "id": "rest_mq_01",
+            "name": "Mì Quảng Bà Mua",
+            "rating": 4.8,
+            "menu": [
+              {
+                "id": "m_mi_01",
+                "name": "Mì Quảng tôm thịt",
+                "price": 50000
+              }
+            ]
+          }
+        ],
+        "orders": [
+          {
+            "id": "ord_01",
+            "restaurant_id": "rest_mq_01",
+            "items": [
+              {
+                "item_id": "m_mi_01",
+                "name": "Mì Quảng tôm thịt",
+                "quantity": 2,
+                "note": null
+              }
+            ],
+            "total": 100000,
+            "address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+            "payment": "cash",
+            "status": "placed"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "41178cc89eb68ae472669395fb6b190dc88916bac52b37a0f3b6b5c61995a54b",
+  "validation": {
+    "scenario_id": "sim_food_val_01",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "food_delivery"
+    ],
+    "state_hash": "41178cc89eb68ae472669395fb6b190dc88916bac52b37a0f3b6b5c61995a54b",
+    "errors": []
+  }
+}

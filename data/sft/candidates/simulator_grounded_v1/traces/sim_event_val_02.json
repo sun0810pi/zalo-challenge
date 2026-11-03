@@ -1,0 +1,218 @@
+{
+  "scenario_id": "sim_event_val_02",
+  "split": "val",
+  "template_id": "tpl_event_book_val_True",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "event_tickets",
+    "calendar"
+  ],
+  "installed_apps": [
+    "event_tickets",
+    "calendar",
+    "ewallet"
+  ],
+  "objective": "Search event Kịch Thiếu nhi, book 3 tickets on event_kt_02, and create calendar event.",
+  "expect_mutation": true,
+  "user_request": "Tìm và đặt 3 vé xem Kịch Thiếu nhi Dế Mèn, sau đó lưu lịch đi xem vào ứng dụng Lịch giúp chị.",
+  "current_time": "2026-11-22T10:00:00+07:00",
+  "city": "TP.HCM",
+  "initial_state": {
+    "event_tickets": {
+      "events": [
+        {
+          "id": "event_kt_02",
+          "name": "Vở kịch Thiếu nhi Dế Mèn",
+          "category": "sự kiện",
+          "date": "2026-12-01",
+          "time": "18:00",
+          "venue": "Nhà hát Tuổi Trẻ",
+          "price": 200000,
+          "available": 30
+        }
+      ],
+      "bookings": []
+    },
+    "calendar": {
+      "events": []
+    },
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "event_tickets.search",
+      "arguments": {
+        "query": "Kịch Thiếu nhi"
+      }
+    },
+    {
+      "name": "event_tickets.book",
+      "arguments": {
+        "event_id": "event_kt_02",
+        "quantity": 3
+      }
+    },
+    {
+      "name": "calendar.create_event",
+      "arguments": {
+        "title": "Vở kịch Thiếu nhi Dế Mèn",
+        "start": "2026-12-01T18:00:00+07:00",
+        "location": "Nhà hát Tuổi Trẻ"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "events": [
+        {
+          "id": "event_kt_02",
+          "name": "Vở kịch Thiếu nhi Dế Mèn",
+          "category": "sự kiện",
+          "date": "2026-12-01",
+          "time": "18:00",
+          "venue": "Nhà hát Tuổi Trẻ",
+          "price": 200000,
+          "available": 30
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "booking": {
+        "id": "tk_01",
+        "event_id": "event_kt_02",
+        "quantity": 3,
+        "total": 600000,
+        "status": "confirmed"
+      }
+    },
+    {
+      "ok": true,
+      "id": "evt_01",
+      "item": {
+        "id": "evt_01",
+        "status": "confirmed",
+        "title": "Vở kịch Thiếu nhi Dế Mèn",
+        "start": "2026-12-01T18:00:00+07:00",
+        "end": "2026-12-01T19:00:00+07:00",
+        "location": "Nhà hát Tuổi Trẻ"
+      }
+    }
+  ],
+  "final_state": {
+    "event_tickets": {
+      "events": [
+        {
+          "id": "event_kt_02",
+          "name": "Vở kịch Thiếu nhi Dế Mèn",
+          "category": "sự kiện",
+          "date": "2026-12-01",
+          "time": "18:00",
+          "venue": "Nhà hát Tuổi Trẻ",
+          "price": 200000,
+          "available": 27
+        }
+      ],
+      "bookings": [
+        {
+          "id": "tk_01",
+          "event_id": "event_kt_02",
+          "quantity": 3,
+          "total": 600000,
+          "status": "confirmed"
+        }
+      ]
+    },
+    "calendar": {
+      "events": [
+        {
+          "id": "evt_01",
+          "status": "confirmed",
+          "title": "Vở kịch Thiếu nhi Dế Mèn",
+          "start": "2026-12-01T18:00:00+07:00",
+          "end": "2026-12-01T19:00:00+07:00",
+          "location": "Nhà hát Tuổi Trẻ"
+        }
+      ]
+    },
+    "ewallet": {}
+  },
+  "state_diff": {
+    "event_tickets": {
+      "before": {
+        "events": [
+          {
+            "id": "event_kt_02",
+            "name": "Vở kịch Thiếu nhi Dế Mèn",
+            "category": "sự kiện",
+            "date": "2026-12-01",
+            "time": "18:00",
+            "venue": "Nhà hát Tuổi Trẻ",
+            "price": 200000,
+            "available": 30
+          }
+        ],
+        "bookings": []
+      },
+      "after": {
+        "events": [
+          {
+            "id": "event_kt_02",
+            "name": "Vở kịch Thiếu nhi Dế Mèn",
+            "category": "sự kiện",
+            "date": "2026-12-01",
+            "time": "18:00",
+            "venue": "Nhà hát Tuổi Trẻ",
+            "price": 200000,
+            "available": 27
+          }
+        ],
+        "bookings": [
+          {
+            "id": "tk_01",
+            "event_id": "event_kt_02",
+            "quantity": 3,
+            "total": 600000,
+            "status": "confirmed"
+          }
+        ]
+      }
+    },
+    "calendar": {
+      "before": {
+        "events": []
+      },
+      "after": {
+        "events": [
+          {
+            "id": "evt_01",
+            "status": "confirmed",
+            "title": "Vở kịch Thiếu nhi Dế Mèn",
+            "start": "2026-12-01T18:00:00+07:00",
+            "end": "2026-12-01T19:00:00+07:00",
+            "location": "Nhà hát Tuổi Trẻ"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "73a9f8a79f64a8018f8f49d973656086ead8a2c872510e8624bb205e1bc1db67",
+  "validation": {
+    "scenario_id": "sim_event_val_02",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "calendar",
+      "event_tickets"
+    ],
+    "state_hash": "73a9f8a79f64a8018f8f49d973656086ead8a2c872510e8624bb205e1bc1db67",
+    "errors": []
+  }
+}

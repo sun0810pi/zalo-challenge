@@ -1,0 +1,231 @@
+{
+  "scenario_id": "sim_event_tr_04",
+  "split": "train",
+  "template_id": "tpl_event_book_train_True",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "event_tickets",
+    "calendar"
+  ],
+  "installed_apps": [
+    "event_tickets",
+    "calendar",
+    "ewallet"
+  ],
+  "objective": "Search event Hội thảo AI, book 1 tickets on event_ai_04, and create calendar event.",
+  "expect_mutation": true,
+  "user_request": "Đặt 1 vé tham dự Hội thảo AI rồi ghi sự kiện đó vào Lịch theo đúng ngày giờ và địa điểm tổ chức nhé.",
+  "serialized_user_prompt": "Đặt 1 vé tham dự Hội thảo AI rồi ghi sự kiện đó vào Lịch theo đúng ngày giờ và địa điểm tổ chức nhé",
+  "current_time": "2026-11-22T10:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Phạm Thanh Thảo",
+    "city": "Hà Nội",
+    "home_address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+    "work_address": "Tòa nhà Lotte Center, 54 Liễu Giai, Ba Đình, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0069,
+    "lng": 105.8027
+  },
+  "history": [],
+  "initial_state": {
+    "event_tickets": {
+      "events": [
+        {
+          "id": "event_ai_04",
+          "name": "Hội thảo AI & Dữ liệu lớn",
+          "category": "sự kiện",
+          "date": "2026-12-05",
+          "time": "08:30",
+          "venue": "Trung tâm Hội nghị",
+          "price": 250000,
+          "available": 30
+        }
+      ],
+      "bookings": []
+    },
+    "calendar": {
+      "events": []
+    },
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "event_tickets.search",
+      "arguments": {
+        "query": "Hội thảo AI"
+      }
+    },
+    {
+      "name": "event_tickets.book",
+      "arguments": {
+        "event_id": "event_ai_04",
+        "quantity": 1
+      }
+    },
+    {
+      "name": "calendar.create_event",
+      "arguments": {
+        "title": "Hội thảo AI & Dữ liệu lớn",
+        "start": "2026-12-05T08:30:00+07:00",
+        "location": "Trung tâm Hội nghị"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "events": [
+        {
+          "id": "event_ai_04",
+          "name": "Hội thảo AI & Dữ liệu lớn",
+          "category": "sự kiện",
+          "date": "2026-12-05",
+          "time": "08:30",
+          "venue": "Trung tâm Hội nghị",
+          "price": 250000,
+          "available": 30
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "booking": {
+        "id": "tk_01",
+        "event_id": "event_ai_04",
+        "quantity": 1,
+        "total": 250000,
+        "status": "confirmed"
+      }
+    },
+    {
+      "ok": true,
+      "id": "evt_01",
+      "item": {
+        "id": "evt_01",
+        "status": "confirmed",
+        "title": "Hội thảo AI & Dữ liệu lớn",
+        "start": "2026-12-05T08:30:00+07:00",
+        "end": "2026-12-05T09:30:00+07:00",
+        "location": "Trung tâm Hội nghị"
+      }
+    }
+  ],
+  "final_state": {
+    "event_tickets": {
+      "events": [
+        {
+          "id": "event_ai_04",
+          "name": "Hội thảo AI & Dữ liệu lớn",
+          "category": "sự kiện",
+          "date": "2026-12-05",
+          "time": "08:30",
+          "venue": "Trung tâm Hội nghị",
+          "price": 250000,
+          "available": 29
+        }
+      ],
+      "bookings": [
+        {
+          "id": "tk_01",
+          "event_id": "event_ai_04",
+          "quantity": 1,
+          "total": 250000,
+          "status": "confirmed"
+        }
+      ]
+    },
+    "calendar": {
+      "events": [
+        {
+          "id": "evt_01",
+          "status": "confirmed",
+          "title": "Hội thảo AI & Dữ liệu lớn",
+          "start": "2026-12-05T08:30:00+07:00",
+          "end": "2026-12-05T09:30:00+07:00",
+          "location": "Trung tâm Hội nghị"
+        }
+      ]
+    },
+    "ewallet": {}
+  },
+  "state_diff": {
+    "event_tickets": {
+      "before": {
+        "events": [
+          {
+            "id": "event_ai_04",
+            "name": "Hội thảo AI & Dữ liệu lớn",
+            "category": "sự kiện",
+            "date": "2026-12-05",
+            "time": "08:30",
+            "venue": "Trung tâm Hội nghị",
+            "price": 250000,
+            "available": 30
+          }
+        ],
+        "bookings": []
+      },
+      "after": {
+        "events": [
+          {
+            "id": "event_ai_04",
+            "name": "Hội thảo AI & Dữ liệu lớn",
+            "category": "sự kiện",
+            "date": "2026-12-05",
+            "time": "08:30",
+            "venue": "Trung tâm Hội nghị",
+            "price": 250000,
+            "available": 29
+          }
+        ],
+        "bookings": [
+          {
+            "id": "tk_01",
+            "event_id": "event_ai_04",
+            "quantity": 1,
+            "total": 250000,
+            "status": "confirmed"
+          }
+        ]
+      }
+    },
+    "calendar": {
+      "before": {
+        "events": []
+      },
+      "after": {
+        "events": [
+          {
+            "id": "evt_01",
+            "status": "confirmed",
+            "title": "Hội thảo AI & Dữ liệu lớn",
+            "start": "2026-12-05T08:30:00+07:00",
+            "end": "2026-12-05T09:30:00+07:00",
+            "location": "Trung tâm Hội nghị"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "8e06854edcff08a3c64fdcb5f728974141f51ef2aa5f6e85c83899d8ad2fd811",
+  "validation": {
+    "scenario_id": "sim_event_tr_04",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "calendar",
+      "event_tickets"
+    ],
+    "state_hash": "8e06854edcff08a3c64fdcb5f728974141f51ef2aa5f6e85c83899d8ad2fd811",
+    "errors": []
+  }
+}

@@ -1,0 +1,209 @@
+{
+  "scenario_id": "sim_recipes_tr_01",
+  "split": "train",
+  "template_id": "tpl_recipes_save_train_True",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "recipes"
+  ],
+  "installed_apps": [
+    "recipes",
+    "pantry",
+    "notes"
+  ],
+  "objective": "Search recipe thịt kho tàu for 6 servings, optionally get details, and save rcp_tkt_01.",
+  "expect_mutation": true,
+  "user_request": "Tìm công thức nấu món thịt kho tàu cho 6 người ăn, xem chi tiết các bước làm rồi lưu công thức đó lại giúp anh.",
+  "current_time": "2026-11-22T15:30:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "recipes": {
+      "recipes": [
+        {
+          "id": "rcp_tkt_01",
+          "name": "Thịt kho tàu trứng vịt",
+          "servings": 2,
+          "steps": [
+            "Sơ chế",
+            "Nấu chín"
+          ],
+          "ingredients": [
+            {
+              "name": "thịt",
+              "quantity": 400,
+              "unit": "g"
+            }
+          ]
+        }
+      ],
+      "saved": []
+    },
+    "pantry": {},
+    "notes": {}
+  },
+  "tool_calls": [
+    {
+      "name": "recipes.search",
+      "arguments": {
+        "query": "thịt kho tàu",
+        "servings": 6
+      }
+    },
+    {
+      "name": "recipes.get",
+      "arguments": {
+        "recipe_id": "rcp_tkt_01"
+      }
+    },
+    {
+      "name": "recipes.save",
+      "arguments": {
+        "recipe_id": "rcp_tkt_01"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "recipes": [
+        {
+          "id": "rcp_tkt_01",
+          "name": "Thịt kho tàu trứng vịt",
+          "servings": 6,
+          "ingredients": [
+            {
+              "name": "thịt",
+              "quantity": 1200,
+              "unit": "g"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "recipe": {
+        "id": "rcp_tkt_01",
+        "name": "Thịt kho tàu trứng vịt",
+        "servings": 2,
+        "steps": [
+          "Sơ chế",
+          "Nấu chín"
+        ],
+        "ingredients": [
+          {
+            "name": "thịt",
+            "quantity": 400,
+            "unit": "g"
+          }
+        ]
+      },
+      "saved": false
+    },
+    {
+      "ok": true,
+      "saved": {
+        "id": "sav_01",
+        "recipe_id": "rcp_tkt_01"
+      }
+    }
+  ],
+  "final_state": {
+    "recipes": {
+      "recipes": [
+        {
+          "id": "rcp_tkt_01",
+          "name": "Thịt kho tàu trứng vịt",
+          "servings": 2,
+          "steps": [
+            "Sơ chế",
+            "Nấu chín"
+          ],
+          "ingredients": [
+            {
+              "name": "thịt",
+              "quantity": 400,
+              "unit": "g"
+            }
+          ]
+        }
+      ],
+      "saved": [
+        {
+          "id": "sav_01",
+          "recipe_id": "rcp_tkt_01"
+        }
+      ]
+    },
+    "pantry": {},
+    "notes": {}
+  },
+  "state_diff": {
+    "recipes": {
+      "before": {
+        "recipes": [
+          {
+            "id": "rcp_tkt_01",
+            "name": "Thịt kho tàu trứng vịt",
+            "servings": 2,
+            "steps": [
+              "Sơ chế",
+              "Nấu chín"
+            ],
+            "ingredients": [
+              {
+                "name": "thịt",
+                "quantity": 400,
+                "unit": "g"
+              }
+            ]
+          }
+        ],
+        "saved": []
+      },
+      "after": {
+        "recipes": [
+          {
+            "id": "rcp_tkt_01",
+            "name": "Thịt kho tàu trứng vịt",
+            "servings": 2,
+            "steps": [
+              "Sơ chế",
+              "Nấu chín"
+            ],
+            "ingredients": [
+              {
+                "name": "thịt",
+                "quantity": 400,
+                "unit": "g"
+              }
+            ]
+          }
+        ],
+        "saved": [
+          {
+            "id": "sav_01",
+            "recipe_id": "rcp_tkt_01"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "4ccb01b89e16d61f15a06724de9ddcb59c7b657fd91869ffd567d1965d5f16d2",
+  "validation": {
+    "scenario_id": "sim_recipes_tr_01",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "recipes"
+    ],
+    "state_hash": "4ccb01b89e16d61f15a06724de9ddcb59c7b657fd91869ffd567d1965d5f16d2",
+    "errors": []
+  }
+}

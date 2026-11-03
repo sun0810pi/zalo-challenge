@@ -1,0 +1,85 @@
+{
+  "scenario_id": "pilot_023_stocks_neg_condition_stop",
+  "split": "train",
+  "template_id": "tpl_stocks_neg_condition_stop",
+  "scenario_type": "negative_condition",
+  "primary_apps": [
+    "stocks"
+  ],
+  "installed_apps": [
+    "stocks",
+    "banking"
+  ],
+  "objective": "Check VNM quote (66800 >= 62000) and stop without placing an order.",
+  "expect_mutation": false,
+  "user_request": "Xem giá cổ phiếu VNM hiện tại giúp mình, nếu giá giảm xuống dưới 62 nghìn thì đặt mua 100 cổ, còn cao hơn thì thôi không mua.",
+  "current_time": "2026-11-20T10:45:00+07:00",
+  "city": "TP.HCM",
+  "initial_state": {
+    "stocks": {
+      "quotes": [
+        {
+          "symbol": "VNM",
+          "name": "CTCP Sữa Việt Nam",
+          "price": 66800,
+          "change_pct": 0.5
+        }
+      ],
+      "holdings": [],
+      "orders": [],
+      "alerts": []
+    },
+    "banking": {}
+  },
+  "tool_calls": [
+    {
+      "name": "stocks.get_quote",
+      "arguments": {
+        "symbol": "VNM"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "quote": {
+        "symbol": "VNM",
+        "name": "CTCP Sữa Việt Nam",
+        "price": 66800,
+        "change_pct": 0.5
+      }
+    }
+  ],
+  "final_state": {
+    "stocks": {
+      "quotes": [
+        {
+          "symbol": "VNM",
+          "name": "CTCP Sữa Việt Nam",
+          "price": 66800,
+          "change_pct": 0.5
+        }
+      ],
+      "holdings": [],
+      "orders": [],
+      "alerts": []
+    },
+    "banking": {}
+  },
+  "state_diff": {},
+  "state_hash": "a4cf905125870257bfc79a6e90f8d62c4539daa9c78862bfbc466a21f3a44d48",
+  "validation": {
+    "scenario_id": "pilot_023_stocks_neg_condition_stop",
+    "scenario_type": "negative_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "a4cf905125870257bfc79a6e90f8d62c4539daa9c78862bfbc466a21f3a44d48",
+    "errors": []
+  }
+}

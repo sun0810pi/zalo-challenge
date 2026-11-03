@@ -1,0 +1,239 @@
+{
+  "scenario_id": "sim_tb_tr_02_book",
+  "split": "train",
+  "template_id": "tpl_tb_search_select_book_train",
+  "scenario_type": "multi_result_selection",
+  "primary_apps": [
+    "train_bus_tickets"
+  ],
+  "installed_apps": [
+    "train_bus_tickets",
+    "flights",
+    "ewallet"
+  ],
+  "objective": "Search train from TP.HCM to Nha Trang, skip trip_full_02 with insufficient seats, book 4 seats on trip_ok_02.",
+  "expect_mutation": true,
+  "user_request": "Tra cứu vé tàu từ TP.HCM đi Nha Trang ngày 2026-11-27, chọn chuyến còn trống từ 4 ghế trở lên và đặt 4 vé nhé.",
+  "current_time": "2026-11-21T09:00:00+07:00",
+  "city": "TP.HCM",
+  "initial_state": {
+    "train_bus_tickets": {
+      "trips": [
+        {
+          "id": "trip_full_02",
+          "type": "train",
+          "operator": "SNT2 Sớm",
+          "origin": "TP.HCM",
+          "destination": "Nha Trang",
+          "date": "2026-11-27",
+          "depart": "05:30",
+          "arrive": "11:00",
+          "price": 390000,
+          "seats_left": 3
+        },
+        {
+          "id": "trip_ok_02",
+          "type": "train",
+          "operator": "SNT2",
+          "origin": "TP.HCM",
+          "destination": "Nha Trang",
+          "date": "2026-11-27",
+          "depart": "08:15",
+          "arrive": "14:30",
+          "price": 390000,
+          "seats_left": 12
+        }
+      ],
+      "bookings": []
+    },
+    "flights": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "train_bus_tickets.search",
+      "arguments": {
+        "origin": "TP.HCM",
+        "destination": "Nha Trang",
+        "date": "2026-11-27",
+        "type": "train"
+      }
+    },
+    {
+      "name": "train_bus_tickets.book",
+      "arguments": {
+        "trip_id": "trip_ok_02",
+        "seats": 4
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "trips": [
+        {
+          "id": "trip_full_02",
+          "type": "train",
+          "operator": "SNT2 Sớm",
+          "origin": "TP.HCM",
+          "destination": "Nha Trang",
+          "date": "2026-11-27",
+          "depart": "05:30",
+          "arrive": "11:00",
+          "price": 390000,
+          "seats_left": 3
+        },
+        {
+          "id": "trip_ok_02",
+          "type": "train",
+          "operator": "SNT2",
+          "origin": "TP.HCM",
+          "destination": "Nha Trang",
+          "date": "2026-11-27",
+          "depart": "08:15",
+          "arrive": "14:30",
+          "price": 390000,
+          "seats_left": 12
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "booking": {
+        "id": "tk_01",
+        "trip_id": "trip_ok_02",
+        "seats": 4,
+        "total": 1560000,
+        "status": "confirmed"
+      }
+    }
+  ],
+  "final_state": {
+    "train_bus_tickets": {
+      "trips": [
+        {
+          "id": "trip_full_02",
+          "type": "train",
+          "operator": "SNT2 Sớm",
+          "origin": "TP.HCM",
+          "destination": "Nha Trang",
+          "date": "2026-11-27",
+          "depart": "05:30",
+          "arrive": "11:00",
+          "price": 390000,
+          "seats_left": 3
+        },
+        {
+          "id": "trip_ok_02",
+          "type": "train",
+          "operator": "SNT2",
+          "origin": "TP.HCM",
+          "destination": "Nha Trang",
+          "date": "2026-11-27",
+          "depart": "08:15",
+          "arrive": "14:30",
+          "price": 390000,
+          "seats_left": 8
+        }
+      ],
+      "bookings": [
+        {
+          "id": "tk_01",
+          "trip_id": "trip_ok_02",
+          "seats": 4,
+          "total": 1560000,
+          "status": "confirmed"
+        }
+      ]
+    },
+    "flights": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "train_bus_tickets": {
+      "before": {
+        "trips": [
+          {
+            "id": "trip_full_02",
+            "type": "train",
+            "operator": "SNT2 Sớm",
+            "origin": "TP.HCM",
+            "destination": "Nha Trang",
+            "date": "2026-11-27",
+            "depart": "05:30",
+            "arrive": "11:00",
+            "price": 390000,
+            "seats_left": 3
+          },
+          {
+            "id": "trip_ok_02",
+            "type": "train",
+            "operator": "SNT2",
+            "origin": "TP.HCM",
+            "destination": "Nha Trang",
+            "date": "2026-11-27",
+            "depart": "08:15",
+            "arrive": "14:30",
+            "price": 390000,
+            "seats_left": 12
+          }
+        ],
+        "bookings": []
+      },
+      "after": {
+        "trips": [
+          {
+            "id": "trip_full_02",
+            "type": "train",
+            "operator": "SNT2 Sớm",
+            "origin": "TP.HCM",
+            "destination": "Nha Trang",
+            "date": "2026-11-27",
+            "depart": "05:30",
+            "arrive": "11:00",
+            "price": 390000,
+            "seats_left": 3
+          },
+          {
+            "id": "trip_ok_02",
+            "type": "train",
+            "operator": "SNT2",
+            "origin": "TP.HCM",
+            "destination": "Nha Trang",
+            "date": "2026-11-27",
+            "depart": "08:15",
+            "arrive": "14:30",
+            "price": 390000,
+            "seats_left": 8
+          }
+        ],
+        "bookings": [
+          {
+            "id": "tk_01",
+            "trip_id": "trip_ok_02",
+            "seats": 4,
+            "total": 1560000,
+            "status": "confirmed"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "c47eed1edd7f14ea853652bc855f0a965f5971115ad7d48a0fa803207dddfb2e",
+  "validation": {
+    "scenario_id": "sim_tb_tr_02_book",
+    "scenario_type": "multi_result_selection",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "train_bus_tickets"
+    ],
+    "state_hash": "c47eed1edd7f14ea853652bc855f0a965f5971115ad7d48a0fa803207dddfb2e",
+    "errors": []
+  }
+}

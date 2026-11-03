@@ -1,0 +1,104 @@
+{
+  "scenario_id": "sim_bill_val_02_insufficient_stop",
+  "split": "val",
+  "template_id": "tpl_bill_arith_val_none",
+  "scenario_type": "negative_condition",
+  "primary_apps": [
+    "bill_payment",
+    "ewallet"
+  ],
+  "installed_apps": [
+    "bill_payment",
+    "ewallet",
+    "banking",
+    "sms"
+  ],
+  "objective": "Check water bill (310000) and wallet balance (95000) -> action=none.",
+  "expect_mutation": false,
+  "user_request": "Xem hóa đơn tiền nước hết bao nhiêu rồi kiểm tra ví điện tử, chỉ thanh toán khi ví đủ số dư, nếu thiếu thì dừng lại không thanh toán nhé.",
+  "current_time": "2026-11-23T09:00:00+07:00",
+  "city": "TP.HCM",
+  "initial_state": {
+    "bill_payment": {
+      "bills": [
+        {
+          "id": "bill_wt_v2",
+          "type": "water",
+          "amount": 310000,
+          "paid": false
+        }
+      ],
+      "autopays": []
+    },
+    "ewallet": {
+      "balance": 95000,
+      "transactions": []
+    },
+    "banking": {},
+    "sms": {}
+  },
+  "tool_calls": [
+    {
+      "name": "bill_payment.list_bills",
+      "arguments": {
+        "type": "water"
+      }
+    },
+    {
+      "name": "ewallet.get_balance",
+      "arguments": {}
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "bills": [
+        {
+          "id": "bill_wt_v2",
+          "type": "water",
+          "amount": 310000,
+          "paid": false
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "balance": 95000
+    }
+  ],
+  "final_state": {
+    "bill_payment": {
+      "bills": [
+        {
+          "id": "bill_wt_v2",
+          "type": "water",
+          "amount": 310000,
+          "paid": false
+        }
+      ],
+      "autopays": []
+    },
+    "ewallet": {
+      "balance": 95000,
+      "transactions": []
+    },
+    "banking": {},
+    "sms": {}
+  },
+  "state_diff": {},
+  "state_hash": "62790086b6938c9477194c60e156fe692529068312d7ba941f218fa3f757822a",
+  "validation": {
+    "scenario_id": "sim_bill_val_02_insufficient_stop",
+    "scenario_type": "negative_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [],
+    "state_hash": "62790086b6938c9477194c60e156fe692529068312d7ba941f218fa3f757822a",
+    "errors": []
+  }
+}

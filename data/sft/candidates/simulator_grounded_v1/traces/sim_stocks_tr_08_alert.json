@@ -1,0 +1,150 @@
+{
+  "scenario_id": "sim_stocks_tr_08_alert",
+  "split": "train",
+  "template_id": "tpl_stocks_alert_train",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "stocks"
+  ],
+  "installed_apps": [
+    "stocks",
+    "reminders"
+  ],
+  "objective": "Check quote for FPT and set price alert above 140000.",
+  "expect_mutation": true,
+  "user_request": "Xem giá cổ phiếu FPT hiện tại rồi cài cảnh báo khi giá FPT vượt lên trên 140000 đồng giúp anh.",
+  "current_time": "2026-11-23T11:00:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "stocks": {
+      "quotes": [
+        {
+          "symbol": "FPT",
+          "name": "CTCP FPT",
+          "price": 132000,
+          "change_pct": 0.4
+        }
+      ],
+      "holdings": [],
+      "orders": [],
+      "alerts": []
+    },
+    "reminders": {}
+  },
+  "tool_calls": [
+    {
+      "name": "stocks.get_quote",
+      "arguments": {
+        "symbol": "FPT"
+      }
+    },
+    {
+      "name": "stocks.set_price_alert",
+      "arguments": {
+        "symbol": "FPT",
+        "price": 140000,
+        "direction": "above"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "quote": {
+        "symbol": "FPT",
+        "name": "CTCP FPT",
+        "price": 132000,
+        "change_pct": 0.4
+      }
+    },
+    {
+      "ok": true,
+      "alert": {
+        "id": "alert_01",
+        "symbol": "FPT",
+        "price": 140000,
+        "direction": "above",
+        "active": true
+      }
+    }
+  ],
+  "final_state": {
+    "stocks": {
+      "quotes": [
+        {
+          "symbol": "FPT",
+          "name": "CTCP FPT",
+          "price": 132000,
+          "change_pct": 0.4
+        }
+      ],
+      "holdings": [],
+      "orders": [],
+      "alerts": [
+        {
+          "id": "alert_01",
+          "symbol": "FPT",
+          "price": 140000,
+          "direction": "above",
+          "active": true
+        }
+      ]
+    },
+    "reminders": {}
+  },
+  "state_diff": {
+    "stocks": {
+      "before": {
+        "quotes": [
+          {
+            "symbol": "FPT",
+            "name": "CTCP FPT",
+            "price": 132000,
+            "change_pct": 0.4
+          }
+        ],
+        "holdings": [],
+        "orders": [],
+        "alerts": []
+      },
+      "after": {
+        "quotes": [
+          {
+            "symbol": "FPT",
+            "name": "CTCP FPT",
+            "price": 132000,
+            "change_pct": 0.4
+          }
+        ],
+        "holdings": [],
+        "orders": [],
+        "alerts": [
+          {
+            "id": "alert_01",
+            "symbol": "FPT",
+            "price": 140000,
+            "direction": "above",
+            "active": true
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "3cef439b2c2950b53f46beed40ca8c59fbad7c27a2ec77a9300824d08b6e552c",
+  "validation": {
+    "scenario_id": "sim_stocks_tr_08_alert",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "stocks"
+    ],
+    "state_hash": "3cef439b2c2950b53f46beed40ca8c59fbad7c27a2ec77a9300824d08b6e552c",
+    "errors": []
+  }
+}

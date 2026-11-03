@@ -1,0 +1,213 @@
+{
+  "scenario_id": "sim_event_tr_06_select_avail",
+  "split": "train",
+  "template_id": "tpl_event_select_avail_train",
+  "scenario_type": "multi_result_selection",
+  "primary_apps": [
+    "event_tickets"
+  ],
+  "installed_apps": [
+    "event_tickets",
+    "calendar"
+  ],
+  "objective": "Search comedy shows, skip event_hk_01 with only 1 ticket left, book 3 tickets on event_hk_02.",
+  "expect_mutation": true,
+  "user_request": "Tìm các suất diễn Hài kịch cuối tuần này, chọn suất nào còn đủ ít nhất 3 vé trống rồi đặt 3 vé giúp anh.",
+  "current_time": "2026-11-22T11:00:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "event_tickets": {
+      "events": [
+        {
+          "id": "event_hk_01",
+          "name": "Hài kịch Tối Thứ Bảy",
+          "category": "hài kịch",
+          "date": "2026-11-28",
+          "time": "20:00",
+          "venue": "Sân khấu Trống Đồng",
+          "price": 250000,
+          "available": 1
+        },
+        {
+          "id": "event_hk_02",
+          "name": "Hài kịch Tối Chủ Nhật",
+          "category": "hài kịch",
+          "date": "2026-11-29",
+          "time": "20:00",
+          "venue": "Sân khấu Trống Đồng",
+          "price": 250000,
+          "available": 18
+        }
+      ],
+      "bookings": []
+    },
+    "calendar": {}
+  },
+  "tool_calls": [
+    {
+      "name": "event_tickets.search",
+      "arguments": {
+        "query": "Hài kịch"
+      }
+    },
+    {
+      "name": "event_tickets.book",
+      "arguments": {
+        "event_id": "event_hk_02",
+        "quantity": 3
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "events": [
+        {
+          "id": "event_hk_01",
+          "name": "Hài kịch Tối Thứ Bảy",
+          "category": "hài kịch",
+          "date": "2026-11-28",
+          "time": "20:00",
+          "venue": "Sân khấu Trống Đồng",
+          "price": 250000,
+          "available": 1
+        },
+        {
+          "id": "event_hk_02",
+          "name": "Hài kịch Tối Chủ Nhật",
+          "category": "hài kịch",
+          "date": "2026-11-29",
+          "time": "20:00",
+          "venue": "Sân khấu Trống Đồng",
+          "price": 250000,
+          "available": 18
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "booking": {
+        "id": "tk_01",
+        "event_id": "event_hk_02",
+        "quantity": 3,
+        "total": 750000,
+        "status": "confirmed"
+      }
+    }
+  ],
+  "final_state": {
+    "event_tickets": {
+      "events": [
+        {
+          "id": "event_hk_01",
+          "name": "Hài kịch Tối Thứ Bảy",
+          "category": "hài kịch",
+          "date": "2026-11-28",
+          "time": "20:00",
+          "venue": "Sân khấu Trống Đồng",
+          "price": 250000,
+          "available": 1
+        },
+        {
+          "id": "event_hk_02",
+          "name": "Hài kịch Tối Chủ Nhật",
+          "category": "hài kịch",
+          "date": "2026-11-29",
+          "time": "20:00",
+          "venue": "Sân khấu Trống Đồng",
+          "price": 250000,
+          "available": 15
+        }
+      ],
+      "bookings": [
+        {
+          "id": "tk_01",
+          "event_id": "event_hk_02",
+          "quantity": 3,
+          "total": 750000,
+          "status": "confirmed"
+        }
+      ]
+    },
+    "calendar": {}
+  },
+  "state_diff": {
+    "event_tickets": {
+      "before": {
+        "events": [
+          {
+            "id": "event_hk_01",
+            "name": "Hài kịch Tối Thứ Bảy",
+            "category": "hài kịch",
+            "date": "2026-11-28",
+            "time": "20:00",
+            "venue": "Sân khấu Trống Đồng",
+            "price": 250000,
+            "available": 1
+          },
+          {
+            "id": "event_hk_02",
+            "name": "Hài kịch Tối Chủ Nhật",
+            "category": "hài kịch",
+            "date": "2026-11-29",
+            "time": "20:00",
+            "venue": "Sân khấu Trống Đồng",
+            "price": 250000,
+            "available": 18
+          }
+        ],
+        "bookings": []
+      },
+      "after": {
+        "events": [
+          {
+            "id": "event_hk_01",
+            "name": "Hài kịch Tối Thứ Bảy",
+            "category": "hài kịch",
+            "date": "2026-11-28",
+            "time": "20:00",
+            "venue": "Sân khấu Trống Đồng",
+            "price": 250000,
+            "available": 1
+          },
+          {
+            "id": "event_hk_02",
+            "name": "Hài kịch Tối Chủ Nhật",
+            "category": "hài kịch",
+            "date": "2026-11-29",
+            "time": "20:00",
+            "venue": "Sân khấu Trống Đồng",
+            "price": 250000,
+            "available": 15
+          }
+        ],
+        "bookings": [
+          {
+            "id": "tk_01",
+            "event_id": "event_hk_02",
+            "quantity": 3,
+            "total": 750000,
+            "status": "confirmed"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "7ce00238f56089ef888b3c8514a0a68d74a0c34474ba9ee34894c570e168410f",
+  "validation": {
+    "scenario_id": "sim_event_tr_06_select_avail",
+    "scenario_type": "multi_result_selection",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "event_tickets"
+    ],
+    "state_hash": "7ce00238f56089ef888b3c8514a0a68d74a0c34474ba9ee34894c570e168410f",
+    "errors": []
+  }
+}

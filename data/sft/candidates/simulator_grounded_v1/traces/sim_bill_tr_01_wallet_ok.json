@@ -1,0 +1,175 @@
+{
+  "scenario_id": "sim_bill_tr_01_wallet_ok",
+  "split": "train",
+  "template_id": "tpl_bill_arith_train_ewallet",
+  "scenario_type": "arithmetic_condition",
+  "primary_apps": [
+    "bill_payment",
+    "ewallet"
+  ],
+  "installed_apps": [
+    "bill_payment",
+    "ewallet",
+    "banking",
+    "sms"
+  ],
+  "objective": "Check electricity bill (320000) and wallet balance (500000) -> action=ewallet.",
+  "expect_mutation": true,
+  "user_request": "Kiểm tra hóa đơn tiền điện tháng này và số dư ví điện tử, nếu ví đủ tiền thì thanh toán bằng ví điện tử nhé.",
+  "current_time": "2026-11-23T09:00:00+07:00",
+  "city": "Hà Nội",
+  "initial_state": {
+    "bill_payment": {
+      "bills": [
+        {
+          "id": "bill_el_01",
+          "type": "electricity",
+          "amount": 320000,
+          "paid": false
+        }
+      ],
+      "autopays": []
+    },
+    "ewallet": {
+      "balance": 500000,
+      "transactions": []
+    },
+    "banking": {},
+    "sms": {}
+  },
+  "tool_calls": [
+    {
+      "name": "bill_payment.list_bills",
+      "arguments": {
+        "type": "electricity"
+      }
+    },
+    {
+      "name": "ewallet.get_balance",
+      "arguments": {}
+    },
+    {
+      "name": "bill_payment.pay",
+      "arguments": {
+        "bill_id": "bill_el_01",
+        "source": "ewallet"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "bills": [
+        {
+          "id": "bill_el_01",
+          "type": "electricity",
+          "amount": 320000,
+          "paid": false
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "balance": 500000
+    },
+    {
+      "ok": true,
+      "bill": {
+        "id": "bill_el_01",
+        "type": "electricity",
+        "amount": 320000,
+        "paid": true,
+        "paid_with": "ewallet"
+      }
+    }
+  ],
+  "final_state": {
+    "bill_payment": {
+      "bills": [
+        {
+          "id": "bill_el_01",
+          "type": "electricity",
+          "amount": 320000,
+          "paid": true,
+          "paid_with": "ewallet"
+        }
+      ],
+      "autopays": []
+    },
+    "ewallet": {
+      "balance": 180000,
+      "transactions": [
+        {
+          "id": "tx_01",
+          "type": "bill_payment",
+          "bill_id": "bill_el_01",
+          "amount": -320000
+        }
+      ]
+    },
+    "banking": {},
+    "sms": {}
+  },
+  "state_diff": {
+    "bill_payment": {
+      "before": {
+        "bills": [
+          {
+            "id": "bill_el_01",
+            "type": "electricity",
+            "amount": 320000,
+            "paid": false
+          }
+        ],
+        "autopays": []
+      },
+      "after": {
+        "bills": [
+          {
+            "id": "bill_el_01",
+            "type": "electricity",
+            "amount": 320000,
+            "paid": true,
+            "paid_with": "ewallet"
+          }
+        ],
+        "autopays": []
+      }
+    },
+    "ewallet": {
+      "before": {
+        "balance": 500000,
+        "transactions": []
+      },
+      "after": {
+        "balance": 180000,
+        "transactions": [
+          {
+            "id": "tx_01",
+            "type": "bill_payment",
+            "bill_id": "bill_el_01",
+            "amount": -320000
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "02a14fb7deb93131e82ee4c639c087d7744c6e969112246f4d94f2d8fdf790e8",
+  "validation": {
+    "scenario_id": "sim_bill_tr_01_wallet_ok",
+    "scenario_type": "arithmetic_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "bill_payment",
+      "ewallet"
+    ],
+    "state_hash": "02a14fb7deb93131e82ee4c639c087d7744c6e969112246f4d94f2d8fdf790e8",
+    "errors": []
+  }
+}

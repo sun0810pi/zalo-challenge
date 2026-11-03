@@ -1,0 +1,239 @@
+{
+  "scenario_id": "sim_transit_tr_03",
+  "split": "train",
+  "template_id": "tpl_transit_train_False",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "public_transit"
+  ],
+  "installed_apps": [
+    "public_transit",
+    "maps",
+    "ewallet"
+  ],
+  "objective": "Find transit routes from Mỹ Đình to Giáp Bát, optionally check departures, and topup 50000.",
+  "expect_mutation": true,
+  "user_request": "Tìm tuyến xe buýt từ Mỹ Đình đi Giáp Bát rồi nạp 50 nghìn vào thẻ vé xe buýt giúp mình.",
+  "serialized_user_prompt": "Tìm tuyến xe buýt từ Mỹ Đình đi Giáp Bát rồi nạp 50 nghìn vào thẻ vé xe buýt giúp mình",
+  "current_time": "2026-11-22T08:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Đà Nẵng",
+  "user_profile": {
+    "name": "Lê Hoàng Nam",
+    "city": "Đà Nẵng",
+    "home_address": "72 Nguyễn Văn Linh, Hải Châu, Đà Nẵng",
+    "work_address": "Khu Công nghệ thông tin tập trung, Liên Chiểu, Đà Nẵng"
+  },
+  "location": {
+    "lat": 16.0601,
+    "lng": 108.2122
+  },
+  "history": [],
+  "initial_state": {
+    "public_transit": {
+      "card_balance": 15000,
+      "routes": [
+        {
+          "id": "rt_tr_03",
+          "name": "Tuyến Mỹ Đình - Giáp Bát",
+          "type": "bus",
+          "stops": [
+            "Mỹ Đình",
+            "Trạm Trung Gian",
+            "Giáp Bát"
+          ],
+          "fare": 10000,
+          "duration_min": 25,
+          "headway_min": 8
+        }
+      ],
+      "departures": [
+        {
+          "stop": "Mỹ Đình",
+          "route": "rt_tr_03",
+          "time": "08:10"
+        },
+        {
+          "stop": "Mỹ Đình",
+          "route": "rt_tr_03",
+          "time": "08:18"
+        }
+      ],
+      "topups": []
+    },
+    "maps": {},
+    "ewallet": {}
+  },
+  "tool_calls": [
+    {
+      "name": "public_transit.find_routes",
+      "arguments": {
+        "origin": "Mỹ Đình",
+        "destination": "Giáp Bát"
+      }
+    },
+    {
+      "name": "public_transit.topup_card",
+      "arguments": {
+        "amount": 50000
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "routes": [
+        {
+          "route_id": "rt_tr_03",
+          "name": "Tuyến Mỹ Đình - Giáp Bát",
+          "type": "bus",
+          "board_at": "Mỹ Đình",
+          "alight_at": "Giáp Bát",
+          "stops_count": 2,
+          "duration_min": 24,
+          "fare": 10000,
+          "headway_min": 8
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "topup": {
+        "id": "top_01",
+        "amount": 50000,
+        "status": "done"
+      },
+      "card_balance": 65000
+    }
+  ],
+  "final_state": {
+    "public_transit": {
+      "card_balance": 65000,
+      "routes": [
+        {
+          "id": "rt_tr_03",
+          "name": "Tuyến Mỹ Đình - Giáp Bát",
+          "type": "bus",
+          "stops": [
+            "Mỹ Đình",
+            "Trạm Trung Gian",
+            "Giáp Bát"
+          ],
+          "fare": 10000,
+          "duration_min": 25,
+          "headway_min": 8
+        }
+      ],
+      "departures": [
+        {
+          "stop": "Mỹ Đình",
+          "route": "rt_tr_03",
+          "time": "08:10"
+        },
+        {
+          "stop": "Mỹ Đình",
+          "route": "rt_tr_03",
+          "time": "08:18"
+        }
+      ],
+      "topups": [
+        {
+          "id": "top_01",
+          "amount": 50000,
+          "status": "done"
+        }
+      ]
+    },
+    "maps": {},
+    "ewallet": {}
+  },
+  "state_diff": {
+    "public_transit": {
+      "before": {
+        "card_balance": 15000,
+        "routes": [
+          {
+            "id": "rt_tr_03",
+            "name": "Tuyến Mỹ Đình - Giáp Bát",
+            "type": "bus",
+            "stops": [
+              "Mỹ Đình",
+              "Trạm Trung Gian",
+              "Giáp Bát"
+            ],
+            "fare": 10000,
+            "duration_min": 25,
+            "headway_min": 8
+          }
+        ],
+        "departures": [
+          {
+            "stop": "Mỹ Đình",
+            "route": "rt_tr_03",
+            "time": "08:10"
+          },
+          {
+            "stop": "Mỹ Đình",
+            "route": "rt_tr_03",
+            "time": "08:18"
+          }
+        ],
+        "topups": []
+      },
+      "after": {
+        "card_balance": 65000,
+        "routes": [
+          {
+            "id": "rt_tr_03",
+            "name": "Tuyến Mỹ Đình - Giáp Bát",
+            "type": "bus",
+            "stops": [
+              "Mỹ Đình",
+              "Trạm Trung Gian",
+              "Giáp Bát"
+            ],
+            "fare": 10000,
+            "duration_min": 25,
+            "headway_min": 8
+          }
+        ],
+        "departures": [
+          {
+            "stop": "Mỹ Đình",
+            "route": "rt_tr_03",
+            "time": "08:10"
+          },
+          {
+            "stop": "Mỹ Đình",
+            "route": "rt_tr_03",
+            "time": "08:18"
+          }
+        ],
+        "topups": [
+          {
+            "id": "top_01",
+            "amount": 50000,
+            "status": "done"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "c5a90ebcebed348bad025e62880ac185cff401ab540c3d950f090b803684d696",
+  "validation": {
+    "scenario_id": "sim_transit_tr_03",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "public_transit"
+    ],
+    "state_hash": "c5a90ebcebed348bad025e62880ac185cff401ab540c3d950f090b803684d696",
+    "errors": []
+  }
+}

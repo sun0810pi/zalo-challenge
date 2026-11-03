@@ -1,0 +1,216 @@
+{
+  "scenario_id": "sim_grocery_val_01",
+  "split": "val",
+  "template_id": "tpl_grocery_buy_val",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "grocery"
+  ],
+  "installed_apps": [
+    "grocery",
+    "pantry",
+    "shopping_list"
+  ],
+  "objective": "Search ức gà phi lê, add 3 of gro_chk_01 to cart, and checkout.",
+  "expect_mutation": true,
+  "user_request": "Tìm ức gà phi lê trên app đi chợ, thêm 3 khay vào giỏ hàng rồi đặt giao về nhà lúc 16:30 chiều nay.",
+  "serialized_user_prompt": "Tìm ức gà phi lê trên app đi chợ, thêm 3 khay vào giỏ hàng rồi đặt giao về nhà lúc 16:30 chiều nay",
+  "current_time": "2026-11-22T09:30:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Phạm Thanh Thảo",
+    "city": "Hà Nội",
+    "home_address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+    "work_address": "Tòa nhà Lotte Center, 54 Liễu Giai, Ba Đình, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0069,
+    "lng": 105.8027
+  },
+  "history": [],
+  "initial_state": {
+    "grocery": {
+      "products": [
+        {
+          "id": "gro_chk_01",
+          "name": "Ức gà phi lê sạch CP 500g",
+          "price": 52000,
+          "unit": "phần",
+          "category": "thực phẩm",
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": []
+    },
+    "pantry": {},
+    "shopping_list": {}
+  },
+  "tool_calls": [
+    {
+      "name": "grocery.search",
+      "arguments": {
+        "query": "ức gà phi lê"
+      }
+    },
+    {
+      "name": "grocery.add_to_cart",
+      "arguments": {
+        "product_id": "gro_chk_01",
+        "quantity": 3
+      }
+    },
+    {
+      "name": "grocery.checkout",
+      "arguments": {
+        "address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+        "delivery_time": "16:30"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "products": [
+        {
+          "id": "gro_chk_01",
+          "name": "Ức gà phi lê sạch CP 500g",
+          "price": 52000,
+          "unit": "phần",
+          "category": "thực phẩm",
+          "in_stock": true
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "cart": [
+        {
+          "product_id": "gro_chk_01",
+          "name": "Ức gà phi lê sạch CP 500g",
+          "price": 52000,
+          "quantity": 3
+        }
+      ],
+      "cart_total": 156000
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "items": [
+          {
+            "product_id": "gro_chk_01",
+            "name": "Ức gà phi lê sạch CP 500g",
+            "price": 52000,
+            "quantity": 3
+          }
+        ],
+        "total": 156000,
+        "status": "placed",
+        "address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+        "delivery_time": "16:30"
+      }
+    }
+  ],
+  "final_state": {
+    "grocery": {
+      "products": [
+        {
+          "id": "gro_chk_01",
+          "name": "Ức gà phi lê sạch CP 500g",
+          "price": 52000,
+          "unit": "phần",
+          "category": "thực phẩm",
+          "in_stock": true
+        }
+      ],
+      "cart": [],
+      "orders": [
+        {
+          "id": "ord_01",
+          "items": [
+            {
+              "product_id": "gro_chk_01",
+              "name": "Ức gà phi lê sạch CP 500g",
+              "price": 52000,
+              "quantity": 3
+            }
+          ],
+          "total": 156000,
+          "status": "placed",
+          "address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+          "delivery_time": "16:30"
+        }
+      ]
+    },
+    "pantry": {},
+    "shopping_list": {}
+  },
+  "state_diff": {
+    "grocery": {
+      "before": {
+        "products": [
+          {
+            "id": "gro_chk_01",
+            "name": "Ức gà phi lê sạch CP 500g",
+            "price": 52000,
+            "unit": "phần",
+            "category": "thực phẩm",
+            "in_stock": true
+          }
+        ],
+        "cart": [],
+        "orders": []
+      },
+      "after": {
+        "products": [
+          {
+            "id": "gro_chk_01",
+            "name": "Ức gà phi lê sạch CP 500g",
+            "price": 52000,
+            "unit": "phần",
+            "category": "thực phẩm",
+            "in_stock": true
+          }
+        ],
+        "cart": [],
+        "orders": [
+          {
+            "id": "ord_01",
+            "items": [
+              {
+                "product_id": "gro_chk_01",
+                "name": "Ức gà phi lê sạch CP 500g",
+                "price": 52000,
+                "quantity": 3
+              }
+            ],
+            "total": 156000,
+            "status": "placed",
+            "address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+            "delivery_time": "16:30"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "7ac30b334fb06dc668070f6447b095ddda97d7672fdec8d66da0db69a0678ff7",
+  "validation": {
+    "scenario_id": "sim_grocery_val_01",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "grocery"
+    ],
+    "state_hash": "7ac30b334fb06dc668070f6447b095ddda97d7672fdec8d66da0db69a0678ff7",
+    "errors": []
+  }
+}

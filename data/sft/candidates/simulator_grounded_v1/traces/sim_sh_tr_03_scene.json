@@ -1,0 +1,515 @@
+{
+  "scenario_id": "sim_sh_tr_03_scene",
+  "split": "train",
+  "template_id": "tpl_smarthome_scene_train",
+  "scenario_type": "read_before_write",
+  "primary_apps": [
+    "smart_home"
+  ],
+  "installed_apps": [
+    "smart_home",
+    "alarm",
+    "tv"
+  ],
+  "objective": "Inspect smart_home status and execute scene action on sc_sleep_01.",
+  "expect_mutation": true,
+  "user_request": "Kiểm tra danh sách thiết bị và ngữ cảnh nhà thông minh rồi kích hoạt ngữ cảnh 'Đi ngủ' giúp mình.",
+  "current_time": "2026-11-23T20:00:00+07:00",
+  "city": "Đà Nẵng",
+  "initial_state": {
+    "smart_home": {
+      "devices": [
+        {
+          "id": "dev_light_work",
+          "name": "Đèn bàn làm việc",
+          "room": "phòng làm việc",
+          "type": "light",
+          "state": {
+            "power": "off",
+            "brightness": 50
+          }
+        },
+        {
+          "id": "dev_fan_work",
+          "name": "Quạt phòng làm việc",
+          "room": "phòng làm việc",
+          "type": "fan",
+          "state": {
+            "power": "off",
+            "speed": 1
+          }
+        },
+        {
+          "id": "dev_ac_bed",
+          "name": "Điều hòa phòng ngủ",
+          "room": "phòng ngủ",
+          "type": "climate",
+          "state": {
+            "mode": "cool",
+            "temperature": 27
+          }
+        },
+        {
+          "id": "dev_fan_bed",
+          "name": "Quạt phòng ngủ",
+          "room": "phòng ngủ",
+          "type": "fan",
+          "state": {
+            "power": "off",
+            "speed": 1
+          }
+        },
+        {
+          "id": "dev_fan_living",
+          "name": "Quạt phòng khách",
+          "room": "phòng khách",
+          "type": "fan",
+          "state": {
+            "power": "off",
+            "speed": 1
+          }
+        },
+        {
+          "id": "dev_ac_living",
+          "name": "Điều hòa phòng khách",
+          "room": "phòng khách",
+          "type": "climate",
+          "state": {
+            "mode": "off",
+            "temperature": 26
+          }
+        }
+      ],
+      "scenes": [
+        {
+          "id": "sc_sleep_01",
+          "name": "Đi ngủ",
+          "actions": [
+            {
+              "device_id": "dev_light_work",
+              "state": {
+                "power": "off"
+              }
+            }
+          ]
+        },
+        {
+          "id": "sc_cinema_02",
+          "name": "Xem phim",
+          "actions": [
+            {
+              "device_id": "dev_light_work",
+              "state": {
+                "power": "off"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "alarm": {},
+    "tv": {}
+  },
+  "tool_calls": [
+    {
+      "name": "smart_home.get_status",
+      "arguments": {}
+    },
+    {
+      "name": "smart_home.scene_run",
+      "arguments": {
+        "scene_id": "sc_sleep_01"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "devices": [
+        {
+          "id": "dev_light_work",
+          "name": "Đèn bàn làm việc",
+          "room": "phòng làm việc",
+          "type": "light",
+          "state": {
+            "power": "off",
+            "brightness": 50
+          }
+        },
+        {
+          "id": "dev_fan_work",
+          "name": "Quạt phòng làm việc",
+          "room": "phòng làm việc",
+          "type": "fan",
+          "state": {
+            "power": "off",
+            "speed": 1
+          }
+        },
+        {
+          "id": "dev_ac_bed",
+          "name": "Điều hòa phòng ngủ",
+          "room": "phòng ngủ",
+          "type": "climate",
+          "state": {
+            "mode": "cool",
+            "temperature": 27
+          }
+        },
+        {
+          "id": "dev_fan_bed",
+          "name": "Quạt phòng ngủ",
+          "room": "phòng ngủ",
+          "type": "fan",
+          "state": {
+            "power": "off",
+            "speed": 1
+          }
+        },
+        {
+          "id": "dev_fan_living",
+          "name": "Quạt phòng khách",
+          "room": "phòng khách",
+          "type": "fan",
+          "state": {
+            "power": "off",
+            "speed": 1
+          }
+        },
+        {
+          "id": "dev_ac_living",
+          "name": "Điều hòa phòng khách",
+          "room": "phòng khách",
+          "type": "climate",
+          "state": {
+            "mode": "off",
+            "temperature": 26
+          }
+        }
+      ],
+      "scenes": [
+        {
+          "id": "sc_sleep_01",
+          "name": "Đi ngủ"
+        },
+        {
+          "id": "sc_cinema_02",
+          "name": "Xem phim"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "scene_id": "sc_sleep_01",
+      "devices": [
+        {
+          "id": "dev_light_work",
+          "name": "Đèn bàn làm việc",
+          "room": "phòng làm việc",
+          "type": "light",
+          "state": {
+            "power": "off",
+            "brightness": 50
+          }
+        }
+      ]
+    }
+  ],
+  "final_state": {
+    "smart_home": {
+      "devices": [
+        {
+          "id": "dev_light_work",
+          "name": "Đèn bàn làm việc",
+          "room": "phòng làm việc",
+          "type": "light",
+          "state": {
+            "power": "off",
+            "brightness": 50
+          }
+        },
+        {
+          "id": "dev_fan_work",
+          "name": "Quạt phòng làm việc",
+          "room": "phòng làm việc",
+          "type": "fan",
+          "state": {
+            "power": "off",
+            "speed": 1
+          }
+        },
+        {
+          "id": "dev_ac_bed",
+          "name": "Điều hòa phòng ngủ",
+          "room": "phòng ngủ",
+          "type": "climate",
+          "state": {
+            "mode": "cool",
+            "temperature": 27
+          }
+        },
+        {
+          "id": "dev_fan_bed",
+          "name": "Quạt phòng ngủ",
+          "room": "phòng ngủ",
+          "type": "fan",
+          "state": {
+            "power": "off",
+            "speed": 1
+          }
+        },
+        {
+          "id": "dev_fan_living",
+          "name": "Quạt phòng khách",
+          "room": "phòng khách",
+          "type": "fan",
+          "state": {
+            "power": "off",
+            "speed": 1
+          }
+        },
+        {
+          "id": "dev_ac_living",
+          "name": "Điều hòa phòng khách",
+          "room": "phòng khách",
+          "type": "climate",
+          "state": {
+            "mode": "off",
+            "temperature": 26
+          }
+        }
+      ],
+      "scenes": [
+        {
+          "id": "sc_sleep_01",
+          "name": "Đi ngủ",
+          "actions": [
+            {
+              "device_id": "dev_light_work",
+              "state": {
+                "power": "off"
+              }
+            }
+          ]
+        },
+        {
+          "id": "sc_cinema_02",
+          "name": "Xem phim",
+          "actions": [
+            {
+              "device_id": "dev_light_work",
+              "state": {
+                "power": "off"
+              }
+            }
+          ]
+        }
+      ],
+      "active_scene": "sc_sleep_01"
+    },
+    "alarm": {},
+    "tv": {}
+  },
+  "state_diff": {
+    "smart_home": {
+      "before": {
+        "devices": [
+          {
+            "id": "dev_light_work",
+            "name": "Đèn bàn làm việc",
+            "room": "phòng làm việc",
+            "type": "light",
+            "state": {
+              "power": "off",
+              "brightness": 50
+            }
+          },
+          {
+            "id": "dev_fan_work",
+            "name": "Quạt phòng làm việc",
+            "room": "phòng làm việc",
+            "type": "fan",
+            "state": {
+              "power": "off",
+              "speed": 1
+            }
+          },
+          {
+            "id": "dev_ac_bed",
+            "name": "Điều hòa phòng ngủ",
+            "room": "phòng ngủ",
+            "type": "climate",
+            "state": {
+              "mode": "cool",
+              "temperature": 27
+            }
+          },
+          {
+            "id": "dev_fan_bed",
+            "name": "Quạt phòng ngủ",
+            "room": "phòng ngủ",
+            "type": "fan",
+            "state": {
+              "power": "off",
+              "speed": 1
+            }
+          },
+          {
+            "id": "dev_fan_living",
+            "name": "Quạt phòng khách",
+            "room": "phòng khách",
+            "type": "fan",
+            "state": {
+              "power": "off",
+              "speed": 1
+            }
+          },
+          {
+            "id": "dev_ac_living",
+            "name": "Điều hòa phòng khách",
+            "room": "phòng khách",
+            "type": "climate",
+            "state": {
+              "mode": "off",
+              "temperature": 26
+            }
+          }
+        ],
+        "scenes": [
+          {
+            "id": "sc_sleep_01",
+            "name": "Đi ngủ",
+            "actions": [
+              {
+                "device_id": "dev_light_work",
+                "state": {
+                  "power": "off"
+                }
+              }
+            ]
+          },
+          {
+            "id": "sc_cinema_02",
+            "name": "Xem phim",
+            "actions": [
+              {
+                "device_id": "dev_light_work",
+                "state": {
+                  "power": "off"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "after": {
+        "devices": [
+          {
+            "id": "dev_light_work",
+            "name": "Đèn bàn làm việc",
+            "room": "phòng làm việc",
+            "type": "light",
+            "state": {
+              "power": "off",
+              "brightness": 50
+            }
+          },
+          {
+            "id": "dev_fan_work",
+            "name": "Quạt phòng làm việc",
+            "room": "phòng làm việc",
+            "type": "fan",
+            "state": {
+              "power": "off",
+              "speed": 1
+            }
+          },
+          {
+            "id": "dev_ac_bed",
+            "name": "Điều hòa phòng ngủ",
+            "room": "phòng ngủ",
+            "type": "climate",
+            "state": {
+              "mode": "cool",
+              "temperature": 27
+            }
+          },
+          {
+            "id": "dev_fan_bed",
+            "name": "Quạt phòng ngủ",
+            "room": "phòng ngủ",
+            "type": "fan",
+            "state": {
+              "power": "off",
+              "speed": 1
+            }
+          },
+          {
+            "id": "dev_fan_living",
+            "name": "Quạt phòng khách",
+            "room": "phòng khách",
+            "type": "fan",
+            "state": {
+              "power": "off",
+              "speed": 1
+            }
+          },
+          {
+            "id": "dev_ac_living",
+            "name": "Điều hòa phòng khách",
+            "room": "phòng khách",
+            "type": "climate",
+            "state": {
+              "mode": "off",
+              "temperature": 26
+            }
+          }
+        ],
+        "scenes": [
+          {
+            "id": "sc_sleep_01",
+            "name": "Đi ngủ",
+            "actions": [
+              {
+                "device_id": "dev_light_work",
+                "state": {
+                  "power": "off"
+                }
+              }
+            ]
+          },
+          {
+            "id": "sc_cinema_02",
+            "name": "Xem phim",
+            "actions": [
+              {
+                "device_id": "dev_light_work",
+                "state": {
+                  "power": "off"
+                }
+              }
+            ]
+          }
+        ],
+        "active_scene": "sc_sleep_01"
+      }
+    }
+  },
+  "state_hash": "ae9f654e93102e8e54d1aa896946b4dff326bcf0884736d7de0346688f2511ec",
+  "validation": {
+    "scenario_id": "sim_sh_tr_03_scene",
+    "scenario_type": "read_before_write",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "smart_home"
+    ],
+    "state_hash": "ae9f654e93102e8e54d1aa896946b4dff326bcf0884736d7de0346688f2511ec",
+    "errors": []
+  }
+}

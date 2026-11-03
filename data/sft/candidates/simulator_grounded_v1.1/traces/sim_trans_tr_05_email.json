@@ -1,0 +1,157 @@
+{
+  "scenario_id": "sim_trans_tr_05_email",
+  "split": "train",
+  "template_id": "tpl_translator_email_train",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "translator",
+    "email"
+  ],
+  "installed_apps": [
+    "translator",
+    "email"
+  ],
+  "objective": "Translate text to en and forward result to email.",
+  "expect_mutation": true,
+  "user_request": "Dịch câu 'Xin cảm ơn quý đối tác đã tham dự hội nghị thường niên của chúng tôi' sang tiếng Anh rồi gửi email tới địa chỉ partner@globalcorp.com với tiêu đề 'Thank You'.",
+  "serialized_user_prompt": "Dịch câu 'Xin cảm ơn quý đối tác đã tham dự hội nghị thường niên của chúng tôi' sang tiếng Anh rồi gửi email tới địa chỉ partner@globalcorp.com với tiêu đề 'Thank You'",
+  "current_time": "2026-11-23T09:30:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Phạm Thanh Thảo",
+    "city": "Hà Nội",
+    "home_address": "Số 18 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội",
+    "work_address": "Tòa nhà Lotte Center, 54 Liễu Giai, Ba Đình, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0069,
+    "lng": 105.8027
+  },
+  "history": [],
+  "initial_state": {
+    "translator": {
+      "dictionary": [
+        {
+          "text": "Xin cảm ơn quý đối tác đã tham dự hội nghị thường niên của chúng tôi",
+          "to_lang": "en",
+          "translation": "Thank you for attending our annual conference"
+        }
+      ]
+    },
+    "email": {
+      "emails": [],
+      "sent": [],
+      "drafts": []
+    }
+  },
+  "tool_calls": [
+    {
+      "name": "translator.translate",
+      "arguments": {
+        "text": "Xin cảm ơn quý đối tác đã tham dự hội nghị thường niên của chúng tôi",
+        "to_lang": "en"
+      }
+    },
+    {
+      "name": "email.send",
+      "arguments": {
+        "to": [
+          "partner@globalcorp.com"
+        ],
+        "subject": "Thank You",
+        "body": "Thank you for attending our annual conference"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "text": "Xin cảm ơn quý đối tác đã tham dự hội nghị thường niên của chúng tôi",
+      "from_lang": null,
+      "to_lang": "en",
+      "translation": "Thank you for attending our annual conference",
+      "translated": "Thank you for attending our annual conference"
+    },
+    {
+      "ok": true,
+      "id": "sent_01",
+      "email": {
+        "id": "sent_01",
+        "to": [
+          "partner@globalcorp.com"
+        ],
+        "cc": [],
+        "subject": "Thank You",
+        "body": "Thank you for attending our annual conference"
+      }
+    }
+  ],
+  "final_state": {
+    "translator": {
+      "dictionary": [
+        {
+          "text": "Xin cảm ơn quý đối tác đã tham dự hội nghị thường niên của chúng tôi",
+          "to_lang": "en",
+          "translation": "Thank you for attending our annual conference"
+        }
+      ]
+    },
+    "email": {
+      "emails": [],
+      "sent": [
+        {
+          "id": "sent_01",
+          "to": [
+            "partner@globalcorp.com"
+          ],
+          "cc": [],
+          "subject": "Thank You",
+          "body": "Thank you for attending our annual conference"
+        }
+      ],
+      "drafts": []
+    }
+  },
+  "state_diff": {
+    "email": {
+      "before": {
+        "emails": [],
+        "sent": [],
+        "drafts": []
+      },
+      "after": {
+        "emails": [],
+        "sent": [
+          {
+            "id": "sent_01",
+            "to": [
+              "partner@globalcorp.com"
+            ],
+            "cc": [],
+            "subject": "Thank You",
+            "body": "Thank you for attending our annual conference"
+          }
+        ],
+        "drafts": []
+      }
+    }
+  },
+  "state_hash": "dad169e2953ecbd545474706326a91468dd1adec792d6bf94925303bbbc7d4be",
+  "validation": {
+    "scenario_id": "sim_trans_tr_05_email",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "email"
+    ],
+    "state_hash": "dad169e2953ecbd545474706326a91468dd1adec792d6bf94925303bbbc7d4be",
+    "errors": []
+  }
+}

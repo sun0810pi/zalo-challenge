@@ -1,0 +1,200 @@
+{
+  "scenario_id": "pilot_003_stocks_cond_buy_met",
+  "split": "train",
+  "template_id": "tpl_stocks_cond_buy_met",
+  "scenario_type": "arithmetic_condition",
+  "primary_apps": [
+    "stocks"
+  ],
+  "installed_apps": [
+    "stocks",
+    "banking",
+    "news",
+    "reminders"
+  ],
+  "objective": "Check FPT quote (131500 < 135000) and place buy order for 200 shares.",
+  "expect_mutation": true,
+  "user_request": "Xem giá cổ phiếu FPT hiện tại giúp anh, nếu giá đang dưới 135 nghìn thì đặt mua 200 cổ phiếu theo giá hiện tại luôn.",
+  "serialized_user_prompt": "Xem giá cổ phiếu FPT hiện tại giúp anh, nếu giá đang dưới 135 nghìn thì đặt mua 200 cổ phiếu theo giá hiện tại luôn",
+  "current_time": "2026-11-20T10:00:00+07:00",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "city": "Hà Nội",
+  "user_profile": {
+    "name": "Nguyễn Minh Quân",
+    "city": "Hà Nội",
+    "home_address": "Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội",
+    "work_address": "Tòa nhà Keangnam, Phạm Hùng, Nam Từ Liêm, Hà Nội"
+  },
+  "location": {
+    "lat": 21.0245,
+    "lng": 105.8091
+  },
+  "history": [],
+  "initial_state": {
+    "stocks": {
+      "quotes": [
+        {
+          "symbol": "FPT",
+          "name": "CTCP FPT",
+          "price": 131500,
+          "change_pct": -0.8
+        },
+        {
+          "symbol": "HPG",
+          "name": "Tập đoàn Hòa Phát",
+          "price": 28400,
+          "change_pct": 1.1
+        }
+      ],
+      "holdings": [],
+      "orders": [],
+      "alerts": []
+    },
+    "banking": {},
+    "reminders": {},
+    "news": {}
+  },
+  "tool_calls": [
+    {
+      "name": "stocks.get_quote",
+      "arguments": {
+        "symbol": "FPT"
+      }
+    },
+    {
+      "name": "stocks.place_order",
+      "arguments": {
+        "symbol": "FPT",
+        "side": "buy",
+        "quantity": 200,
+        "price": 131500
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "quote": {
+        "symbol": "FPT",
+        "name": "CTCP FPT",
+        "price": 131500,
+        "change_pct": -0.8
+      }
+    },
+    {
+      "ok": true,
+      "order": {
+        "id": "ord_01",
+        "symbol": "FPT",
+        "side": "buy",
+        "quantity": 200,
+        "type": "limit",
+        "price": 131500,
+        "status": "placed"
+      }
+    }
+  ],
+  "final_state": {
+    "stocks": {
+      "quotes": [
+        {
+          "symbol": "FPT",
+          "name": "CTCP FPT",
+          "price": 131500,
+          "change_pct": -0.8
+        },
+        {
+          "symbol": "HPG",
+          "name": "Tập đoàn Hòa Phát",
+          "price": 28400,
+          "change_pct": 1.1
+        }
+      ],
+      "holdings": [],
+      "orders": [
+        {
+          "id": "ord_01",
+          "symbol": "FPT",
+          "side": "buy",
+          "quantity": 200,
+          "type": "limit",
+          "price": 131500,
+          "status": "placed"
+        }
+      ],
+      "alerts": []
+    },
+    "banking": {},
+    "reminders": {},
+    "news": {}
+  },
+  "state_diff": {
+    "stocks": {
+      "before": {
+        "quotes": [
+          {
+            "symbol": "FPT",
+            "name": "CTCP FPT",
+            "price": 131500,
+            "change_pct": -0.8
+          },
+          {
+            "symbol": "HPG",
+            "name": "Tập đoàn Hòa Phát",
+            "price": 28400,
+            "change_pct": 1.1
+          }
+        ],
+        "holdings": [],
+        "orders": [],
+        "alerts": []
+      },
+      "after": {
+        "quotes": [
+          {
+            "symbol": "FPT",
+            "name": "CTCP FPT",
+            "price": 131500,
+            "change_pct": -0.8
+          },
+          {
+            "symbol": "HPG",
+            "name": "Tập đoàn Hòa Phát",
+            "price": 28400,
+            "change_pct": 1.1
+          }
+        ],
+        "holdings": [],
+        "orders": [
+          {
+            "id": "ord_01",
+            "symbol": "FPT",
+            "side": "buy",
+            "quantity": 200,
+            "type": "limit",
+            "price": 131500,
+            "status": "placed"
+          }
+        ],
+        "alerts": []
+      }
+    }
+  },
+  "state_hash": "4e55c8148136247bb73cc49059fdb41780d5af14ff289e1c3386da02e7f44bc0",
+  "validation": {
+    "scenario_id": "pilot_003_stocks_cond_buy_met",
+    "scenario_type": "arithmetic_condition",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "stocks"
+    ],
+    "state_hash": "4e55c8148136247bb73cc49059fdb41780d5af14ff289e1c3386da02e7f44bc0",
+    "errors": []
+  }
+}

@@ -1,0 +1,189 @@
+{
+  "scenario_id": "sim_weather_tr_03_rain_cancel",
+  "split": "train",
+  "template_id": "tpl_weather_cond_train_True",
+  "scenario_type": "multi_step_chain",
+  "primary_apps": [
+    "weather",
+    "calendar"
+  ],
+  "installed_apps": [
+    "weather",
+    "calendar",
+    "reminders"
+  ],
+  "objective": "Check weather on 2026-11-24 (rain=True) and conditionally update/cancel calendar event.",
+  "expect_mutation": true,
+  "user_request": "Kiểm tra thời tiết ngày mai 2026-11-24 xem có mưa không, nếu mưa thì hủy sự kiện 'Dã ngoại cuối tuần' trong lịch giúp chị.",
+  "current_time": "2026-11-23T18:00:00+07:00",
+  "city": "Đà Nẵng",
+  "initial_state": {
+    "weather": {
+      "current": [
+        {
+          "location": "Đà Nẵng",
+          "condition": "mát mẻ",
+          "temp": 25,
+          "rain": false
+        }
+      ],
+      "forecast": [
+        {
+          "location": "Đà Nẵng",
+          "date": "2026-11-24",
+          "condition": "mưa rào",
+          "temp_min": 22,
+          "temp_max": 29,
+          "rain": true
+        }
+      ]
+    },
+    "calendar": {
+      "events": [
+        {
+          "id": "evt_pic_03",
+          "title": "Dã ngoại cuối tuần",
+          "start": "2026-11-24T06:30:00+07:00",
+          "end": "2026-11-24T08:00:00+07:00",
+          "status": "confirmed"
+        }
+      ]
+    },
+    "reminders": {}
+  },
+  "tool_calls": [
+    {
+      "name": "weather.get_forecast",
+      "arguments": {
+        "date": "2026-11-24"
+      }
+    },
+    {
+      "name": "calendar.list_events",
+      "arguments": {
+        "date_from": "2026-11-24",
+        "date_to": "2026-11-24"
+      }
+    },
+    {
+      "name": "calendar.cancel_event",
+      "arguments": {
+        "event_id": "evt_pic_03"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "ok": true,
+      "forecast": [
+        {
+          "location": "Đà Nẵng",
+          "date": "2026-11-24",
+          "condition": "mưa rào",
+          "temp_min": 22,
+          "temp_max": 29,
+          "rain": true
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "events": [
+        {
+          "id": "evt_pic_03",
+          "title": "Dã ngoại cuối tuần",
+          "start": "2026-11-24T06:30:00+07:00",
+          "end": "2026-11-24T08:00:00+07:00",
+          "status": "confirmed"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "item": {
+        "id": "evt_pic_03",
+        "title": "Dã ngoại cuối tuần",
+        "start": "2026-11-24T06:30:00+07:00",
+        "end": "2026-11-24T08:00:00+07:00",
+        "status": "cancelled"
+      }
+    }
+  ],
+  "final_state": {
+    "weather": {
+      "current": [
+        {
+          "location": "Đà Nẵng",
+          "condition": "mát mẻ",
+          "temp": 25,
+          "rain": false
+        }
+      ],
+      "forecast": [
+        {
+          "location": "Đà Nẵng",
+          "date": "2026-11-24",
+          "condition": "mưa rào",
+          "temp_min": 22,
+          "temp_max": 29,
+          "rain": true
+        }
+      ]
+    },
+    "calendar": {
+      "events": [
+        {
+          "id": "evt_pic_03",
+          "title": "Dã ngoại cuối tuần",
+          "start": "2026-11-24T06:30:00+07:00",
+          "end": "2026-11-24T08:00:00+07:00",
+          "status": "cancelled"
+        }
+      ]
+    },
+    "reminders": {}
+  },
+  "state_diff": {
+    "calendar": {
+      "before": {
+        "events": [
+          {
+            "id": "evt_pic_03",
+            "title": "Dã ngoại cuối tuần",
+            "start": "2026-11-24T06:30:00+07:00",
+            "end": "2026-11-24T08:00:00+07:00",
+            "status": "confirmed"
+          }
+        ]
+      },
+      "after": {
+        "events": [
+          {
+            "id": "evt_pic_03",
+            "title": "Dã ngoại cuối tuần",
+            "start": "2026-11-24T06:30:00+07:00",
+            "end": "2026-11-24T08:00:00+07:00",
+            "status": "cancelled"
+          }
+        ]
+      }
+    }
+  },
+  "state_hash": "4ad4828b5400a7cdc57ae2692acf9706cbf15eb29bedce95c986a2a7647908c6",
+  "validation": {
+    "scenario_id": "sim_weather_tr_03_rain_cancel",
+    "scenario_type": "multi_step_chain",
+    "passed": true,
+    "schema_valid": true,
+    "execution_valid": true,
+    "state_replay_consistent": true,
+    "unexpected_error_count": 0,
+    "invalid_id_count": 0,
+    "read_before_write_violations": 0,
+    "changed_apps": [
+      "calendar"
+    ],
+    "state_hash": "4ad4828b5400a7cdc57ae2692acf9706cbf15eb29bedce95c986a2a7647908c6",
+    "errors": []
+  }
+}
