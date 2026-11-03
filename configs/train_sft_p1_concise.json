@@ -1,0 +1,46 @@
+{
+  "description": "P1 Concise Decision SFT Configuration: Prompt Parity (P0) + Concise Action Rationale (P1) on NVIDIA L4",
+  "model": "Qwen/Qwen3-4B",
+  "data_dir": "data/sft/candidates/p1_concise",
+  "output_dir": "checkpoints/qwen3-4b-zac-lora-p1-concise",
+  "preserved_hyperparameters": {
+    "epochs": 3,
+    "per_device_train_batch_size": 2,
+    "per_device_eval_batch_size": 2,
+    "gradient_accumulation_steps": 8,
+    "effective_batch_size": 16,
+    "learning_rate": 0.0002,
+    "lr_scheduler_type": "cosine",
+    "warmup_steps": 15,
+    "lora_r": 32,
+    "lora_alpha": 64,
+    "lora_dropout": 0.05,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ],
+    "use_4bit": false,
+    "packing": false
+  },
+  "throughput_and_safety_optimizations": {
+    "max_seq_len": 8192,
+    "verify_no_truncation": false,
+    "pretokenize": true,
+    "group_by_length": true,
+    "length_column_name": "length",
+    "attn_implementation": "sdpa",
+    "gradient_checkpointing": true,
+    "gradient_checkpointing_kwargs": {
+      "use_reentrant": false
+    },
+    "optim": "adamw_torch_fused",
+    "bf16": true,
+    "tf32": true
+  },
+  "recommended_cli_command": "python train_sft.py --model Qwen/Qwen3-4B --data-dir data/sft/candidates/p1_concise --output-dir checkpoints/qwen3-4b-zac-lora-p1-concise --epochs 3 --batch-size 2 --grad-accum 8 --lr 2e-4 --max-seq-len 8192 --lora-r 32 --lora-alpha 64 --optimized"
+}

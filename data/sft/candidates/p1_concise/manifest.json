@@ -1,0 +1,22 @@
+{
+  "dataset_name": "p1_concise",
+  "description": "P1 Concise Decision SFT Dataset with P0 Prompt Parity and <think> compression",
+  "total_train_samples": 1692,
+  "total_val_samples": 173,
+  "breakdown_train": {
+    "official_clean_train": 1400,
+    "asr_noise_variants": 180,
+    "simulator_grounded_new_apps": 112
+  },
+  "breakdown_val": {
+    "official_clean_val": 145,
+    "simulator_grounded_new_apps_val": 28
+  },
+  "improvements": [
+    "P0: catalog_apps_map and SemanticToolRouter passed to prompt builder (100% train-infer prompt parity)",
+    "P0: train_1696 label defect quarantined (no fabricated chat_id)",
+    "P1: <think> compressed to concise 1-sentence decision rationale (< 35 tokens)",
+    "P1: Max sequence length reduced from 9,216 to ~4,200 tokens",
+    "P1: 80% gradient loss focused on functional tool calls rather than template prose"
+  ]
+}
