@@ -136,6 +136,7 @@ class LLMBackend:
         self._load()
 
     def _load(self) -> None:
+        import torch
         from transformers import AutoTokenizer
 
         tokenizer_src = (
@@ -154,7 +155,7 @@ class LLMBackend:
                     model=self.model_name_or_path,
                     max_model_len=self.max_model_len,
                     gpu_memory_utilization=self.gpu_memory_utilization,
-                    dtype="bfloat16",
+                    dtype=("bfloat16" if (torch.cuda.is_available() and torch.cuda.is_bf16_supported()) else "float16"),
                     trust_remote_code=True,
                     enable_lora=bool(self.lora_path),
                     max_lora_rank=64,
@@ -202,7 +203,18 @@ class LLMBackend:
 
             self.model = PeftModel.from_pretrained(self.model, self.lora_path)
             self.model = self.model.merge_and_unload()
+            import gc
+            gc.collect()
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
         self.model.eval()
+        # On Turing GPUs (e.g. Tesla T4), force memory-efficient attention to prevent 4GB un-fused SDPA OOM
+        if torch.cuda.is_available():
+            try:
+                torch.backends.cuda.enable_mem_efficient_sdp(True)
+                torch.backends.cuda.enable_flash_sdp(False)
+            except Exception:
+                pass
         self.backend = "transformers"
 
     def generate(self, messages: list[dict[str, str]]) -> str:

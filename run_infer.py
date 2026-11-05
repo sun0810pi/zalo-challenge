@@ -157,8 +157,10 @@ def main():
             fout.flush()
             elapsed = time.perf_counter() - s_t0
             if idx % 10 == 0 or idx == len(samples) or idx <= 3:
+                cl_text = agent.preprocessor.preprocess(final_text, item)
+                txt_info = f"ASR: {final_text[:45]!r}" if cl_text == final_text else f"ASR: {final_text[:30]!r} -> Prep: {cl_text[:35]!r}"
                 print(
-                    f"[{idx}/{len(samples)}] {item['id']} ({elapsed:.2f}s) | ASR: {final_text[:50]!r} -> {len(tool_calls)} calls"
+                    f"[{idx}/{len(samples)}] {item['id']} ({elapsed:.2f}s) | {txt_info} -> {len(tool_calls)} calls"
                 )
 
     transcriber.save_cache()
