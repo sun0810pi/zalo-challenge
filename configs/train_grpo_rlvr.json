@@ -1,0 +1,14 @@
+{
+  "model": "Qwen/Qwen3-4B",
+  "base_lora": "checkpoints/qwen3-4b-zac-lora-p1-concise",
+  "output_dir": "checkpoints/qwen3-4b-zac-lora-grpo-rlvr",
+  "epochs": 2,
+  "group_size": 4,
+  "batch_size": 1,
+  "lr": 5e-6,
+  "clip_eps": 0.2,
+  "kl_beta": 0.04,
+  "temperature": 0.7,
+  "max_new_tokens": 512,
+  "use_4bit": false
+}
