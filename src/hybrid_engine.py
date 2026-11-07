@@ -53,7 +53,7 @@ class HybridProgramAidedEngine:
         """Return True if the entire user request was cancelled at the end of the sentence."""
         t = text.strip()
         # If user explicitly asks to view/check something, it's not a complete cancellation
-        if any(kw in t.lower() for kw in ("chỉ cần xem", "chỉ xem", "xem giúp", "kiểm tra giúp", "coi giúp")):
+        if any(kw in t.lower() for kw in ("chỉ cần xem", "chỉ xem", "xem giúp", "kiểm tra giúp", "coi giúp", "trừ ", "ngoại trừ ")):
             return False
 
         for pat in _FULL_CANCEL_PATTERNS:

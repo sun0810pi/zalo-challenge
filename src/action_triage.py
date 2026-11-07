@@ -26,18 +26,10 @@ class ActionTriageBarrier:
         self.enabled = enabled
 
     def check_out_of_scope(self, sample: dict[str, Any], user_text: str) -> tuple[bool, str]:
-        """Check if user request explicitly targets an application NOT in installed_apps."""
-        if not self.enabled or not user_text:
-            return False, ""
-
-        installed = (sample.get("context") or {}).get("installed_apps") or {}
-        text_lower = user_text.lower()
-
-        for app_id, keywords in APP_INTENT_SIGNATURES.items():
-            if any(kw in text_lower for kw in keywords):
-                if app_id not in installed:
-                    return True, f"Ứng dụng '{app_id}' chưa được cài đặt trên thiết bị của người dùng."
-
+        """Check if user request explicitly targets an application NOT in installed_apps.
+        Safe-guard: Do not trigger keyword aborts that cause false-rejects (e.g. 'khách sạn' in taxi drop-off,
+        or 'vé xe' in 'vé xem phim'). Let the LLM handle schema constraints natively.
+        """
         return False, ""
 
     def guard_ask_missing_info(

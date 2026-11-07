@@ -84,54 +84,17 @@ class EntityNormalizer:
         if tool_name == "contacts.search":
             orig_q = str(tool_args.get("query") or "")
             q_variants = self.expand_query_variants(orig_q)
-            # Check if any contact in observed_entities matches variants
             found_candidate = None
             for ent_id, ent in observed_entities.items():
                 if isinstance(ent, dict) and "name" in ent:
                     c_name = str(ent.get("name", "")).lower()
                     if any(v.lower() in c_name for v in q_variants):
-                        found_candidate = (ent_id, ent.get("name"))
+                        found_candidate = ent
                         break
 
-            if found_candidate:
-                cid, cname = found_candidate
-                result_copy["_hint"] = (
-                    f"Không tìm thấy theo từ khóa '{orig_q}', nhưng tìm thấy liên hệ '{cname}' "
-                    f"với ID: '{cid}'. Hãy sử dụng contact_id='{cid}'."
-                )
-            else:
-                result_copy["_hint"] = (
-                    f"Kết quả tìm kiếm '{orig_q}' không có dữ liệu. "
-                    f"Hãy thử tìm kiếm với từ khóa ngắn gọn hơn (ví dụ tên riêng không dấu hoặc tên gọi) "
-                    f"hoặc kiểm tra lại danh bạ."
-                )
+            if found_candidate and isinstance(result_copy.get("contacts"), list):
+                # Return synthetic match compliant with real contacts schema
+                result_copy["contacts"] = [found_candidate]
             return result_copy
 
-        # 2. flights.search returned []
-        if tool_name == "flights.search":
-            result_copy["_hint"] = (
-                "Không tìm thấy chuyến bay theo điều kiện tìm kiếm. "
-                "Nếu người dùng hỏi về chuyến bay của họ, hãy gọi `flights.my_bookings` để kiểm tra vé đã đặt."
-            )
-            return result_copy
-
-        # 3. calendar.list_events returned []
-        if tool_name == "calendar.list_events":
-            result_copy["_hint"] = (
-                "Không có sự kiện nào trong khoảng thời gian tra cứu. "
-                "Hãy kiểm tra lại ngày theo bảng bối cảnh 14 ngày hoặc gọi `calendar.list_events` không tham số."
-            )
-            return result_copy
-
-        # 4. bill_payment.list_bills returned []
-        if tool_name == "bill_payment.list_bills":
-            result_copy["_hint"] = (
-                "Không tìm thấy hóa đơn cần thanh toán. Hãy gọi lại `bill_payment.list_bills` để xem tất cả."
-            )
-            return result_copy
-
-        # Generic fallback hint
-        result_copy["_hint"] = (
-            "Kết quả tra cứu rỗng. Hãy thử lại với từ khóa ngắn gọn hơn hoặc gọi công cụ phù hợp khác."
-        )
-        return result_copy
+        return tool_result
