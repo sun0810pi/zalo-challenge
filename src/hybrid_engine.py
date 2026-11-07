@@ -16,6 +16,7 @@ import re
 from datetime import datetime
 from typing import Any
 
+from .datetime_engine import VietnameseRelativeDateTimeEngine
 from .number_parser import parse_vietnamese_number
 
 # High-precision patterns for complete cancellation at end of utterance
@@ -81,6 +82,15 @@ class HybridProgramAidedEngine:
             return s
         except ValueError:
             return dt_str
+
+    @staticmethod
+    def resolve_relative_datetime(
+        query_text: str, current_time_iso: str, tz_offset: str = "+07:00"
+    ) -> str | None:
+        """Resolve colloquial Vietnamese date-time references into strict ISO 8601."""
+        return VietnameseRelativeDateTimeEngine.resolve_datetime_iso(
+            query_text, current_time_iso, tz_offset
+        )
 
     @staticmethod
     def check_weather_condition(
