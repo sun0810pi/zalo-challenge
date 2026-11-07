@@ -122,6 +122,13 @@ def main():
     ap.add_argument("--ids-file", default=None)
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--max-steps", type=int, default=8)
+    ap.add_argument(
+        "--preprocessor",
+        choices=["a", "b", "safe"],
+        default="a",
+        help="Tiền xử lý ngôn ngữ: a (Fuzzy Context Aligner), b (Neural Restorer), hoặc safe",
+    )
+    ap.add_argument("--ignore-asr-cache", action="store_true", help="Bỏ qua cache ASR, chạy nhận dạng lại")
     ap.add_argument("--use-gt-asr", action="store_true")
 
     # Switches for Solutions 2, 3, 4
@@ -164,11 +171,16 @@ def main():
         f"ActionTriage={not args.no_action_triage}"
     )
 
-    if args.asr_lora_path:
+    if args.ignore_asr_cache:
+        asr_cache_p = None
+    elif args.asr_lora_path:
         lora_tag = Path(args.asr_lora_path).name or "lora"
         asr_cache_p = root / "cache" / f"asr_{args.split}_{lora_tag}.json"
-    else:
+    elif "turbo" in args.asr_model or "ct2" in args.asr_model:
         asr_cache_p = root / "cache" / f"asr_{args.split}.json"
+    else:
+        model_tag = Path(args.asr_model).name or "custom"
+        asr_cache_p = root / "cache" / f"asr_{args.split}_{model_tag}.json"
 
     transcriber = Transcriber(
         model_name=args.asr_model,
@@ -188,7 +200,23 @@ def main():
         gpu_memory_utilization=args.gpu_memory_utilization,
     )
 
-    preprocessor = ContextLanguagePreprocessorA()
+    if args.preprocessor == "b":
+        from src.preprocessor_b import ContextLanguagePreprocessorB
+
+        preprocessor = ContextLanguagePreprocessorB(model_name="Qwen/Qwen2.5-0.5B-Instruct")
+    elif args.preprocessor == "safe":
+        from src.asr_fallback import SafeContextPreprocessor
+
+        _safe_prep = SafeContextPreprocessor(sim_threshold=0.80)
+
+        class _SafePreprocessorAdapter:
+            def preprocess(self, raw_asr_text: str, sample: dict) -> str:
+                cleaned, _ = _safe_prep.preprocess_with_evidence(raw_asr_text, sample)
+                return cleaned
+
+        preprocessor = _SafePreprocessorAdapter()
+    else:
+        preprocessor = ContextLanguagePreprocessorA()
     router = SemanticToolRouter(top_k_recommended=4)
 
     out_path = Path(args.output)
