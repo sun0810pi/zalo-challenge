@@ -8,3 +8,4 @@ cache/
 venv/
 .DS_Store
 *.jsonl.tmp
+submissions/*.jsonl
