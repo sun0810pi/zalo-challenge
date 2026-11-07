@@ -147,16 +147,24 @@ def main():
                 temp = temps[c_idx]
                 # Clone fresh ToolEnv in memory for this candidate
                 c_env = ToolEnv(args.split, item["id"], root=root)
+                init_hash = c_env.get_state_hash()
 
-                # Run sample rollout
+                # Run sample rollout with candidate temperature
                 calls, s_hash = agent.run_sample(
                     env=c_env,
                     sample=item,
                     final_user_text=final_text,
                     history_transcripts=hist_transcripts,
+                    temperature=temp,
                 )
 
-                score = evaluate_trajectory_quality(c_env, calls, catalog_tools_map)
+                score = evaluate_trajectory_quality(
+                    c_env,
+                    calls,
+                    catalog_tools_map,
+                    user_text=final_text,
+                    initial_hash=init_hash,
+                )
                 candidate_records.append({
                     "candidate_idx": c_idx + 1,
                     "temp": temp,

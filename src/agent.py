@@ -208,8 +208,8 @@ class LLMBackend:
         self.model.eval()
         self.backend = "transformers"
 
-    def generate(self, messages: list[dict[str, str]]) -> str:
-        """Render ChatML prompt and generate deterministically."""
+    def generate(self, messages: list[dict[str, str]], temperature: float = 0.0) -> str:
+        """Render ChatML prompt and generate with specified temperature."""
         prompt = render_chatml_preserving_think(
             self.tokenizer,
             messages,
@@ -223,9 +223,19 @@ class LLMBackend:
             prompt = self.tokenizer.decode(input_ids, skip_special_tokens=False)
 
         if self.backend == "vllm":
+            sampling_params = self._vllm_sampling_params
+            if temperature > 0.0:
+                from vllm import SamplingParams
+
+                sampling_params = SamplingParams(
+                    temperature=temperature,
+                    top_p=0.9,
+                    max_tokens=self.max_new_tokens,
+                    stop=["<|im_end|>", "<|endoftext|>"],
+                )
             outputs = self.model.generate(
                 [prompt],
-                sampling_params=self._vllm_sampling_params,
+                sampling_params=sampling_params,
                 lora_request=self._vllm_lora_request,
                 use_tqdm=False,
             )
@@ -243,16 +253,25 @@ class LLMBackend:
         if torch.cuda.is_available():
             inputs = {k: v.to(self.model.device) for k, v in inputs.items()}
         with torch.no_grad():
+            gen_kwargs = {
+                "max_new_tokens": self.max_new_tokens,
+                "pad_token_id": self.tokenizer.eos_token_id,
+                "stop_strings": ["</tool_call>", "<|im_end|>", "<|endoftext|>"],
+                "tokenizer": self.tokenizer,
+            }
+            if temperature > 0.0:
+                gen_kwargs["do_sample"] = True
+                gen_kwargs["temperature"] = temperature
+                gen_kwargs["top_p"] = 0.9
+            else:
+                gen_kwargs["do_sample"] = False
+                gen_kwargs["temperature"] = None
+                gen_kwargs["top_p"] = None
+                gen_kwargs["top_k"] = None
+
             out_ids = self.model.generate(
                 **inputs,
-                max_new_tokens=self.max_new_tokens,
-                do_sample=False,
-                temperature=None,
-                top_p=None,
-                top_k=None,
-                pad_token_id=self.tokenizer.eos_token_id,
-                stop_strings=["</tool_call>", "<|im_end|>", "<|endoftext|>"],
-                tokenizer=self.tokenizer,
+                **gen_kwargs,
             )
         gen_ids = out_ids[0][inputs["input_ids"].shape[1] :]
         text = self.tokenizer.decode(gen_ids, skip_special_tokens=False)
@@ -347,6 +366,7 @@ class LifeMateAgent:
         sample: dict[str, Any],
         final_user_text: str,
         history_transcripts: dict[str, str] | None = None,
+        temperature: float = 0.0,
     ) -> tuple[list[dict[str, Any]], str]:
         """Run the agent on a single `ToolEnv` instance and return `(tool_calls, state_hash)`."""
         # 1. Language Preprocessing
@@ -393,7 +413,7 @@ class LifeMateAgent:
         )
 
         for _step in range(self.max_steps):
-            reply = self.llm.generate(messages)
+            reply = self.llm.generate(messages, temperature=temperature)
             raw_calls = parse_tool_calls(reply)
 
             if not raw_calls:
@@ -427,7 +447,7 @@ class LifeMateAgent:
                             "role": "user",
                             "content": (
                                 f"<tool_response>\n"
-                                f"{json.dumps({'ok': False, 'triage_error': triage_reason, 'hint': 'Không hỏi lại người dùng khi chưa tra cứu hoặc thông tin đã có sẵn trong ngữ cảnh.'}, ensure_ascii=False)}\n"
+                                f"{json.dumps({'ok': False, 'validation_error': triage_reason, 'hint': 'Hãy chọn đối tượng phù hợp nhất từ kết quả tra cứu để thực thi công cụ tiếp theo.'}, ensure_ascii=False)}\n"
                                 f"</tool_response>"
                             ),
                         }

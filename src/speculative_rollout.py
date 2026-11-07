@@ -14,33 +14,65 @@ def evaluate_trajectory_quality(
     env: Any,
     tool_calls: list[dict[str, Any]],
     catalog_tools_map: dict[str, dict[str, Any]],
+    user_text: str = "",
+    initial_hash: str | None = None,
 ) -> float:
-    """Computes a heuristic quality score for a generated trajectory without ground truth."""
+    """Computes a verifiable quality score for a generated trajectory without ground truth."""
+    u_lower = user_text.lower()
+    has_active_intent = any(
+        kw in u_lower
+        for kw in (
+            "đặt", "bật", "tắt", "chuyển", "mua", "bán", "thêm", "hủy", "cập nhật",
+            "nhắc", "hẹn", "đóng", "mở", "nạp", "rút", "lưu", "gọi", "nhắn"
+        )
+    )
+
     if not tool_calls:
-        # Valid empty trajectory (e.g. Out-of-scope or complete cancellation)
-        return 100.0
+        # If user explicitly had active intent, empty trajectory is penalized
+        return 20.0 if has_active_intent else 80.0
 
     score = 100.0
+    seen_names: list[str] = []
+
+    # 1. State modification bonus: Changing the simulator state is the core competition objective
+    if initial_hash is not None and hasattr(env, "get_state_hash"):
+        try:
+            curr_hash = env.get_state_hash()
+            if curr_hash != initial_hash:
+                score += 50.0
+        except Exception:
+            pass
 
     for call in tool_calls:
         name = call.get("name", "")
         args = call.get("arguments") or {}
+        seen_names.append(name)
 
-        # 1. Penalize premature or ungrounded ask_missing_info
+        # 2. Penalize infinite repetition loops (e.g. calling search 7-8 times)
+        if seen_names.count(name) >= 3:
+            score -= 40.0
+
+        # 3. Penalize premature or ungrounded ask_missing_info
         if name == "sys.ask_missing_info":
             score -= 60.0
 
-        # 2. Strict schema validation
+        # 4. Strict schema validation
         val = env.validate(name, args)
         if not val.get("ok"):
-            score -= 40.0
+            score -= 50.0
 
-        # 3. Parameter nullness check on required fields
+        # 5. Parameter nullness check on required fields
         spec = catalog_tools_map.get(name) or {}
         reqs = (spec.get("parameters") or {}).get("required") or []
         for r in reqs:
             if r not in args or args[r] in (None, "", [], {}):
                 score -= 25.0
+
+    # 6. Read-only penalty if user had clear active write intent
+    read_only_suffixes = (".search", ".list", ".get_menu", ".find_lots", ".get_quotes", ".get_quote", ".get_forecast", ".get_current", ".get_status")
+    all_read = all(any(n.endswith(sfx) for sfx in read_only_suffixes) for n in seen_names)
+    if all_read and has_active_intent:
+        score -= 30.0
 
     return score
 

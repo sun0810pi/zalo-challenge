@@ -325,7 +325,7 @@ def main():
                             "role": "user",
                             "content": (
                                 f"<tool_response>\n"
-                                f"{json.dumps({'ok': False, 'triage_error': triage_reason, 'hint': 'Không hỏi lại người dùng khi chưa tra cứu hoặc thông tin đã có sẵn trong ngữ cảnh.'}, ensure_ascii=False)}\n"
+                                f"{json.dumps({'ok': False, 'validation_error': triage_reason, 'hint': 'Hãy chọn đối tượng phù hợp nhất từ kết quả tra cứu để thực thi công cụ tiếp theo.'}, ensure_ascii=False)}\n"
                                 f"</tool_response>"
                             ),
                         }

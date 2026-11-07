@@ -82,4 +82,34 @@ class ActionTriageBarrier:
             if p in ("current_time", "date") and ctx.get("current_time"):
                 return False, f"Tham số thời gian đã có trong bối cảnh ({ctx['current_time']})."
 
+        # Check Prerequisite 3: Are candidates for the requested params ALREADY in observed_entities?
+        # e.g., flights.search returned flight_ids, recipes.search returned recipe_ids,
+        # event_tickets.search returned event_ids, grocery.search returned product_ids.
+        if observed_entities:
+            for p in params:
+                matching_cands = []
+                for eid, edata in observed_entities.items():
+                    if p == "flight_id" and (eid.startswith("fl_") or "flight" in eid):
+                        matching_cands.append(eid)
+                    elif p == "event_id" and (eid.startswith("evt_") or eid.startswith("ev_") or "event" in eid):
+                        matching_cands.append(eid)
+                    elif p in ("product_id", "item_id") and (eid.startswith("prod_") or eid.startswith("item_") or eid.startswith("it_")):
+                        matching_cands.append(eid)
+                    elif p == "recipe_id" and (eid.startswith("rec_") or "recipe" in eid):
+                        matching_cands.append(eid)
+                    elif p in ("order_id", "booking_id") and (eid.startswith("ord_") or eid.startswith("bk_") or eid.startswith("bkg_")):
+                        matching_cands.append(eid)
+                    elif p == "lot_id" and (eid.startswith("lot_") or eid.startswith("p_")):
+                        matching_cands.append(eid)
+                    elif p == "contact_id" and eid.startswith("c_"):
+                        matching_cands.append(eid)
+                    elif p == "chat_id" and eid.startswith("chat_"):
+                        matching_cands.append(eid)
+
+                if matching_cands:
+                    return False, (
+                        f"Đã có danh sách kết quả {matching_cands[:5]} trong lịch sử quan sát. "
+                        f"Không được gọi sys.ask_missing_info mà hãy chọn đối tượng phù hợp nhất từ danh sách trên để thực thi '{target_tool}'."
+                    )
+
         return True, "Hợp lệ"
