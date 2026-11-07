@@ -1,0 +1,13 @@
+{
+  "version": "v4_hammer_when2call",
+  "num_train": 1933,
+  "num_val": 173,
+  "hammer_masked_count": 502,
+  "negative_samples_count": 241,
+  "features": [
+    "P0_prompt_parity",
+    "P1_concise_rationale",
+    "Hammer_function_masking_35_percent",
+    "When2Call_negative_action_triage"
+  ]
+}

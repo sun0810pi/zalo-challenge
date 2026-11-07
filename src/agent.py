@@ -2,7 +2,9 @@
 Features:
 - Pure schema-driven state guardrails (no dataset-specific prefix dependencies)
 - Dynamic two-tier semantic tool routing (recommended vs secondary installed tools)
-- Robust context-grounded language preprocessing
+- Solution 2: EntityNormalizer for robust fuzzy read recovery
+- Solution 3: HybridProgramAidedEngine for cancellation & arithmetic decisions
+- Solution 4: ActionTriageBarrier to eliminate hallucinated calls and premature sys.ask_missing_info
 """
 from __future__ import annotations
 
@@ -17,6 +19,8 @@ from typing import Any
 # Required for vLLM V1 on Linux/Colab to prevent "Cannot re-initialize CUDA in forked subprocess"
 os.environ.setdefault("VLLM_WORKER_MULTIPROC_METHOD", "spawn")
 
+from .action_triage import ActionTriageBarrier
+from .entity_normalizer import EntityNormalizer
 from .guardrail import PureSchemaStateTracker, normalize_arguments, parse_tool_calls
 from .hybrid_engine import HybridProgramAidedEngine
 from .preprocessor_a import ContextLanguagePreprocessorA
@@ -101,104 +105,98 @@ class LLMBackend:
         max_model_len: int = 16384,
         max_new_tokens: int = 512,
         gpu_memory_utilization: float = 0.68,
-        enable_thinking: bool = True,
     ):
         self.model_name_or_path = model_name_or_path
-        if lora_path:
-            lp = Path(lora_path)
-            if not (lp / "adapter_config.json").is_file():
-                sub_ckpts = sorted(
-                    lp.glob("checkpoint-*/adapter_config.json"),
-                    key=lambda p: int(p.parent.name.split("-")[-1]) if p.parent.name.split("-")[-1].isdigit() else 0,
-                )
-                if sub_ckpts:
-                    resolved_sub = sub_ckpts[-1].parent.resolve()
-                    print(f"[LLMBackend] Tự động dùng LoRA checkpoint mới nhất: {resolved_sub}")
-                    lora_path = str(resolved_sub)
-                else:
-                    print(
-                        f"[CẢNH BÁO] Không tìm thấy file 'adapter_config.json' trong '{lora_path}'. "
-                        f"Sẽ chạy model gốc '{model_name_or_path}' (Zero-shot) thay vì crash!"
-                    )
-                    lora_path = None
-            else:
-                lora_path = str(lp.resolve())
         self.lora_path = lora_path
+        self.backend = backend
         self.max_model_len = max_model_len
         self.max_new_tokens = max_new_tokens
         self.gpu_memory_utilization = gpu_memory_utilization
-        self.enable_thinking = enable_thinking
-        self.backend = backend
+
         self.tokenizer = None
         self.model = None
         self._vllm_sampling_params = None
         self._vllm_lora_request = None
-        self._load()
 
-    def _load(self) -> None:
-        import torch
+        self._init_backend()
+
+    def _init_backend(self) -> None:
         from transformers import AutoTokenizer
 
-        tokenizer_src = (
-            self.lora_path
-            if (self.lora_path and (Path(self.lora_path) / "tokenizer_config.json").is_file())
-            else self.model_name_or_path
-        )
-        self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_src, trust_remote_code=True)
+        tokenizer_path = self.lora_path if self.lora_path and Path(self.lora_path).is_dir() else self.model_name_or_path
+        try:
+            self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_path, trust_remote_code=True)
+        except Exception:
+            self.tokenizer = AutoTokenizer.from_pretrained(self.model_name_or_path, trust_remote_code=True)
 
-        if self.backend in ("auto", "vllm"):
+        if self.backend == "auto":
             try:
-                from vllm import LLM, SamplingParams
-                from vllm.lora.request import LoRARequest
+                import torch
+                import vllm  # noqa: F401
 
-                self.model = LLM(
-                    model=self.model_name_or_path,
-                    max_model_len=self.max_model_len,
-                    gpu_memory_utilization=self.gpu_memory_utilization,
-                    dtype=("bfloat16" if (torch.cuda.is_available() and torch.cuda.is_bf16_supported()) else "float16"),
-                    trust_remote_code=True,
-                    enable_lora=bool(self.lora_path),
-                    max_lora_rank=64,
-                    enforce_eager=True,
-                    seed=42,
-                )
-                self._vllm_sampling_params = SamplingParams(
-                    temperature=0.0,
-                    top_p=1.0,
-                    max_tokens=self.max_new_tokens,
-                    skip_special_tokens=False,
-                    stop=["</tool_call>", "<|im_end|>", "<|endoftext|>"],
-                    include_stop_str_in_output=True,
-                    seed=42,
-                )
-                if self.lora_path:
-                    self._vllm_lora_request = LoRARequest("zac_adapter", 1, self.lora_path)
-                self.backend = "vllm"
-                return
+                if torch.cuda.is_available():
+                    self._init_vllm()
+                else:
+                    self._init_transformers()
             except Exception as e:
-                if self.backend == "vllm":
-                    raise
-                print(f"[LLMBackend] vLLM không khả dụng ({e}), chuyển sang transformers...")
+                print(f"[LLMBackend] vLLM không khả dụng ({e}). Tự động fallback sang Transformers.")
+                self._init_transformers()
+        elif self.backend == "vllm":
+            self._init_vllm()
+        else:
+            self._init_transformers()
 
+    def _init_vllm(self) -> None:
+        import torch
+        from vllm import LLM as VLLMEngine
+        from vllm import SamplingParams
+
+        dtype = "bfloat16" if torch.cuda.is_bf16_supported() else "float16"
+        vllm_kwargs = {
+            "model": self.model_name_or_path,
+            "max_model_len": self.max_model_len,
+            "gpu_memory_utilization": self.gpu_memory_utilization,
+            "dtype": dtype,
+            "trust_remote_code": True,
+            "seed": 42,
+            "enforce_eager": False,
+        }
+        if self.lora_path and Path(self.lora_path).is_dir():
+            from vllm.lora.request import LoRARequest
+
+            vllm_kwargs["enable_lora"] = True
+            vllm_kwargs["max_lora_rank"] = 64
+            self.model = VLLMEngine(**vllm_kwargs)
+            self._vllm_lora_request = LoRARequest("zac_lora", 1, self.lora_path)
+        else:
+            self.model = VLLMEngine(**vllm_kwargs)
+            self._vllm_lora_request = None
+
+        self._vllm_sampling_params = SamplingParams(
+            temperature=0.0,
+            top_p=1.0,
+            max_tokens=self.max_new_tokens,
+            seed=42,
+            stop=["</tool_call>", "<|im_end|>", "<|endoftext|>"],
+            include_stop_str_in_output=True,
+        )
+        self.backend = "vllm"
+
+    def _init_transformers(self) -> None:
         import torch
         from transformers import AutoModelForCausalLM
 
-        dtype = torch.bfloat16 if (torch.cuda.is_available() and torch.cuda.is_bf16_supported()) else torch.float16
+        torch_dtype = torch.bfloat16 if (torch.cuda.is_available() and torch.cuda.is_bf16_supported()) else torch.float16
+        if not torch.cuda.is_available():
+            torch_dtype = torch.float32
+
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_name_or_path,
-            torch_dtype=dtype if torch.cuda.is_available() else torch.float32,
+            torch_dtype=torch_dtype,
             device_map="auto" if torch.cuda.is_available() else None,
             trust_remote_code=True,
         )
-        if self.lora_path:
-            try:
-                import peft.import_utils
-                import peft.tuners.lora.torchao
-
-                peft.import_utils.is_torchao_available = lambda: False
-                peft.tuners.lora.torchao.is_torchao_available = lambda: False
-            except Exception:
-                pass
+        if self.lora_path and Path(self.lora_path).is_dir():
             from peft import PeftModel
 
             self.model = PeftModel.from_pretrained(self.model, self.lora_path)
@@ -208,17 +206,10 @@ class LLMBackend:
             if torch.cuda.is_available():
                 torch.cuda.empty_cache()
         self.model.eval()
-        # On Turing GPUs (e.g. Tesla T4), force memory-efficient attention to prevent 4GB un-fused SDPA OOM
-        if torch.cuda.is_available():
-            try:
-                torch.backends.cuda.enable_mem_efficient_sdp(True)
-                torch.backends.cuda.enable_flash_sdp(False)
-            except Exception:
-                pass
         self.backend = "transformers"
 
     def generate(self, messages: list[dict[str, str]]) -> str:
-        """Render ChatML prompt (respecting 16,384 token limit) and generate deterministically."""
+        """Render ChatML prompt and generate deterministically."""
         prompt = render_chatml_preserving_think(
             self.tokenizer,
             messages,
@@ -274,10 +265,52 @@ class LLMBackend:
             text += "\n</tool_call>"
         return text
 
+    def generate_batch(self, list_of_messages: list[list[dict[str, str]]]) -> list[str]:
+        """Batch generation for multiple samples simultaneously via vLLM continuous batching."""
+        if not list_of_messages:
+            return []
+
+        prompts = []
+        max_input_tokens = self.max_model_len - self.max_new_tokens - 32
+        for messages in list_of_messages:
+            prompt = render_chatml_preserving_think(
+                self.tokenizer,
+                messages,
+                add_generation_prompt=True,
+            )
+            input_ids = self.tokenizer.encode(prompt, add_special_tokens=False)
+            if len(input_ids) > max_input_tokens:
+                input_ids = input_ids[-max_input_tokens:]
+                prompt = self.tokenizer.decode(input_ids, skip_special_tokens=False)
+            prompts.append(prompt)
+
+        if self.backend == "vllm":
+            outputs = self.model.generate(
+                prompts,
+                sampling_params=self._vllm_sampling_params,
+                lora_request=self._vllm_lora_request,
+                use_tqdm=False,
+            )
+            results = []
+            for out in outputs:
+                text = out.outputs[0].text
+                for eos_tok in ("<|im_end|>", "<|endoftext|>"):
+                    text = text.replace(eos_tok, "")
+                text = text.strip()
+                if "</tool_call>" in text:
+                    text = text[: text.find("</tool_call>") + len("</tool_call>")]
+                elif "<tool_call>" in text and not text.endswith("</tool_call>"):
+                    text += "\n</tool_call>"
+                results.append(text)
+            return results
+
+        # Fallback to serial generation if transformers backend
+        return [self.generate(msgs) for msgs in list_of_messages]
+
 
 class LifeMateAgent:
     """ReAct agent with single-tool execution per step, pure schema-driven state guardrail,
-    and two-tier semantic tool routing.
+    and switchable solutions 2, 3, and 4.
     """
 
     def __init__(
@@ -288,6 +321,9 @@ class LifeMateAgent:
         preprocessor: Any | None = None,
         router: SemanticToolRouter | None = None,
         catalog_apps_map: dict[str, dict[str, Any]] | None = None,
+        enable_fuzzy_normalizer: bool = True,
+        enable_hybrid_engine: bool = True,
+        enable_action_triage: bool = True,
     ):
         self.llm = llm
         self.catalog_tools_map = catalog_tools_map
@@ -296,25 +332,14 @@ class LifeMateAgent:
         self.router = router or SemanticToolRouter(top_k_recommended=4)
         self.catalog_apps_map = catalog_apps_map
 
-    @staticmethod
-    def _augment_empty_read_hint(
-        tool_name: str,
-        tool_args: dict[str, Any],
-        exec_res: dict[str, Any],
-    ) -> dict[str, Any]:
-        """Attach a non-destructive `_hint` if a parameterized read/search call returned an empty list."""
-        if not isinstance(exec_res, dict) or not tool_args:
-            return exec_res
+        # Switches for the 5 Solutions
+        self.enable_fuzzy_normalizer = enable_fuzzy_normalizer
+        self.enable_hybrid_engine = enable_hybrid_engine
+        self.enable_action_triage = enable_action_triage
 
-        for k, v in exec_res.items():
-            if isinstance(v, list) and len(v) == 0:
-                res_copy = copy.deepcopy(exec_res)
-                res_copy["_hint"] = (
-                    "Kết quả tra cứu rỗng (có thể do từ khóa tìm kiếm quá dài hoặc sai lệch âm ASR). "
-                    "Hãy thử tra cứu lại với từ khóa ngắn gọn hơn hoặc gọi công cụ phù hợp khác."
-                )
-                return res_copy
-        return exec_res
+        self.entity_normalizer = EntityNormalizer(enabled=enable_fuzzy_normalizer)
+        self.hybrid_engine = HybridProgramAidedEngine(enabled=enable_hybrid_engine)
+        self.action_triage = ActionTriageBarrier(enabled=enable_action_triage)
 
     def run_sample(
         self,
@@ -330,15 +355,21 @@ class LifeMateAgent:
         for k, v in (history_transcripts or {}).items():
             cleaned_hist_transcripts[k] = self.preprocessor.preprocess(v, sample)
 
-        # If Whisper output was purely stripped hallucination boilerplate, do not call tools
         if not cleaned_user_text:
             return env.get_tool_calls(), env.get_state_hash()
 
-        # Hybrid Rule 1: Instant stop on complete cancellation at end of speech
-        if HybridProgramAidedEngine.is_complete_cancellation(cleaned_user_text):
-            return env.get_tool_calls(), env.get_state_hash()
+        # Solution 4 Check: Out of scope request -> immediate 0-call return
+        if self.enable_action_triage:
+            is_oos, _ = self.action_triage.check_out_of_scope(sample, cleaned_user_text)
+            if is_oos:
+                return env.get_tool_calls(), env.get_state_hash()
 
-        # 2. Build initial ChatML messages with Two-Tier tool schemas
+        # Solution 3 Check: Instant stop on complete cancellation
+        if self.enable_hybrid_engine:
+            if self.hybrid_engine.is_complete_cancellation(cleaned_user_text):
+                return env.get_tool_calls(), env.get_state_hash()
+
+        # 2. Build initial ChatML messages
         messages = build_initial_messages(
             sample=sample,
             final_user_text=cleaned_user_text,
@@ -365,11 +396,9 @@ class LifeMateAgent:
             reply = self.llm.generate(messages)
             raw_calls = parse_tool_calls(reply)
 
-            # No tool call emitted -> agent completed all tasks
             if not raw_calls:
                 break
 
-            # STRICT REACT: Only execute the FIRST tool call emitted in this step
             call = raw_calls[0]
             t_name = call["name"]
             t_args = normalize_arguments(
@@ -379,34 +408,58 @@ class LifeMateAgent:
                 tz_offset=tz_offset,
             )
 
-            # Hybrid Rule: Stock Math Adjustment
-            if t_name == "stocks.place_order":
-                t_args = HybridProgramAidedEngine.adjust_stock_order(
-                    t_args, cleaned_user_text, state_tracker.observed_entities
-                )
+            # Solution 3: DateTime Auto-Repair
+            if self.enable_hybrid_engine:
+                for k in ("time", "start", "end", "schedule_time"):
+                    if k in t_args and isinstance(t_args[k], str):
+                        t_args[k] = self.hybrid_engine.normalize_iso_datetime(t_args[k], tz_offset)
 
-            # Hybrid Rule: Bill Payment Balance & Source Adjustment
-            if t_name == "bill_payment.pay":
-                t_args, supp_sms = HybridProgramAidedEngine.adjust_bill_payment(
-                    t_args, cleaned_user_text, state_tracker.observed_entities, state_tracker.balances
+            # Solution 4: Guard sys.ask_missing_info
+            if t_name == "sys.ask_missing_info" and self.enable_action_triage:
+                allowed, triage_reason = self.action_triage.guard_ask_missing_info(
+                    t_args, sample, seen_calls, self.catalog_tools_map, state_tracker.observed_entities
                 )
-                if t_args is None:
-                    suppress_sms = True
+                if not allowed:
+                    guardrail_retries += 1
+                    messages.append({"role": "assistant", "content": reply})
+                    messages.append(
+                        {
+                            "role": "user",
+                            "content": (
+                                f"<tool_response>\n"
+                                f"{json.dumps({'ok': False, 'triage_error': triage_reason, 'hint': 'Không hỏi lại người dùng khi chưa tra cứu hoặc thông tin đã có sẵn trong ngữ cảnh.'}, ensure_ascii=False)}\n"
+                                f"</tool_response>"
+                            ),
+                        }
+                    )
+                    if guardrail_retries >= 3:
+                        break
                     continue
-                if supp_sms:
-                    suppress_sms = True
 
-            # Hybrid Rule: Suppress fake SMS when condition failed
-            if t_name == "sms.send" and suppress_sms:
-                continue
+            # Solution 3: Stock Math & Bill Payment adjustments
+            if self.enable_hybrid_engine:
+                if t_name == "stocks.place_order":
+                    t_args = self.hybrid_engine.adjust_stock_order(
+                        t_args, cleaned_user_text, state_tracker.observed_entities
+                    )
+                elif t_name == "bill_payment.pay":
+                    t_args, supp_sms = self.hybrid_engine.adjust_bill_payment(
+                        t_args, cleaned_user_text, state_tracker.observed_entities, state_tracker.balances
+                    )
+                    if t_args is None:
+                        suppress_sms = True
+                        continue
+                    if supp_sms:
+                        suppress_sms = True
 
-            # Hybrid Rule: Over-call pruning (no parking when taking bike)
-            if t_name == "parking.reserve" and any("ride_hailing.book" in s and "bike" in s for s in seen_calls):
-                continue
+                if t_name == "sms.send" and suppress_sms:
+                    continue
+
+                if t_name == "parking.reserve" and any("ride_hailing.book" in s and "bike" in s for s in seen_calls):
+                    continue
 
             messages.append({"role": "assistant", "content": reply})
 
-            # Prevent infinite loops on identical calls
             call_sig = f"{t_name}:{json.dumps(t_args, sort_keys=True, ensure_ascii=False)}"
             if call_sig in seen_calls:
                 guardrail_retries += 1
@@ -424,7 +477,7 @@ class LifeMateAgent:
                     break
                 continue
 
-            # Zero-cost schema validation via env.validate()
+            # Zero-cost schema validation
             val_res = env.validate(t_name, t_args)
             if not val_res.get("ok"):
                 guardrail_retries += 1
@@ -434,7 +487,7 @@ class LifeMateAgent:
                         "role": "user",
                         "content": (
                             f"<tool_response>\n"
-                            f"{json.dumps({'ok': False, 'validation_error': err_msg, 'hint': 'Hãy sửa lại đúng tên tham số/kiểu dữ liệu hoặc gọi sys.ask_missing_info nếu người dùng chưa cung cấp đủ thông tin.'}, ensure_ascii=False)}\n"
+                            f"{json.dumps({'ok': False, 'validation_error': err_msg, 'hint': 'Hãy sửa lại đúng tên tham số/kiểu dữ liệu.'}, ensure_ascii=False)}\n"
                             f"</tool_response>"
                         ),
                     }
@@ -443,7 +496,7 @@ class LifeMateAgent:
                     break
                 continue
 
-            # Zero-cost pure schema state check (prevents done: False soft-failures)
+            # Pure schema state precheck
             pre_err = state_tracker.check_pre_execution(t_name, t_args)
             if pre_err is not None:
                 guardrail_retries += 1
@@ -461,27 +514,33 @@ class LifeMateAgent:
                     break
                 continue
 
-            # Validated & checked! Execute on the official simulator
             seen_calls.add(call_sig)
             exec_res = env.call(t_name, t_args)
             state_tracker.record_observation(t_name, t_args, exec_res)
 
-            # Hybrid Rule: Weather condition verification (stop if target day does not rain)
-            if t_name in ("weather.get_forecast", "weather.get_current"):
-                if not HybridProgramAidedEngine.check_weather_condition(cleaned_user_text, exec_res):
-                    break
+            # Solution 3: Weather condition check
+            if self.enable_hybrid_engine:
+                if t_name in ("weather.get_forecast", "weather.get_current"):
+                    if not self.hybrid_engine.check_weather_condition(cleaned_user_text, exec_res):
+                        break
 
-            # Hybrid Rule: Smart Home multi-fan expansion
-            if t_name == "smart_home.fan_set":
-                extra_fans = HybridProgramAidedEngine.expand_smart_home_fans(
-                    env, cleaned_user_text, state_tracker.observed_entities, t_args
+                if t_name == "smart_home.fan_set":
+                    extra_fans = self.hybrid_engine.expand_smart_home_fans(
+                        env, cleaned_user_text, state_tracker.observed_entities, t_args
+                    )
+                    for ef in extra_fans:
+                        seen_calls.add(f"{ef['name']}:{json.dumps(ef['arguments'], sort_keys=True, ensure_ascii=False)}")
+                        ef_res = env.call(ef["name"], ef["arguments"])
+                        state_tracker.record_observation(ef["name"], ef["arguments"], ef_res)
+
+            # Solution 2: Fuzzy Read Recovery
+            if self.enable_fuzzy_normalizer:
+                prompt_res = self.entity_normalizer.recover_empty_read(
+                    t_name, t_args, exec_res, sample, state_tracker.observed_entities
                 )
-                for ef in extra_fans:
-                    seen_calls.add(f"{ef['name']}:{json.dumps(ef['arguments'], sort_keys=True, ensure_ascii=False)}")
-                    ef_res = env.call(ef["name"], ef["arguments"])
-                    state_tracker.record_observation(ef["name"], ef["arguments"], ef_res)
+            else:
+                prompt_res = exec_res
 
-            prompt_res = self._augment_empty_read_hint(t_name, t_args, exec_res)
             messages.append(
                 {
                     "role": "user",

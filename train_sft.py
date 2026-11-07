@@ -77,6 +77,25 @@ class AssistantOnlyDataCollator:
             )
         return labels
 
+    def compute_weights_for_ids(self, ids: list[int], labels: list[int]) -> list[float]:
+        weights = [0.0] * len(ids)
+        for j, (tok_id, lab) in enumerate(zip(ids, labels)):
+            if lab == -100:
+                continue
+            tok_str = self.tokenizer.decode([tok_id]).strip()
+            # Punctuation / JSON structure tokens get low weight
+            if tok_str in ('{', '}', '"', '":', '",', ':', ',', '[', ']', '{"', '"}'):
+                weights[j] = 0.5
+            # Tool call tags and action decision tokens get highest weight
+            elif any(k in tok_str for k in ('<tool_call>', '</tool_call>', 'sys.ask_missing_info', 'name')):
+                weights[j] = 2.5
+            # Numbers, entity IDs (evt_, c_, ord_, trk_, pl_), dates get high weight
+            elif any(c.isdigit() for c in tok_str) or any(prefix in tok_str for prefix in ('evt_', 'c_', 'ord_', 'trk_', 'pl_')):
+                weights[j] = 2.0
+            else:
+                weights[j] = 1.0
+        return weights
+
     def __call__(self, features: list[dict[str, Any]]) -> dict[str, Any]:
         import torch
 
@@ -85,7 +104,6 @@ class AssistantOnlyDataCollator:
 
         for feat in features:
             if "input_ids" in feat and "labels" in feat:
-                # Fast path: pre-tokenized input_ids and pre-computed assistant labels
                 ids = list(feat["input_ids"])[: self.max_seq_len]
                 labels = list(feat["labels"])[: self.max_seq_len]
                 batch_input_ids.append(ids)
@@ -144,7 +162,7 @@ def main():
     ap = argparse.ArgumentParser(description="Fine-tune Qwen3-4B trên dữ liệu ReAct Tool-Calling ZAC 2026")
     ap.add_argument("--model", default="Qwen/Qwen3-4B", help="Model gốc (< 5B tham số)")
     ap.add_argument("--data-dir", default="data/sft", help="Thư mục chứa sft_train.jsonl và sft_val.jsonl")
-    ap.add_argument("--output-dir", default="checkpoints/qwen3-4b-zac-lora", help="Thư mục lưu LoRA adapter")
+    ap.add_argument("--output-dir", default="checkpoints/qwen3-4b-zac-lora-v3", help="Thư mục lưu LoRA adapter")
     ap.add_argument("--epochs", type=int, default=3)
     ap.add_argument("--batch-size", type=int, default=2)
     ap.add_argument("--grad-accum", type=int, default=8)
@@ -157,7 +175,6 @@ def main():
         action="store_true",
         help="Bật QLoRA 4-bit nếu chạy trên GPU 16GB (T4); trên L4/A100/A30 24GB+ có thể chạy thẳng BF16 LoRA",
     )
-    # Optional controlled performance optimizations (off by default to preserve original configuration)
     ap.add_argument(
         "--optimized",
         action="store_true",
@@ -171,7 +188,7 @@ def main():
     ap.add_argument(
         "--group-by-length",
         action="store_true",
-        help="Gom nhóm các mẫu có độ dài tương đương vào cùng micro-batch để giảm ~80% padding waste",
+        help="Gom nhóm các mẫu có độ dài tương đương vào cùng micro-batch để giảm ~80%% padding waste",
     )
     ap.add_argument(
         "--attn-implementation",
@@ -194,7 +211,51 @@ def main():
         action="store_true",
         help="Kiểm tra nghiêm ngặt đảm bảo không có bất kỳ lượt assistant hoặc tool_call nào bị cắt cụt",
     )
+    ap.add_argument(
+        "--weighted-loss",
+        action="store_true",
+        help="Bật hàm loss có trọng số theo token (TVAFT: Token-Weighted Loss cho Action Triage & Tool Schema)",
+    )
+
+    # Solutions 1, 5, and Baseline Preset Switches
+    ap.add_argument(
+        "--enable-hammer",
+        action="store_true",
+        help="[Solution 5] Tự động chọn candidate v4_hammer_when2call và bật weighted-loss",
+    )
+    ap.add_argument(
+        "--enable-rsft",
+        action="store_true",
+        help="[Solution 1] Tự động chọn candidate rsft (Simulator Rejection Sampling, R=1.0)",
+    )
+    ap.add_argument(
+        "--enable-concise",
+        action="store_true",
+        help="[Baseline v3] Tự động chọn candidate p1_concise",
+    )
+
     args = ap.parse_args()
+
+    # Apply solution presets if requested
+    if args.enable_hammer:
+        if args.data_dir == "data/sft":
+            args.data_dir = "data/sft/candidates/v4_hammer_when2call"
+        if args.output_dir == "checkpoints/qwen3-4b-zac-lora-v3":
+            args.output_dir = "checkpoints/qwen3-4b-zac-lora-v4-hammer"
+        args.weighted_loss = True
+        print(f"[Solution 5: Hammer Masking] Đã chọn data={args.data_dir} | output={args.output_dir} | weighted_loss=True")
+    elif args.enable_rsft:
+        if args.data_dir == "data/sft":
+            args.data_dir = "data/sft/candidates/rsft"
+        if args.output_dir == "checkpoints/qwen3-4b-zac-lora-v3":
+            args.output_dir = "checkpoints/qwen3-4b-zac-lora-rsft"
+        print(f"[Solution 1: RSFT] Đã chọn data={args.data_dir} | output={args.output_dir}")
+    elif args.enable_concise:
+        if args.data_dir == "data/sft":
+            args.data_dir = "data/sft/candidates/p1_concise"
+        if args.output_dir == "checkpoints/qwen3-4b-zac-lora-v3":
+            args.output_dir = "checkpoints/qwen3-4b-zac-lora-p1-concise"
+        print(f"[Baseline v3: Concise] Đã chọn data={args.data_dir} | output={args.output_dir}")
 
     if args.optimized:
         args.pretokenize = True
@@ -223,7 +284,7 @@ def main():
     data_dir = Path(args.data_dir)
     if not (data_dir / "sft_train.jsonl").is_file():
         raise FileNotFoundError(
-            f"Không tìm thấy {data_dir / 'sft_train.jsonl'}. Hãy chạy `python generate_reasoning_sft.py` trước!"
+            f"Không tìm thấy {data_dir / 'sft_train.jsonl'}. Hãy chuẩn bị dữ liệu SFT trước!"
         )
 
     tokenizer = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
@@ -278,7 +339,6 @@ def main():
     )
 
     def format_row(example):
-        # Bảo toàn đầy đủ thẻ <think>...</think> ở MỌI bước assistant trong multi-turn ReAct
         text = render_chatml_preserving_think(
             tokenizer,
             example["messages"],
@@ -304,7 +364,6 @@ def main():
 
     dataset = dataset.map(format_row, remove_columns=dataset["train"].column_names)
 
-    # Tự động kiểm tra các tham số hợp lệ của SFTConfig theo phiên bản trl/transformers trên Colab
     valid_sft_params = set(inspect.signature(SFTConfig.__init__).parameters.keys())
     sft_kwargs = {
         "output_dir": args.output_dir,
@@ -361,7 +420,35 @@ def main():
     elif "tokenizer" in trainer_params:
         trainer_kwargs["tokenizer"] = tokenizer
 
-    trainer = SFTTrainer(**trainer_kwargs)
+    class TokenWeightedSFTTrainer(SFTTrainer):
+        def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+            if "weights" not in inputs:
+                return super().compute_loss(model, inputs, return_outputs=return_outputs)
+            weights = inputs.pop("weights")
+            outputs = model(**inputs)
+            logits = outputs.get("logits")
+            labels = inputs.get("labels")
+
+            import torch
+            import torch.nn.functional as F
+
+            shift_logits = logits[..., :-1, :].contiguous()
+            shift_labels = labels[..., 1:].contiguous()
+            shift_weights = weights[..., 1:].contiguous()
+
+            loss = F.cross_entropy(
+                shift_logits.view(-1, shift_logits.size(-1)),
+                shift_labels.view(-1),
+                reduction="none",
+                ignore_index=-100,
+            )
+            valid_mask = (shift_labels.view(-1) != -100).float()
+            w = shift_weights.view(-1) * valid_mask
+            weighted_loss = (loss * w).sum() / (w.sum() + 1e-8)
+            return (weighted_loss, outputs) if return_outputs else weighted_loss
+
+    trainer_cls = TokenWeightedSFTTrainer if args.weighted_loss else SFTTrainer
+    trainer = trainer_cls(**trainer_kwargs)
 
     trainer.train()
     trainer.save_model(args.output_dir)

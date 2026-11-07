@@ -1,0 +1,63 @@
+{
+  "description": "ZAC 2026 LifeMate v4 SFT: Hammer Function Masking (Unseen Tools) + When2Call Negative Action Triage + Token-Weighted Loss (TVAFT) on NVIDIA L4/A100",
+  "model": "Qwen/Qwen3-4B",
+  "data_dir": "data/sft/candidates/v4_hammer_when2call",
+  "output_dir": "checkpoints/qwen3-4b-zac-lora-v4-hammer",
+  "preserved_hyperparameters": {
+    "epochs": 3,
+    "per_device_train_batch_size": 2,
+    "per_device_eval_batch_size": 2,
+    "gradient_accumulation_steps": 8,
+    "effective_batch_size": 16,
+    "learning_rate": 0.0002,
+    "lr_scheduler_type": "cosine",
+    "warmup_steps": 25,
+    "lora_r": 32,
+    "lora_alpha": 64,
+    "lora_dropout": 0.05,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ],
+    "use_4bit": false,
+    "packing": false
+  },
+  "training_innovations": {
+    "weighted_loss": true,
+    "token_weights": {
+      "decision_tags_and_names": 2.5,
+      "exact_entities_and_scalars": 2.0,
+      "syntax_punctuation": 0.5,
+      "base_text": 1.0
+    },
+    "hammer_masking": {
+      "masked_samples_count": 502,
+      "objective": "Prevent schema memorization and force generalization to unseen test apps"
+    },
+    "when2call_triage": {
+      "negative_samples_count": 241,
+      "objective": "Zero out hallucinated calls on cancellations, uninstalled apps, and out-of-scope requests"
+    }
+  },
+  "throughput_and_safety_optimizations": {
+    "max_seq_len": 8192,
+    "verify_no_truncation": false,
+    "pretokenize": true,
+    "group_by_length": true,
+    "length_column_name": "length",
+    "attn_implementation": "sdpa",
+    "gradient_checkpointing": true,
+    "gradient_checkpointing_kwargs": {
+      "use_reentrant": false
+    },
+    "optim": "adamw_torch_fused",
+    "bf16": true,
+    "tf32": true
+  },
+  "recommended_cli_command": "python train_sft.py --model Qwen/Qwen3-4B --data-dir data/sft/candidates/v4_hammer_when2call --output-dir checkpoints/qwen3-4b-zac-lora-v4-hammer --epochs 3 --batch-size 2 --grad-accum 8 --lr 2e-4 --max-seq-len 8192 --lora-r 32 --lora-alpha 64 --optimized --weighted-loss"
+}

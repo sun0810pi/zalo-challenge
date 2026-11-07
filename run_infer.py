@@ -42,6 +42,12 @@ def main():
     ap.add_argument("--ids-file", default=None, help="File JSON chứa danh sách ID cần chạy (VD: data/sft/val_ids.json)")
     ap.add_argument("--limit", type=int, default=0, help="Giới hạn số mẫu chạy thử (0 = chạy toàn bộ)")
     ap.add_argument("--max-steps", type=int, default=8, help="Số bước ReAct tối đa mỗi mẫu")
+
+    # Switches for Solutions 2, 3, 4
+    ap.add_argument("--no-fuzzy-normalizer", action="store_true", help="[Solution 2] Tắt EntityNormalizer & Fuzzy Read Recovery")
+    ap.add_argument("--no-hybrid-engine", action="store_true", help="[Solution 3] Tắt HybridProgramAidedEngine (Cancellation, Weather, Math)")
+    ap.add_argument("--no-action-triage", action="store_true", help="[Solution 4] Tắt ActionTriageBarrier (Out-of-Scope & ask_missing_info guard)")
+
     args = ap.parse_args()
 
     fix_all_seeds(42)
@@ -73,7 +79,10 @@ def main():
         f"[Pipeline] Split={args.split} | Số mẫu={len(samples)} | "
         f"LLM={args.model} (LoRA: {args.lora_path}) | "
         f"ASR={args.asr_model} (LoRA: {args.asr_lora_path}) | "
-        f"Preprocessor={args.preprocessor.upper()}"
+        f"Preprocessor={args.preprocessor.upper()} | "
+        f"FuzzyNormalizer={not args.no_fuzzy_normalizer} | "
+        f"HybridEngine={not args.no_hybrid_engine} | "
+        f"ActionTriage={not args.no_action_triage}"
     )
 
     if args.ignore_asr_cache:
@@ -134,6 +143,9 @@ def main():
         preprocessor=preprocessor,
         router=router,
         catalog_apps_map=catalog_apps_map,
+        enable_fuzzy_normalizer=not args.no_fuzzy_normalizer,
+        enable_hybrid_engine=not args.no_hybrid_engine,
+        enable_action_triage=not args.no_action_triage,
     )
 
     t0 = time.perf_counter()

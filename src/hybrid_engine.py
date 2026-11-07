@@ -1,34 +1,51 @@
 """Hybrid Program-Aided Logic Engine for ZAC 2026 LifeMate.
-Provides deterministic, zero-cost business logic guarantees on top of LLM tool proposals:
+Solution 3: Provides deterministic, zero-cost business logic guarantees on top of LLM tool proposals:
 1. Cancellation & Negation Interceptor (instant stop on self-cancellation "...à mà thôi")
-2. Weather Condition Branch Guard (stops immediately when rain condition is False)
-3. E-wallet vs Bank Arithmetic Balance Matcher (forces correct payment source & blocks false SMS)
-4. Stock Arithmetic Resolver (calculates actual sell quantity for "giữ lại X" / "bán một nửa")
-5. Multi-device Smart Home Expander (ensures all fans/lights in scope are acted upon)
-6. Over-call & Conflicting Tool Pruner (prevents booking parking when taking motorbikes, etc.)
+2. DateTime & Timezone ISO Auto-Repair (enforces valid ISO format and +07:00 offset)
+3. Weather Condition Branch Guard (stops immediately when rain condition is False)
+4. E-wallet vs Bank Arithmetic Balance Matcher (forces correct payment source & blocks false SMS)
+5. Stock Arithmetic Resolver (calculates actual sell quantity for "giữ lại X" / "bán một nửa")
+6. Multi-device Smart Home Expander (ensures all fans/lights in scope are acted upon)
+7. Over-call & Conflicting Tool Pruner (prevents booking parking when taking motorbikes, etc.)
 """
 from __future__ import annotations
 
 import copy
 import json
 import re
+from datetime import datetime
 from typing import Any
-
-# High-precision patterns for complete cancellation at end of utterance
-_FULL_CANCEL_PATTERNS = [
-    re.compile(r"(?:à\s+mà\s+thôi|thôi\s+khỏi|khỏi\s+cần|thôi\s+không\s+cần|thôi\s+thôi|bỏ\s+qua\s+đi|đừng\s+làm|cứ\s+để\s+nguyên|cứ\s+giữ\s+nguyên|cứ\s+để\s+đó|thôi\s+bỏ\s+đi|thôi\s+được\s+rồi)\s*[.?!]*$", re.IGNORECASE),
-    re.compile(r"cô\s+có\s+tập\s+(?:tầng\s+)?gym\s+mô\s*[.?!]*$", re.IGNORECASE),
-    re.compile(r"thôi\s+đừng\s+làm\s*[.?!]*$", re.IGNORECASE),
-]
 
 from .number_parser import parse_vietnamese_number
 
-_KEEP_STOCK_RE = re.compile(r"(?:giữ\s+lại|để\s+lại)\s+([a-zA-Z0-9\s_đĐà-ỹÀ-Ỹ]+?)(?:,\s*|\.\s*|m\s*$|$)", re.IGNORECASE)
-_HALF_STOCK_RE = re.compile(r"(?:bán\s+(?:một\s+nửa|1/2|nửa)|bán\s+hết\s+một\s+nửa)", re.IGNORECASE)
+# High-precision patterns for complete cancellation at end of utterance
+_FULL_CANCEL_PATTERNS = [
+    re.compile(
+        r"(?:à\s+mà\s+thôi|thôi\s+khỏi|khỏi\s+cần|thôi\s+không\s+cần|thôi\s+thôi|bỏ\s+qua\s+đi|đừng\s+làm|"
+        r"cứ\s+để\s+nguyên|cứ\s+giữ\s+nguyên|cứ\s+để\s+đó|thôi\s+bỏ\s+đi|thôi\s+được\s+rồi|không\s+cần\s+nữa|"
+        r"khỏi\s+tạo|khỏi\s+đặt|đừng\s+tạo|đừng\s+đặt|thôi\s+đừng)\s*[.?!]*$",
+        re.IGNORECASE,
+    ),
+    re.compile(r"cô\s+có\s+tập\s+(?:tầng\s+)?gym\s+mô\s*[.?!]*$", re.IGNORECASE),
+    re.compile(r"thôi\s+đừng\s+làm\s*[.?!]*$", re.IGNORECASE),
+    re.compile(r"thôi\s+đừng\s+gọi\s+nữa\s*[.?!]*$", re.IGNORECASE),
+]
+
+_KEEP_STOCK_RE = re.compile(
+    r"(?:giữ\s+lại|để\s+lại)\s+([a-zA-Z0-9\s_đĐà-ỹÀ-Ỹ]+?)(?:,\s*|\.\s*|m\s*$|$)",
+    re.IGNORECASE,
+)
+_HALF_STOCK_RE = re.compile(
+    r"(?:bán\s+(?:một\s+nửa|1/2|nửa)|bán\s+hết\s+một\s+nửa)",
+    re.IGNORECASE,
+)
 
 
 class HybridProgramAidedEngine:
     """Deterministic orchestrator and guardrail policy."""
+
+    def __init__(self, enabled: bool = True):
+        self.enabled = enabled
 
     @staticmethod
     def is_complete_cancellation(text: str) -> bool:
@@ -44,11 +61,33 @@ class HybridProgramAidedEngine:
         return False
 
     @staticmethod
+    def normalize_iso_datetime(dt_str: str, tz_offset: str = "+07:00") -> str:
+        """Ensure date-time string strictly conforms to ISO-8601 with timezone offset."""
+        if not dt_str or not isinstance(dt_str, str):
+            return dt_str
+        s = dt_str.strip()
+
+        # Handle ' ' instead of 'T'
+        if " " in s and "T" not in s:
+            s = s.replace(" ", "T", 1)
+
+        # Handle missing timezone offset
+        if not (s.endswith("Z") or ("+" in s[10:]) or ("-" in s[10:])):
+            s += tz_offset
+
+        # Validate format
+        try:
+            datetime.fromisoformat(s)
+            return s
+        except ValueError:
+            return dt_str
+
+    @staticmethod
     def check_weather_condition(
         user_text: str,
         forecast_result: dict[str, Any],
     ) -> bool:
-        """Returns False if user had a conditional "nếu mưa thì... không mưa thì thôi"
+        """Returns False if user had a conditional 'nếu mưa thì... không mưa thì thôi'
         and tomorrow DOES NOT rain, indicating agent should immediately STOP.
         """
         user_l = user_text.lower()
@@ -57,7 +96,8 @@ class HybridProgramAidedEngine:
 
         # Check if the user specified an empty / noop branch for no rain
         has_noop_fallback = any(
-            kw in user_l for kw in (
+            kw in user_l
+            for kw in (
                 "không mưa thì thôi",
                 "không mưa thì giữ nguyên",
                 "không mưa giữ nguyên",
@@ -112,7 +152,12 @@ class HybridProgramAidedEngine:
                 if "nếu ví đủ mới" in user_l or "nếu đủ thì mới" in user_l or "chỉ trả khi ví đủ" in user_l:
                     # Do not pay bill, and suppress SMS!
                     return None, True
-                if "ngân hàng" in user_l or "trừ ngân hàng" in user_l or "qua ngân hàng" in user_l or "thiếu thì trả bằng ngân hàng" in user_l:
+                if (
+                    "ngân hàng" in user_l
+                    or "trừ ngân hàng" in user_l
+                    or "qua ngân hàng" in user_l
+                    or "thiếu thì trả bằng ngân hàng" in user_l
+                ):
                     tool_args["source"] = "bank"
                     return tool_args, False
 
@@ -124,7 +169,7 @@ class HybridProgramAidedEngine:
         user_text: str,
         observed_entities: dict[str, Any],
     ) -> dict[str, Any]:
-        """Auto-calculate exact sell quantity for "giữ lại X" or "bán một nửa"."""
+        """Auto-calculate exact sell quantity for 'giữ lại X' or 'bán một nửa'."""
         side = tool_args.get("side", "")
         if side != "sell":
             return tool_args
@@ -194,13 +239,14 @@ class HybridProgramAidedEngine:
                 dev_room = item.get("room")
                 if dev_id and dev_id != first_dev:
                     if dev_room not in ac_running_rooms:
-                        # Call fan_set for this eligible fan
-                        extra_calls.append({
-                            "name": "smart_home.fan_set",
-                            "arguments": {
-                                "device_id": dev_id,
-                                "power": target_power,
-                                "speed": target_speed,
+                        extra_calls.append(
+                            {
+                                "name": "smart_home.fan_set",
+                                "arguments": {
+                                    "device_id": dev_id,
+                                    "power": target_power,
+                                    "speed": target_speed,
+                                },
                             }
-                        })
+                        )
         return extra_calls

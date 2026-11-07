@@ -1,0 +1,8 @@
+{
+  "version": "rsft_v1.0",
+  "num_train": 1400,
+  "num_val": 145,
+  "perfect_simulator_matches": 1545,
+  "repaired_count": 0,
+  "strict_only": true
+}
