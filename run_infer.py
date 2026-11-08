@@ -37,6 +37,7 @@ def main():
         action="store_true",
         help="Tùy chọn: Bật cơ chế dự phòng Qwen3-ASR-0.6B khi Whisper có độ không chắc chắn cao ở các slot quan trọng",
     )
+    ap.add_argument("--asr-cache-path", default=None, help="Đường dẫn trực tiếp tới file ASR cache JSON")
     ap.add_argument("--ignore-asr-cache", action="store_true", help="Bỏ qua cache ASR, ép transcriber chạy lại toàn bộ audio với model/LoRA mới")
     ap.add_argument("--use-gt-asr", action="store_true", help="Dùng audio_text có sẵn (chỉ dùng khi test nhanh LLM trên tập train)")
     ap.add_argument("--ids-file", default=None, help="File JSON chứa danh sách ID cần chạy (VD: data/sft/val_ids.json)")
@@ -87,6 +88,8 @@ def main():
 
     if args.ignore_asr_cache:
         asr_cache_p = None
+    elif args.asr_cache_path:
+        asr_cache_p = Path(args.asr_cache_path)
     elif args.asr_lora_path:
         lora_tag = Path(args.asr_lora_path).name or "lora"
         asr_cache_p = root / "cache" / f"asr_{args.split}_{lora_tag}.json"

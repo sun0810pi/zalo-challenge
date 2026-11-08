@@ -128,6 +128,7 @@ def main():
         default="safe",
         help="Tiền xử lý ngôn ngữ: safe (SafeContextPreprocessor mặc định), a (Fuzzy Context Aligner), hoặc b (Neural Restorer)",
     )
+    ap.add_argument("--asr-cache-path", default=None, help="Đường dẫn trực tiếp tới file ASR cache JSON")
     ap.add_argument("--ignore-asr-cache", action="store_true", help="Bỏ qua cache ASR, chạy nhận dạng lại")
     ap.add_argument("--use-gt-asr", action="store_true")
 
@@ -173,6 +174,8 @@ def main():
 
     if args.ignore_asr_cache:
         asr_cache_p = None
+    elif args.asr_cache_path:
+        asr_cache_p = Path(args.asr_cache_path)
     elif args.asr_lora_path:
         lora_tag = Path(args.asr_lora_path).name or "lora"
         asr_cache_p = root / "cache" / f"asr_{args.split}_{lora_tag}.json"
