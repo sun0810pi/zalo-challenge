@@ -64,7 +64,8 @@ _PHONETIC_ACOUSTIC_RULES: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"\bđặc\s+nè\b", re.IGNORECASE), "đặt ngay"),
     (re.compile(r"\bđặc\s+dúp\b", re.IGNORECASE), "đặt giúp"),
     (re.compile(r"\b(?:nạp|lạp)\s+(?:chiếu\s+)?phim\b", re.IGNORECASE), "rạp phim"),
-    (re.compile(r"\bcái\s+nạp\s+phim\b", re.IGNORECASE), "rạp chiếu phim"),
+    (re.compile(r"\bcái\s+nạp\s+phim\b", re.IGNORECASE), "rạp phim"),
+    (re.compile(r"\bbãi\s+xe\s+của\s+(?:đoạp|nạp)\b", re.IGNORECASE), "bãi xe của rạp"),
     (re.compile(r"\b(?:ra|đến|tới)\s+bên(?:\s+nữa|\s+xe|\s+tàu)?\b", re.IGNORECASE), "ra bến"),
     (re.compile(r"\bở\s+bên\s+(?:xe|tàu)\b", re.IGNORECASE), "ở bến"),
     (re.compile(r"\b(?:vô|vào)\s+bản(?:\s+đồ)?\b", re.IGNORECASE), "vào bản đồ"),
@@ -120,13 +121,21 @@ _PHONETIC_ACOUSTIC_RULES: list[tuple[re.Pattern[str], str]] = [
 
     # Food & Recipes & Grocery & Orders
     (re.compile(r"\b(?:hải|hai)\s+công\s+tục\b", re.IGNORECASE), "hai công thức"),
-    (re.compile(r"\bcông\s+tục\b", re.IGNORECASE), "công thức"),
+    (re.compile(r"\b(?:công\s+tục|cổng\s+thức)\b", re.IGNORECASE), "công thức"),
+    (re.compile(r"\bcho\s+anh\s+sách\b", re.IGNORECASE), "trong danh sách"),
+    (re.compile(r"\bvào\s+gió\b", re.IGNORECASE), "vào giỏ"),
     (re.compile(r"\bkhẩu\s+phầm\b", re.IGNORECASE), "khẩu phần"),
     (re.compile(r"\byếu\s+mạch\b", re.IGNORECASE), "yến mạch"),
     (re.compile(r"\bdư\s+dụt\b", re.IGNORECASE), "dưa chuột"),
 
-    # Fuel & Prices
+    # Fuel & Prices & Bills & Flights
     (re.compile(r"\bxăng\s+chín\s+(?:lắm|năm)\b", re.IGNORECASE), "xăng 95"),
+    (re.compile(r"\btrường\s+điện\b", re.IGNORECASE), "tiền điện"),
+    (re.compile(r"\bđọng\s+hồ\s+tiền\b", re.IGNORECASE), "đóng hộ tiền"),
+    (re.compile(r"\btiền\s+nửa\b", re.IGNORECASE), "tiền nước"),
+    (re.compile(r"\bhạ\s+canh\b", re.IGNORECASE), "hạ cánh"),
+    (re.compile(r"\bchuyển\s+rẻ\b", re.IGNORECASE), "chuyến rẻ"),
+    (re.compile(r"\bgiờ\s+muộn\b", re.IGNORECASE), "dời muộn"),
 ]
 
 # Spoken currency and percentage normalization rules (Order is strictly from longest to shortest)
