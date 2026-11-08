@@ -109,7 +109,7 @@ class SampleReActState:
 
 def main():
     ap = argparse.ArgumentParser(description="Chạy pipeline suy luận đa luồng theo lô (Batched ReAct) cho ZAC 2026")
-    ap.add_argument("--split", default="public_test", choices=["public_test", "train"])
+    ap.add_argument("--split", default="public_test", help="Tên split dữ liệu (public_test, train, private_test...)")
     ap.add_argument("--root", default=".")
     ap.add_argument("--output", default="submissions/submission_batched.jsonl")
     ap.add_argument("--model", default="Qwen/Qwen3-4B")
@@ -125,8 +125,8 @@ def main():
     ap.add_argument(
         "--preprocessor",
         choices=["a", "b", "safe"],
-        default="a",
-        help="Tiền xử lý ngôn ngữ: a (Fuzzy Context Aligner), b (Neural Restorer), hoặc safe",
+        default="safe",
+        help="Tiền xử lý ngôn ngữ: safe (SafeContextPreprocessor mặc định), a (Fuzzy Context Aligner), hoặc b (Neural Restorer)",
     )
     ap.add_argument("--ignore-asr-cache", action="store_true", help="Bỏ qua cache ASR, chạy nhận dạng lại")
     ap.add_argument("--use-gt-asr", action="store_true")
@@ -240,6 +240,13 @@ def main():
             raw_text, raw_hist = transcriber.transcribe_sample(item, split_dir)
             cl_text = preprocessor.preprocess(raw_text, item)
             cl_hist = {k: preprocessor.preprocess(v, item) for k, v in raw_hist.items()}
+
+            if item.get("history") and cl_hist:
+                for turn in item["history"]:
+                    if not turn.get("audio_text"):
+                        aud = turn.get("audio", "")
+                        if aud in cl_hist:
+                            turn["audio_text"] = cl_hist[aud]
 
             state = SampleReActState(
                 index=idx,
@@ -362,6 +369,12 @@ def main():
                 if t_name == "parking.reserve" and any("ride_hailing.book" in s and "bike" in s for s in state.seen_calls):
                     continue
 
+            # Solution 2: Entity normalization
+            if state.enable_fuzzy_normalizer:
+                t_args = state.normalizer.resolve_fuzzy_arguments(
+                    t_name, t_args, state.state_tracker.observed_entities, state.sample
+                )
+
             state.messages.append({"role": "assistant", "content": reply})
 
             call_sig = f"{t_name}:{json.dumps(t_args, sort_keys=True, ensure_ascii=False)}"
@@ -398,6 +411,30 @@ def main():
                         "content": (
                             f"<tool_response>\n"
                             f"{json.dumps({'ok': False, 'validation_error': err_msg}, ensure_ascii=False)}\n"
+                            f"</tool_response>"
+                        ),
+                    }
+                )
+                if state.guardrail_retries >= 3 or state.step >= state.max_steps:
+                    state._finish()
+                    completed_results[state.index] = {
+                        "id": state.sample_id,
+                        "tool_calls": state.tool_calls,
+                        "state_hash": state.state_hash,
+                    }
+                    completed_count += 1
+                continue
+
+            # Pure schema state precheck
+            pre_err = state.state_tracker.check_pre_execution(t_name, t_args)
+            if pre_err is not None:
+                state.guardrail_retries += 1
+                state.messages.append(
+                    {
+                        "role": "user",
+                        "content": (
+                            f"<tool_response>\n"
+                            f"{json.dumps({'ok': False, 'precheck_error': pre_err}, ensure_ascii=False)}\n"
                             f"</tool_response>"
                         ),
                     }

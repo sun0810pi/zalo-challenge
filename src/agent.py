@@ -375,6 +375,14 @@ class LifeMateAgent:
         for k, v in (history_transcripts or {}).items():
             cleaned_hist_transcripts[k] = self.preprocessor.preprocess(v, sample)
 
+        # Enrich history turns with audio_text if missing
+        if cleaned_hist_transcripts and sample.get("history"):
+            for turn in sample["history"]:
+                if not turn.get("audio_text"):
+                    aud = turn.get("audio", "")
+                    if aud in cleaned_hist_transcripts:
+                        turn["audio_text"] = cleaned_hist_transcripts[aud]
+
         if not cleaned_user_text:
             return env.get_tool_calls(), env.get_state_hash()
 

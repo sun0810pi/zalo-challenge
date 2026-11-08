@@ -17,7 +17,7 @@ from src.router import SemanticToolRouter
 
 def main():
     ap = argparse.ArgumentParser(description="Chạy pipeline ZAC 2026 LifeMate tạo file submission.jsonl")
-    ap.add_argument("--split", default="public_test", choices=["public_test", "train"])
+    ap.add_argument("--split", default="public_test", help="Tên split dữ liệu (public_test, train, private_test...)")
     ap.add_argument("--root", default=".")
     ap.add_argument("--output", default="submission.jsonl")
     ap.add_argument("--model", default="Qwen/Qwen3-4B", help="Tên hoặc đường dẫn model LLM (< 5B)")
@@ -28,9 +28,9 @@ def main():
     ap.add_argument("--gpu-memory-utilization", type=float, default=0.68, help="Tỷ lệ VRAM cấp cho vLLM (mặc định 0.68)")
     ap.add_argument(
         "--preprocessor",
-        default="a",
+        default="safe",
         choices=["a", "b", "safe"],
-        help="Tiền xử lý ngôn ngữ: a (Fuzzy Context Aligner mặc định), b (Neural Restorer < 0.5B), hoặc safe (SafeContextPreprocessor chống nuốt từ)",
+        help="Tiền xử lý ngôn ngữ: safe (SafeContextPreprocessor an toàn chống nuốt từ, mặc định), a (Fuzzy Aligner), b (Neural Restorer)",
     )
     ap.add_argument(
         "--use-asr-fallback",
@@ -154,6 +154,12 @@ def main():
             s_t0 = time.perf_counter()
             env = ToolEnv(args.split, item["id"], root=root)
             final_text, hist_transcripts = transcriber.transcribe_sample(item, split_dir)
+            if item.get("history") and hist_transcripts:
+                for turn in item["history"]:
+                    if not turn.get("audio_text"):
+                        aud = turn.get("audio", "")
+                        if aud in hist_transcripts:
+                            turn["audio_text"] = hist_transcripts[aud]
             tool_calls, st_hash = agent.run_sample(
                 env=env,
                 sample=item,

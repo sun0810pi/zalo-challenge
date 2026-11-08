@@ -1,0 +1,26 @@
+{
+  "dataset_name": "sft_v5_expanded",
+  "description": "SFT V5 Massive Dataset with 11-App Grounding, ASR Noise Robustness, Conversational Paraphrases, and P1 Concise Rationales",
+  "total_train_samples": 2917,
+  "total_val_samples": 198,
+  "breakdown_train": {
+    "official_clean_train": 1399,
+    "new_apps_synthetic": 226,
+    "simulator_grounded_v1_1": 112,
+    "real_asr_noise_variants": 379,
+    "conversational_paraphrases": 600,
+    "self_cancellations": 200
+  },
+  "breakdown_val": {
+    "official_clean_val": 145,
+    "new_apps_val": 26
+  },
+  "features": [
+    "P0_prompt_parity_with_two_tier_router",
+    "P1_concise_decision_rationale_under_35_tokens",
+    "full_coverage_of_11_public_test_apps",
+    "real_public_test_asr_error_resilience",
+    "self_cancellation_and_negative_condition_handling",
+    "token_weighted_loss_ready"
+  ]
+}

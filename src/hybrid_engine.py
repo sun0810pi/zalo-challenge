@@ -37,7 +37,7 @@ _KEEP_STOCK_RE = re.compile(
     re.IGNORECASE,
 )
 _HALF_STOCK_RE = re.compile(
-    r"(?:bán\s+(?:một\s+nửa|1/2|nửa)|bán\s+hết\s+một\s+nửa)",
+    r"(?:bán\s+(?:một\s+nửa|1/2|nửa|50\s*%|50\s*phần\s*trăm)|bán\s+hết\s+(?:một\s+nửa|1/2|nửa|50\s*%|50\s*phần\s*trăm)|(?:bán|chốt|thanh\s+lý)\s+(?:50\s*%|50\s*phần\s*trăm)|\b(?:một\s+nửa|1/2|50\s*%|50\s*phần\s*trăm)\b)",
     re.IGNORECASE,
 )
 

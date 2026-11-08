@@ -30,8 +30,13 @@ def _arg_match(k: str, pred_v: Any, gt_v: Any, free_text_keys: set[str], _canon_
             return True
         if not t_gt or not t_pred:
             return False
-        overlap = len(t_pred & t_gt) / len(t_pred | t_gt)
-        return overlap >= 0.5 or t_gt.issubset(t_pred)
+        overlap = len(t_pred & t_gt)
+        p = overlap / len(t_pred)
+        r = overlap / len(t_gt)
+        if p + r == 0:
+            return False
+        token_f1 = (2 * p * r) / (p + r)
+        return token_f1 > 0.6 or t_gt.issubset(t_pred)
     if isinstance(pred_v, list) and isinstance(gt_v, list) and k == "params":
         return sorted(str(x) for x in pred_v) == sorted(str(x) for x in gt_v)
     return _canon_scalar(pred_v) == _canon_scalar(gt_v)
@@ -136,6 +141,7 @@ def evaluate_predictions(
     state_matches = 0
     name_f1_sum = 0.0
     full_f1_sum = 0.0
+    official_score_sum = 0.0
     printed_err = 0
 
     # Diagnostic tracking
@@ -186,6 +192,19 @@ def evaluate_predictions(
             name_f1_sum += nf1
             full_f1_sum += ff1
 
+            # Official ZAIC 2026 Hard-Gate Scoring Rule:
+            # 1. State hash must match; if not -> 0.0 immediately
+            # 2. If gt_calls == []: 1.0 if pred_calls == [] and st_ok else 0.0
+            # 3. If gt_calls != []: ff1 if st_ok else 0.0 (0.0 if full_tp == 0)
+            if not st_ok:
+                sample_score = 0.0
+            else:
+                if not gt_calls:
+                    sample_score = 1.0 if not pred_calls else 0.0
+                else:
+                    sample_score = ff1
+            official_score_sum += sample_score
+
             # Triage tracking
             gt_cls = _classify_calls(gt_calls)
             pred_cls = _classify_calls(pred_calls)
@@ -201,7 +220,7 @@ def evaluate_predictions(
 
             if (not st_ok or ff1 < 1.0) and printed_err < verbose_errors:
                 printed_err += 1
-                print(f"\n[Mismatch #{printed_err}] ID={qid} | state_ok={st_ok} | call_F1={ff1:.2f}")
+                print(f"\n[Mismatch #{printed_err}] ID={qid} | state_ok={st_ok} | call_F1={ff1:.2f} | score={sample_score:.2f}")
                 print(f"  Audio text : {gt_row.get('audio_text', '')}")
                 print(f"  GT calls   : {json.dumps(gt_calls, ensure_ascii=False)}")
                 print(f"  Pred calls : {json.dumps(pred_calls, ensure_ascii=False)}")
@@ -217,6 +236,7 @@ def evaluate_predictions(
         "state_acc": state_matches / n if has_labels else 0.0,
         "tool_name_f1": name_f1_sum / n,
         "tool_call_f1": full_f1_sum / n,
+        "official_score": official_score_sum / n if has_labels else 0.0,
         "combined_score": 0.5 * (state_matches / n) + 0.5 * (full_f1_sum / n) if has_labels else 0.0,
     }
     print("\n" + "=" * 65)
@@ -229,7 +249,8 @@ def evaluate_predictions(
         print(f"- State Hash Accuracy         : {metrics['state_acc'] * 100:.2f}% ({state_matches}/{n})")
         print(f"- Tool Name F1                : {metrics['tool_name_f1'] * 100:.2f}%")
         print(f"- Full Tool Call F1           : {metrics['tool_call_f1'] * 100:.2f}%")
-        print(f"- Điểm tổng hợp (50/50)       : {metrics['combined_score'] * 100:.2f}%")
+        print(f"- ZAIC Official Score (Gate)  : {metrics['official_score'] * 100:.2f}% (Chuẩn công thức BTC)")
+        print(f"- Điểm cũ (Linear 50/50)      : {metrics['combined_score'] * 100:.2f}%")
     print("=" * 65)
 
     if breakdown:

@@ -28,10 +28,11 @@ def _patch_colab_torchao():
 class AssistantOnlyDataCollator:
     """Mask all system/user/tool_response tokens with -100 so loss is computed strictly on assistant `<think>` + `<tool_call>` turns."""
 
-    def __init__(self, tokenizer: Any, max_seq_len: int = 8192, strict_no_truncation: bool = False):
+    def __init__(self, tokenizer: Any, max_seq_len: int = 8192, strict_no_truncation: bool = False, weighted_loss: bool = False):
         self.tokenizer = tokenizer
         self.max_seq_len = max_seq_len
         self.strict_no_truncation = strict_no_truncation
+        self.weighted_loss = weighted_loss
         self.assistant_start_ids = tokenizer.encode("<|im_start|>assistant\n", add_special_tokens=False)
         self.im_end_ids = tokenizer.encode("<|im_end|>", add_special_tokens=False)
 
@@ -101,6 +102,7 @@ class AssistantOnlyDataCollator:
 
         batch_input_ids: list[list[int]] = []
         batch_labels: list[list[int]] = []
+        batch_weights: list[list[float]] = []
 
         for feat in features:
             if "input_ids" in feat and "labels" in feat:
@@ -108,6 +110,8 @@ class AssistantOnlyDataCollator:
                 labels = list(feat["labels"])[: self.max_seq_len]
                 batch_input_ids.append(ids)
                 batch_labels.append(labels)
+                if self.weighted_loss:
+                    batch_weights.append(self.compute_weights_for_ids(ids, labels))
                 continue
 
             if "input_ids" in feat:
@@ -138,6 +142,8 @@ class AssistantOnlyDataCollator:
             labels = self.compute_labels_for_ids(ids)
             batch_input_ids.append(ids)
             batch_labels.append(labels)
+            if self.weighted_loss:
+                batch_weights.append(self.compute_weights_for_ids(ids, labels))
 
         max_len = max(len(x) for x in batch_input_ids)
         pad_id = self.tokenizer.pad_token_id if self.tokenizer.pad_token_id is not None else self.tokenizer.eos_token_id
@@ -145,17 +151,23 @@ class AssistantOnlyDataCollator:
         padded_ids = []
         padded_mask = []
         padded_labels = []
-        for ids, lbs in zip(batch_input_ids, batch_labels):
+        padded_weights = []
+        for i, (ids, lbs) in enumerate(zip(batch_input_ids, batch_labels)):
             pad_len = max_len - len(ids)
             padded_ids.append(ids + [pad_id] * pad_len)
             padded_mask.append([1] * len(ids) + [0] * pad_len)
             padded_labels.append(lbs + [-100] * pad_len)
+            if self.weighted_loss:
+                padded_weights.append(batch_weights[i] + [0.0] * pad_len)
 
-        return {
+        res = {
             "input_ids": torch.tensor(padded_ids, dtype=torch.long),
             "attention_mask": torch.tensor(padded_mask, dtype=torch.long),
             "labels": torch.tensor(padded_labels, dtype=torch.long),
         }
+        if self.weighted_loss:
+            res["weights"] = torch.tensor(padded_weights, dtype=torch.float)
+        return res
 
 
 def main():
@@ -336,6 +348,7 @@ def main():
         tokenizer=tokenizer,
         max_seq_len=args.max_seq_len,
         strict_no_truncation=args.verify_no_truncation,
+        weighted_loss=args.weighted_loss,
     )
 
     def format_row(example):

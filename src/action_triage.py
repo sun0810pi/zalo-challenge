@@ -10,7 +10,7 @@ from typing import Any
 # Intent keywords mapping to canonical app IDs
 APP_INTENT_SIGNATURES: dict[str, list[str]] = {
     "food_delivery": ["đặt đồ ăn", "giao đồ ăn", "đặt món", "trà sữa", "cơm trưa", "giao tận nơi", "ship đồ ăn"],
-    "train_bus": ["vé xe", "vé tàu", "xe khách", "tàu hỏa", "chuyến tàu", "xe liên tỉnh"],
+    "train_bus_tickets": ["vé xe", "vé tàu", "xe khách", "tàu hỏa", "chuyến tàu", "xe liên tỉnh"],
     "event_tickets": ["vé xem phim", "vé ca nhạc", "vé hòa nhạc", "vé sự kiện", "rạp chiếu phim"],
     "package_tracking": ["đơn hàng đang giao", "kiểm tra đơn hàng", "bưu kiện", "mã vận đơn", "tra cứu bưu kiện"],
     "hotel": ["đặt phòng khách sạn", "khách sạn", "homestay", "resort", "phòng nghỉ"],

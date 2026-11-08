@@ -390,9 +390,10 @@ def main():
 
                 # Mask tool calls in assistant turns
                 for m in msgs:
-                    if m.get("role") == "assistant" and "<tool_call>" in m.get("content", ""):
+                    if m.get("role") == "assistant":
                         for orig_t, masked_t in t_map.items():
                             m["content"] = m["content"].replace(f'"{orig_t}"', f'"{masked_t}"')
+                            m["content"] = m["content"].replace(f"'{orig_t}'", f"'{masked_t}'")
                             for orig_p, masked_p in p_map.get(orig_t, {}).items():
                                 m["content"] = m["content"].replace(f'"{orig_p}":', f'"{masked_p}":')
 
@@ -400,6 +401,7 @@ def main():
                 sys_msg = msgs[0]["content"]
                 for orig_t, masked_t in t_map.items():
                     sys_msg = sys_msg.replace(f'"{orig_t}"', f'"{masked_t}"')
+                    sys_msg = sys_msg.replace(f"'{orig_t}'", f"'{masked_t}'")
                     for orig_p, masked_p in p_map.get(orig_t, {}).items():
                         sys_msg = sys_msg.replace(f'"{orig_p}":', f'"{masked_p}":')
                 msgs[0]["content"] = sys_msg

@@ -134,8 +134,14 @@ def compute_verifiable_reward(
     # 2. Full Tool Call F1
     _, full_f1 = compute_call_f1(executed_calls, gt_calls, free_text_keys, _canon_scalar, _tokens)
 
-    # 3. Overall Verifiable Reward
-    reward = 0.5 * hash_match + 0.5 * full_f1
+    # 3. Overall Verifiable Reward (Strict ZAIC 2026 Hard-Gate)
+    if hash_match < 1.0:
+        reward = 0.0
+    else:
+        if not gt_calls:
+            reward = 1.0 if not executed_calls else 0.0
+        else:
+            reward = full_f1
 
     # Penalty for schema or execution errors
     if has_exec_error and reward > 0.1:
