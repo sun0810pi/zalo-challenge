@@ -56,6 +56,59 @@ class EntityNormalizer:
 
         return variants
 
+    def resolve_fuzzy_arguments(
+        self,
+        tool_name: str,
+        tool_args: dict[str, Any],
+        observed_entities: dict[str, Any],
+        sample: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Resolve colloquial or fuzzy entity references (e.g. contact names, relationship aliases,
+        or device names) to concrete database IDs observed in the session.
+        """
+        if not self.enabled or not isinstance(tool_args, dict) or not observed_entities:
+            return tool_args
+
+        resolved = copy.deepcopy(tool_args)
+
+        # 1. Resolve contact_id if passed as a relationship alias or name instead of ID
+        if "contact_id" in resolved and isinstance(resolved["contact_id"], str):
+            cid = resolved["contact_id"].strip()
+            if cid and cid not in observed_entities:
+                cid_lower = cid.lower()
+                cid_variants = self.expand_query_variants(cid)
+                for ent_id, ent in observed_entities.items():
+                    if isinstance(ent, dict):
+                        e_name = str(ent.get("name", "")).strip().lower()
+                        e_rel = str(ent.get("relation", "")).strip().lower()
+                        if (
+                            e_name == cid_lower
+                            or e_rel == cid_lower
+                            or any(v.lower() == e_name or v.lower() == e_rel for v in cid_variants)
+                            or (e_name and e_name in cid_lower)
+                            or (cid_lower and cid_lower in e_name)
+                        ):
+                            resolved["contact_id"] = str(ent.get("id") or ent_id)
+                            break
+
+        # 2. Resolve device_id if passed as a device name/room instead of ID
+        if "device_id" in resolved and isinstance(resolved["device_id"], str):
+            did = resolved["device_id"].strip()
+            if did and did not in observed_entities:
+                did_lower = did.lower()
+                for ent_id, ent in observed_entities.items():
+                    if isinstance(ent, dict) and "type" in ent:
+                        e_name = str(ent.get("name", "")).strip().lower()
+                        if (
+                            e_name == did_lower
+                            or (e_name and e_name in did_lower)
+                            or (did_lower and did_lower in e_name)
+                        ):
+                            resolved["device_id"] = str(ent.get("id") or ent_id)
+                            break
+
+        return resolved
+
     def recover_empty_read(
         self,
         tool_name: str,

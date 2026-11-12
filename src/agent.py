@@ -486,6 +486,12 @@ class LifeMateAgent:
                 if t_name == "parking.reserve" and any("ride_hailing.book" in s and "bike" in s for s in seen_calls):
                     continue
 
+            # Solution 2: Entity normalization
+            if self.enable_fuzzy_normalizer:
+                t_args = self.entity_normalizer.resolve_fuzzy_arguments(
+                    t_name, t_args, state_tracker.observed_entities, sample
+                )
+
             messages.append({"role": "assistant", "content": reply})
 
             call_sig = f"{t_name}:{json.dumps(t_args, sort_keys=True, ensure_ascii=False)}"
