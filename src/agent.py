@@ -94,6 +94,36 @@ def fix_all_seeds(seed: int = 42) -> None:
         pass
 
 
+_VLLM_LORA_RANK_BUCKETS = (64, 128, 256, 512)
+
+
+def _resolve_max_lora_rank(lora_path: str | None, override: int | None = None) -> int:
+    """Resolve vLLM max_lora_rank from explicit override or adapter_config.json."""
+    if override is not None:
+        rank = int(override)
+        return max(64, rank)
+
+    detected_rank = 64
+    if lora_path:
+        cfg_path = Path(lora_path) / "adapter_config.json"
+        if cfg_path.is_file():
+            try:
+                import json
+
+                cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
+                raw_r = cfg.get("r")
+                if isinstance(raw_r, int) and raw_r > 0:
+                    detected_rank = raw_r
+            except Exception:
+                detected_rank = 64
+
+    target = max(64, detected_rank)
+    for bucket in _VLLM_LORA_RANK_BUCKETS:
+        if target <= bucket:
+            return bucket
+    return target
+
+
 class LLMBackend:
     """Unified deterministic inference wrapper for vLLM or HuggingFace Transformers (+ optional LoRA)."""
 
@@ -106,6 +136,7 @@ class LLMBackend:
         max_new_tokens: int = 512,
         gpu_memory_utilization: float = 0.68,
         load_in_4bit: bool = False,
+        max_lora_rank: int | None = None,
     ):
         self.model_name_or_path = model_name_or_path
         self.lora_path = lora_path
@@ -114,6 +145,7 @@ class LLMBackend:
         self.max_new_tokens = max_new_tokens
         self.gpu_memory_utilization = gpu_memory_utilization
         self.load_in_4bit = load_in_4bit
+        self.max_lora_rank = max_lora_rank
 
         self.tokenizer = None
         self.model = None
@@ -169,8 +201,10 @@ class LLMBackend:
         if self.lora_path and Path(self.lora_path).is_dir():
             from vllm.lora.request import LoRARequest
 
+            resolved_rank = _resolve_max_lora_rank(self.lora_path, override=self.max_lora_rank)
+            print(f"[LLMBackend] Enabling LoRA from {self.lora_path} (max_lora_rank={resolved_rank})")
             vllm_kwargs["enable_lora"] = True
-            vllm_kwargs["max_lora_rank"] = 64
+            vllm_kwargs["max_lora_rank"] = resolved_rank
             self.model = VLLMEngine(**vllm_kwargs)
             self._vllm_lora_request = LoRARequest("zac_lora", 1, self.lora_path)
         else:
