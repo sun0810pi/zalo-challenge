@@ -400,6 +400,7 @@ class ReActSessionState:
         enable_hybrid_engine: bool = True,
         enable_action_triage: bool = True,
         index: int = 0,
+        max_apps: int | None = None,
     ):
         import time
 
@@ -461,6 +462,7 @@ class ReActSessionState:
             history_transcripts=cleaned_hist_transcripts,
             router=router,
             catalog_apps_map=catalog_apps_map,
+            max_apps=max_apps,
         )
 
     def _finish(self) -> None:
@@ -727,6 +729,7 @@ class LifeMateAgent:
         enable_fuzzy_normalizer: bool = True,
         enable_hybrid_engine: bool = True,
         enable_action_triage: bool = True,
+        max_apps: int | None = None,
     ):
         self.llm = llm
         self.catalog_tools_map = catalog_tools_map
@@ -738,6 +741,7 @@ class LifeMateAgent:
         self.enable_fuzzy_normalizer = enable_fuzzy_normalizer
         self.enable_hybrid_engine = enable_hybrid_engine
         self.enable_action_triage = enable_action_triage
+        self.max_apps = max_apps
 
         self.entity_normalizer = EntityNormalizer(enabled=enable_fuzzy_normalizer)
         self.hybrid_engine = HybridProgramAidedEngine(enabled=enable_hybrid_engine)
@@ -776,6 +780,7 @@ class LifeMateAgent:
             enable_fuzzy_normalizer=self.enable_fuzzy_normalizer,
             enable_hybrid_engine=self.enable_hybrid_engine,
             enable_action_triage=self.enable_action_triage,
+            max_apps=self.max_apps,
         )
 
         while not state.finished:

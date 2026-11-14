@@ -114,7 +114,7 @@ def build_allowed_tools_block(
     user_query: str = "",
     router: SemanticToolRouter | None = None,
     catalog_apps_map: dict[str, dict[str, Any]] | None = None,
-    max_apps: int | None = 4,
+    max_apps: int | None = None,
 ) -> str:
     """Build unified installed tools block grouped by application with rich Vietnamese anchors
     and explicit x-ref call dependency hints.
@@ -254,6 +254,7 @@ def build_user_context_block(
     user_query: str = "",
     router: SemanticToolRouter | None = None,
     catalog_apps_map: dict[str, dict[str, Any]] | None = None,
+    max_apps: int | None = None,
 ) -> str:
     """Build the context block with calendar, user profile, and unified app-grounded tool schemas."""
     ctx = sample.get("context", {})
@@ -267,6 +268,7 @@ def build_user_context_block(
         user_query=user_query,
         router=router,
         catalog_apps_map=catalog_apps_map,
+        max_apps=max_apps,
     )
 
     return (
@@ -316,6 +318,7 @@ def build_initial_messages(
     history_transcripts: dict[str, str] | None = None,
     router: SemanticToolRouter | None = None,
     catalog_apps_map: dict[str, dict[str, Any]] | None = None,
+    max_apps: int | None = None,
 ) -> list[dict[str, str]]:
     """Build the initial ChatML message list with unified app-grounded tool schemas."""
     context_block = build_user_context_block(
@@ -324,6 +327,7 @@ def build_initial_messages(
         user_query=final_user_text,
         router=router,
         catalog_apps_map=catalog_apps_map,
+        max_apps=max_apps,
     )
     history_block = format_history_block(sample.get("history") or [], history_transcripts)
     user_prompt = (

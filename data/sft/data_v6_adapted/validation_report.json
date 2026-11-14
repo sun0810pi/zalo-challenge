@@ -1,0 +1,139 @@
+{
+  "dataset": "v6_adapted",
+  "counts": {
+    "p1_concise_train": 1692,
+    "salvaged_v5_asr_train": 38,
+    "new_sim_weak_train": 176,
+    "total_train": 1906,
+    "p1_concise_val": 173,
+    "new_sim_weak_val": 28,
+    "total_val": 201
+  },
+  "v5_salvage_audit": {
+    "dropped_overlap_p1_asr": 176,
+    "dropped_wrong_app_hint": 28,
+    "dropped_synth_base": 128,
+    "salvaged_clean_asr": 38,
+    "dropped_corrupted_phrase": 9
+  },
+  "integrity_checks": {
+    "duplicate_ids": 0,
+    "train_val_id_overlap": 0,
+    "train_val_prompt_overlap": 0,
+    "schema_and_allowed_tool_errors": 0,
+    "simulator_replay_failures": 0,
+    "max_train_chars": 27639,
+    "p99_train_chars": 26287,
+    "max_val_chars": 27961
+  },
+  "weak_apps_coverage_before_vs_after": {
+    "translator": {
+      "train_before": 6,
+      "train_after": 17,
+      "val_before": 1,
+      "val_after": 2
+    },
+    "pantry": {
+      "train_before": 11,
+      "train_after": 29,
+      "val_before": 3,
+      "val_after": 6
+    },
+    "habit_tracker": {
+      "train_before": 11,
+      "train_after": 26,
+      "val_before": 4,
+      "val_after": 7
+    },
+    "public_transit": {
+      "train_before": 12,
+      "train_after": 26,
+      "val_before": 3,
+      "val_after": 5
+    },
+    "fuel_price": {
+      "train_before": 13,
+      "train_after": 30,
+      "val_before": 0,
+      "val_after": 2
+    },
+    "recipes": {
+      "train_before": 14,
+      "train_after": 30,
+      "val_before": 4,
+      "val_after": 8
+    },
+    "event_tickets": {
+      "train_before": 14,
+      "train_after": 26,
+      "val_before": 2,
+      "val_after": 5
+    },
+    "parking": {
+      "train_before": 16,
+      "train_after": 32,
+      "val_before": 4,
+      "val_after": 8
+    },
+    "train_bus_tickets": {
+      "train_before": 18,
+      "train_after": 36,
+      "val_before": 6,
+      "val_after": 9
+    },
+    "tv": {
+      "train_before": 20,
+      "train_after": 39,
+      "val_before": 2,
+      "val_after": 6
+    },
+    "stocks": {
+      "train_before": 22,
+      "train_after": 42,
+      "val_before": 6,
+      "val_after": 10
+    },
+    "ecommerce": {
+      "train_before": 22,
+      "train_after": 45,
+      "val_before": 7,
+      "val_after": 12
+    },
+    "grocery": {
+      "train_before": 22,
+      "train_after": 56,
+      "val_before": 6,
+      "val_after": 13
+    },
+    "phone": {
+      "train_before": 34,
+      "train_after": 37,
+      "val_before": 8,
+      "val_after": 9
+    },
+    "notes": {
+      "train_before": 45,
+      "train_after": 55,
+      "val_before": 6,
+      "val_after": 6
+    },
+    "email": {
+      "train_before": 48,
+      "train_after": 53,
+      "val_before": 7,
+      "val_after": 7
+    },
+    "maps": {
+      "train_before": 43,
+      "train_after": 48,
+      "val_before": 13,
+      "val_after": 15
+    },
+    "ride_hailing": {
+      "train_before": 57,
+      "train_after": 73,
+      "val_before": 9,
+      "val_after": 11
+    }
+  }
+}

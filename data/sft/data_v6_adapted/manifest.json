@@ -1,0 +1,7 @@
+{
+  "name": "v6_adapted",
+  "based_on": "p1_concise (1,692 train / 173 val)",
+  "total_train": 1906,
+  "total_val": 201,
+  "summary": "p1_concise + 38 verified clean non-overlapping v5 ASR + 176 train / 28 val simulator-grounded weak-case trajectories"
+}
