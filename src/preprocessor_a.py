@@ -108,15 +108,11 @@ _PHONETIC_ACOUSTIC_RULES: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"\b(?:đói\s+tá|phương\s+tác)\b", re.IGNORECASE), "đối tác"),
     (re.compile(r"\bsóc\s+(?:quay|que)\b", re.IGNORECASE), "Software"),
     (re.compile(r"\bbiết\s+góp\b", re.IGNORECASE), "viết mail"),
-    (re.compile(r"\bbố\s+dạo\s+máy\b", re.IGNORECASE), "cô giáo Mai"),
 
     # Music & Media English titles
-    (re.compile(r"\bbài\s+ngoài\s+sáng\b", re.IGNORECASE), "bài Morning Light"),
     (re.compile(r"\bcô\s+nói\s+lộn(?:\s+của)?\b", re.IGNORECASE), "của"),
 
     # Stocks & Finance
-    (re.compile(r"\b(?:giá\s+)?xe\s+xe\s+nhà(?:\s+thằng\s+tuấn)?\b", re.IGNORECASE), "giá vàng SJC"),
-    (re.compile(r"\b(?:zcanner|dứt\s+end)\b", re.IGNORECASE), "ZKN"),
     (re.compile(r"\b(?:dổ|đổ)\s+lại\s+(\d+)\b", re.IGNORECASE), r"giữ lại \1"),
 
     # Food & Recipes & Grocery & Orders

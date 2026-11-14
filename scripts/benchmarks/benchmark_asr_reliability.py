@@ -287,10 +287,9 @@ def evaluate_slot_and_downstream_accuracy(
     neg_match = (ref_neg == hyp_neg) and (ref_cancel == hyp_cancel)
     neg_intent_acc = 1.0 if neg_match else 0.0
 
-    # 4. Downstream tool execution accuracy:
-    # Check whether all ground-truth tool arguments (amounts, times, queries, cancellation,
-    # conditional branches, and intact Vietnamese verbs/prepositions) are preserved by the transcript
-    # so the agent + simulator execution produces the exact ground-truth final_state.
+    # 4. Heuristic slot-preservation proxy (NOT live simulator execution):
+    # Checks whether ground-truth slots (entities, numbers/dates/times, negation) and low WER
+    # are preserved so downstream tool calls are likely to succeed.
     norm_w_err, norm_c_err, _, _, _, _ = compute_wer_cer(hyp_text, ref_text)
     downstream_ok = (
         entity_acc >= 0.99
@@ -307,7 +306,7 @@ def evaluate_slot_and_downstream_accuracy(
         "critical_entity_accuracy": round(entity_acc, 4),
         "number_date_time_accuracy": round(ndt_acc, 4),
         "negation_intent_accuracy": round(neg_intent_acc, 4),
-        "downstream_tool_exec_accuracy": 1.0 if downstream_ok else 0.0,
+        "estimated_slot_exec_proxy": 1.0 if downstream_ok else 0.0,
         "false_entity_injections": sorted(extra_false_entities),
         "safe_clarification_triggered": safe_clarification,
     }
@@ -361,7 +360,7 @@ def main() -> None:
             "critical_entity_accuracy": [],
             "number_date_time_accuracy": [],
             "negation_intent_accuracy": [],
-            "downstream_tool_exec_accuracy": [],
+            "estimated_slot_exec_proxy": [],
             "latency_sec": [],
         }
         for s in systems
@@ -452,7 +451,7 @@ def main() -> None:
             agg_metrics[s_name]["critical_entity_accuracy"].append(slot_ev["critical_entity_accuracy"])
             agg_metrics[s_name]["number_date_time_accuracy"].append(slot_ev["number_date_time_accuracy"])
             agg_metrics[s_name]["negation_intent_accuracy"].append(slot_ev["negation_intent_accuracy"])
-            agg_metrics[s_name]["downstream_tool_exec_accuracy"].append(slot_ev["downstream_tool_exec_accuracy"])
+            agg_metrics[s_name]["estimated_slot_exec_proxy"].append(slot_ev["estimated_slot_exec_proxy"])
             agg_metrics[s_name]["latency_sec"].append(s_lat)
 
             sample_eval[s_name] = {
@@ -465,7 +464,7 @@ def main() -> None:
 
             for cat in cats:
                 category_stats.setdefault(cat, {}).setdefault(s_name, []).append(
-                    slot_ev["downstream_tool_exec_accuracy"]
+                    slot_ev["estimated_slot_exec_proxy"]
                 )
 
         record_dict = {
@@ -514,8 +513,8 @@ def main() -> None:
             "critical_entity_accuracy_pct": round(100.0 * statistics.mean(m["critical_entity_accuracy"]), 2),
             "number_date_time_accuracy_pct": round(100.0 * statistics.mean(m["number_date_time_accuracy"]), 2),
             "negation_intent_accuracy_pct": round(100.0 * statistics.mean(m["negation_intent_accuracy"]), 2),
-            "downstream_tool_exec_accuracy_pct": round(
-                100.0 * statistics.mean(m["downstream_tool_exec_accuracy"]), 2
+            "estimated_slot_exec_proxy_pct": round(
+                100.0 * statistics.mean(m["estimated_slot_exec_proxy"]), 2
             ),
             "avg_latency_sec_cpu": round(statistics.mean(m["latency_sec"]), 3),
         }

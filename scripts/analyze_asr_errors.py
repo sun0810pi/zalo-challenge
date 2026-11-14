@@ -1,9 +1,12 @@
 import sys
 import json
 import re
+from pathlib import Path
 
 sys.stdout.reconfigure(encoding='utf-8')
-data = json.load(open(r'E:\zalo-challenge\cache\asr_public_test.json', encoding='utf-8'))
+cache_path = Path(__file__).resolve().parents[1] / "cache" / "asr_public_test.json"
+with cache_path.open("r", encoding="utf-8") as f:
+    data = json.load(f)
 print(f'Total transcripts: {len(data)}')
 
 patterns = {

@@ -23,6 +23,11 @@ def main():
     ap.add_argument("--model", default="Qwen/Qwen3-4B", help="Tên hoặc đường dẫn model LLM (< 5B)")
     ap.add_argument("--lora-path", default=None, help="Đường dẫn tới LoRA adapter (nếu đã fine-tune)")
     ap.add_argument("--backend", default="auto", choices=["auto", "vllm", "transformers"])
+    ap.add_argument(
+        "--load-in-4bit",
+        action="store_true",
+        help="Nạp LLM ở chế độ 4-bit (BitsAndBytes NF4) để chạy trên GPU VRAM thấp (< 4GB)",
+    )
     ap.add_argument("--asr-model", default="deepdml/faster-whisper-large-v3-turbo-ct2")
     ap.add_argument("--asr-lora-path", default=None, help="Đường dẫn tới Whisper LoRA adapter")
     ap.add_argument("--gpu-memory-utilization", type=float, default=0.68, help="Tỷ lệ VRAM cấp cho vLLM (mặc định 0.68)")
@@ -120,6 +125,7 @@ def main():
         lora_path=args.lora_path,
         backend=args.backend,
         gpu_memory_utilization=args.gpu_memory_utilization,
+        load_in_4bit=args.load_in_4bit,
     )
 
     if args.preprocessor == "b":
@@ -152,8 +158,23 @@ def main():
     )
 
     t0 = time.perf_counter()
-    with open(args.output, "w", encoding="utf-8") as fout:
+    completed_ids = set()
+    out_path = Path(args.output)
+    if out_path.exists():
+        for line in out_path.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                try:
+                    completed_ids.add(json.loads(line)["id"])
+                except Exception:
+                    pass
+        if completed_ids:
+            print(f"[Resume] Đã phát hiện {len(completed_ids)} mẫu đã hoàn thành trong {args.output}. Bỏ qua và chạy tiếp...")
+
+    with open(args.output, "a", encoding="utf-8") as fout:
         for idx, item in enumerate(samples, 1):
+            if item["id"] in completed_ids:
+                continue
+
             s_t0 = time.perf_counter()
             env = ToolEnv(args.split, item["id"], root=root)
             final_text, hist_transcripts = transcriber.transcribe_sample(item, split_dir)
@@ -177,12 +198,21 @@ def main():
             fout.write(json.dumps(row_out, ensure_ascii=False) + "\n")
             fout.flush()
             elapsed = time.perf_counter() - s_t0
-            if idx % 10 == 0 or idx == len(samples) or idx <= 3:
-                cl_text = agent.preprocessor.preprocess(final_text, item)
-                txt_info = f"ASR: {final_text[:45]!r}" if cl_text == final_text else f"ASR: {final_text[:30]!r} -> Prep: {cl_text[:35]!r}"
-                print(
-                    f"[{idx}/{len(samples)}] {item['id']} ({elapsed:.2f}s) | {txt_info} -> {len(tool_calls)} calls"
-                )
+
+            cl_text = agent.preprocessor.preprocess(final_text, item)
+            txt_info = f"{cl_text[:40]!r}"
+            print(
+                f"[{idx}/{len(samples)}] {item['id']} ({elapsed:.2f}s) | Req: {txt_info} -> {len(tool_calls)} calls | Hash: {st_hash[:16]}...",
+                flush=True,
+            )
+
+            # Cleanup VRAM every 5 samples to prevent memory creeping
+            if idx % 5 == 0:
+                import gc
+                import torch
+                gc.collect()
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
 
     transcriber.save_cache()
     total_time = time.perf_counter() - t0

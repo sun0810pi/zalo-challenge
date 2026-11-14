@@ -368,6 +368,7 @@ def main():
     # Repeat pool to ensure broad phonetic coverage across apps
     augmented_pool = train_pool + [copy.deepcopy(s) for i, s in enumerate(new_app_samples) if i % 10 != 0]
     rng.shuffle(augmented_pool)
+    unseen_public_apps = set(pub_apps_map) - set(train_apps_map)
 
     for s in augmented_pool:
         if noise_count >= 650:
@@ -389,9 +390,10 @@ def main():
         if matched_note and noisy_text != orig_text:
             s_noisy = copy.deepcopy(s)
             s_noisy["audio_text"] = noisy_text
-            # Pick proper tools map based on sample origin
-            cat_map = pub_tools_map if any(k in s.get("context", {}).get("installed_apps", {}) for k in ("stocks", "parking", "recipes")) else train_tools_map
-            app_map = pub_apps_map if cat_map == pub_tools_map else train_apps_map
+            # Pick proper tools map dynamically across all unseen public_test apps
+            is_unseen_app = any(k in s.get("context", {}).get("installed_apps", {}) for k in unseen_public_apps)
+            cat_map = pub_tools_map if is_unseen_app else train_tools_map
+            app_map = pub_apps_map if is_unseen_app else train_apps_map
             msgs = build_concise_trajectory(s_noisy, cat_map, app_map, router, asr_note=matched_note)
             train_rows.append({"id": f"{s['id']}_asr_v5_{noise_count}", "messages": msgs})
             noise_count += 1
@@ -420,8 +422,9 @@ def main():
         s_para = copy.deepcopy(s)
         s_para["audio_text"] = para_text
 
-        cat_map = pub_tools_map if any(k in s.get("context", {}).get("installed_apps", {}) for k in ("stocks", "parking", "recipes")) else train_tools_map
-        app_map = pub_apps_map if cat_map == pub_tools_map else train_apps_map
+        is_unseen_app = any(k in s.get("context", {}).get("installed_apps", {}) for k in unseen_public_apps)
+        cat_map = pub_tools_map if is_unseen_app else train_tools_map
+        app_map = pub_apps_map if is_unseen_app else train_apps_map
 
         msgs = build_concise_trajectory(s_para, cat_map, app_map, router)
         train_rows.append({"id": f"{s['id']}_para_{para_count}", "messages": msgs})

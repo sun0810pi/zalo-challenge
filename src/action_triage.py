@@ -4,19 +4,30 @@ prevents out-of-scope hallucinations, and blocks premature sys.ask_missing_info 
 """
 from __future__ import annotations
 
-import re
 from typing import Any
 
-# Intent keywords mapping to canonical app IDs
-APP_INTENT_SIGNATURES: dict[str, list[str]] = {
-    "food_delivery": ["đặt đồ ăn", "giao đồ ăn", "đặt món", "trà sữa", "cơm trưa", "giao tận nơi", "ship đồ ăn"],
-    "train_bus_tickets": ["vé xe", "vé tàu", "xe khách", "tàu hỏa", "chuyến tàu", "xe liên tỉnh"],
-    "event_tickets": ["vé xem phim", "vé ca nhạc", "vé hòa nhạc", "vé sự kiện", "rạp chiếu phim"],
-    "package_tracking": ["đơn hàng đang giao", "kiểm tra đơn hàng", "bưu kiện", "mã vận đơn", "tra cứu bưu kiện"],
-    "hotel": ["đặt phòng khách sạn", "khách sạn", "homestay", "resort", "phòng nghỉ"],
-    "parking": ["đặt chỗ đỗ xe", "tìm bãi đỗ", "bãi gửi xe", "bãi đỗ xe", "phiên đỗ xe"],
-    "stocks": ["đặt lệnh mua cổ phiếu", "bán cổ phiếu", "chứng khoán", "mã cổ phiếu", "khớp lệnh"],
-}
+
+def _resolve_xref_read_tools(
+    xref_collection: str,
+    target_tool: str,
+    catalog_tools_map: dict[str, dict[str, Any]],
+) -> list[str]:
+    """Find the exact prerequisite read tool(s) returning `xref_collection` (e.g. `ecommerce.orders` -> `ecommerce.order_status`)."""
+    app_prefix = xref_collection.split(".", 1)[0] if "." in xref_collection else target_tool.split(".", 1)[0]
+    coll_suffix = xref_collection.split(".", 1)[1] if "." in xref_collection else ""
+
+    exact_matches: list[str] = []
+    app_reads: list[str] = []
+    for tname, tspec in catalog_tools_map.items():
+        if not tname.startswith(f"{app_prefix}.") or tspec.get("kind") != "read":
+            continue
+        app_reads.append(tname)
+        ret_str = str(tspec.get("returns") or "").replace("[]", "").strip()
+        ret_suffix = ret_str.split(".", 1)[-1] if ret_str else ""
+        if ret_str == xref_collection or (coll_suffix and ret_suffix == coll_suffix):
+            exact_matches.append(tname)
+
+    return exact_matches or app_reads
 
 
 class ActionTriageBarrier:
@@ -26,10 +37,7 @@ class ActionTriageBarrier:
         self.enabled = enabled
 
     def check_out_of_scope(self, sample: dict[str, Any], user_text: str) -> tuple[bool, str]:
-        """Check if user request explicitly targets an application NOT in installed_apps.
-        Safe-guard: Do not trigger keyword aborts that cause false-rejects (e.g. 'khách sạn' in taxi drop-off,
-        or 'vé xe' in 'vé xem phim'). Let the LLM handle schema constraints natively.
-        """
+        """Reserved triage hook. Disabled for keyword heuristics to avoid false rejects on cross-app nouns."""
         return False, ""
 
     def guard_ask_missing_info(
@@ -52,28 +60,30 @@ class ActionTriageBarrier:
         if not target_tool:
             return False, "Thiếu tham số 'tool_name' trong sys.ask_missing_info."
 
-        # Check Prerequisite 1: If target_tool has prerequisite read tools that haven't been called yet
-        # e.g., flights.book requires flight_id (retrieved via flights.search or flights.my_bookings)
         spec = catalog_tools_map.get(target_tool) or {}
         props = (spec.get("parameters") or {}).get("properties") or {}
+        seen_tool_names = {c.split(":", 1)[0] for c in seen_calls}
 
-        # Look for x-ref in required properties
+        # Include history read tools as already observed
+        for turn in sample.get("history") or []:
+            for tc in turn.get("tool_calls") or []:
+                if tc.get("name"):
+                    seen_tool_names.add(tc["name"])
+
+        # Prerequisite 1: Exact x-ref read tool must have been called before asking user for a system ID
         for p in params:
             p_info = props.get(p) or {}
-            xref = p_info.get("x-ref") or ""
+            raw_xref = p_info.get("x-ref") or ""
+            xref = raw_xref.split(" ", 1)[0].strip()
             if xref:
-                app_prefix = target_tool.split(".")[0]
-                has_read_called = any(
-                    (f"{app_prefix}." in c and ("search" in c or "list" in c or "my_" in c or "get_" in c))
-                    for c in seen_calls
-                )
-                if not has_read_called:
+                required_reads = _resolve_xref_read_tools(xref, target_tool, catalog_tools_map)
+                if required_reads and not any(rt in seen_tool_names for rt in required_reads):
                     return False, (
-                        f"Tham số '{p}' của công cụ '{target_tool}' cần được tra cứu trước qua công cụ read "
-                        f"thay vì hỏi người dùng. Hãy gọi công cụ tìm kiếm/tra cứu tương ứng trước."
+                        f"Tham số '{p}' của công cụ '{target_tool}' cần được tra cứu trước qua "
+                        f"{'/'.join(required_reads)} (x-ref: '{xref}') thay vì hỏi người dùng."
                     )
 
-        # Check Prerequisite 2: Is the parameter already available in user context?
+        # Prerequisite 2: Parameter already present in user context profile or timestamp
         ctx = sample.get("context") or {}
         prof = ctx.get("user_profile") or {}
         for p in params:
@@ -81,35 +91,5 @@ class ActionTriageBarrier:
                 return False, f"Tham số '{p}' đã có sẵn trong hồ sơ người dùng ({prof[p]})."
             if p in ("current_time", "date") and ctx.get("current_time"):
                 return False, f"Tham số thời gian đã có trong bối cảnh ({ctx['current_time']})."
-
-        # Check Prerequisite 3: Are candidates for the requested params ALREADY in observed_entities?
-        # e.g., flights.search returned flight_ids, recipes.search returned recipe_ids,
-        # event_tickets.search returned event_ids, grocery.search returned product_ids.
-        if observed_entities:
-            for p in params:
-                matching_cands = []
-                for eid, edata in observed_entities.items():
-                    if p == "flight_id" and (eid.startswith("fl_") or "flight" in eid):
-                        matching_cands.append(eid)
-                    elif p == "event_id" and (eid.startswith("evt_") or eid.startswith("ev_") or "event" in eid):
-                        matching_cands.append(eid)
-                    elif p in ("product_id", "item_id") and (eid.startswith("prod_") or eid.startswith("item_") or eid.startswith("it_")):
-                        matching_cands.append(eid)
-                    elif p == "recipe_id" and (eid.startswith("rec_") or "recipe" in eid):
-                        matching_cands.append(eid)
-                    elif p in ("order_id", "booking_id") and (eid.startswith("ord_") or eid.startswith("bk_") or eid.startswith("bkg_")):
-                        matching_cands.append(eid)
-                    elif p == "lot_id" and (eid.startswith("lot_") or eid.startswith("p_")):
-                        matching_cands.append(eid)
-                    elif p == "contact_id" and eid.startswith("c_"):
-                        matching_cands.append(eid)
-                    elif p == "chat_id" and eid.startswith("chat_"):
-                        matching_cands.append(eid)
-
-                if matching_cands:
-                    return False, (
-                        f"Đã có danh sách kết quả {matching_cands[:5]} trong lịch sử quan sát. "
-                        f"Không được gọi sys.ask_missing_info mà hãy chọn đối tượng phù hợp nhất từ danh sách trên để thực thi '{target_tool}'."
-                    )
 
         return True, "Hợp lệ"

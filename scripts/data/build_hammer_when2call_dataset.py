@@ -108,7 +108,14 @@ def mask_catalog_tool_spec(
     new_params = {}
     for p_name, p_info in old_params.items():
         masked_p = param_map.get(p_name, p_name)
-        new_params[masked_p] = copy.deepcopy(p_info)
+        p_copy = copy.deepcopy(p_info)
+        if isinstance(p_copy, dict) and isinstance(p_copy.get("x-ref"), str):
+            xref_str = p_copy["x-ref"]
+            for orig_prov, masked_prov in tool_name_map.items():
+                if orig_prov in xref_str:
+                    xref_str = xref_str.replace(orig_prov, masked_prov)
+            p_copy["x-ref"] = xref_str
+        new_params[masked_p] = p_copy
     new_spec["params"] = new_params
 
     # Mask required list
@@ -370,41 +377,70 @@ def main():
         # Apply hammer mask only to positive non-synthetic samples with probability
         row_seed = int(hashlib.md5(f"{s_id}_mask_prob".encode()).hexdigest()[:8], 16)
         if (row_seed % 100) < (MASK_PROBABILITY * 100) and not s_id.startswith("sim_"):
-            # Clone and mask
+            # Clone and mask ALL tools declared in the system prompt + used in assistant turns
             msgs = copy.deepcopy(row["messages"])
-            # Extract tool names from assistant messages
-            used_tools = set()
+            prompt_tools: set[str] = set()
+            sys_lines = msgs[0].get("content", "").splitlines()
+            for line in sys_lines:
+                stripped_line = line.strip()
+                if stripped_line.startswith("{") and stripped_line.endswith("}"):
+                    try:
+                        spec_obj = json.loads(stripped_line)
+                        t_name = spec_obj.get("name")
+                        if t_name and t_name != "sys.ask_missing_info":
+                            prompt_tools.add(t_name)
+                    except json.JSONDecodeError:
+                        pass
+
+            used_tools: set[str] = set()
             for m in msgs:
                 if m.get("role") == "assistant":
-                    for tc in re.findall(r'"name":\s*"([^"]+)"', m.get("content", "")):
-                        used_tools.add(tc)
+                    for tc in re.findall(r'"name"\s*:\s*"([^"]+)"', m.get("content", "")):
+                        if tc != "sys.ask_missing_info":
+                            used_tools.add(tc)
 
-            if used_tools and all(t in merged_cat_tools for t in used_tools if t != "sys.ask_missing_info"):
-                # Create fake installed apps representation for mapping
-                fake_apps = {}
-                for t in used_tools:
+            all_sample_tools = prompt_tools | used_tools
+            if all_sample_tools and all(t in merged_cat_tools for t in all_sample_tools):
+                fake_apps: dict[str, dict[str, Any]] = {}
+                for t in sorted(all_sample_tools):
                     app = t.split(".", 1)[0]
                     fake_apps.setdefault(app, {"tools": []})["tools"].append(t)
 
                 t_map, p_map = generate_mask_mappings(s_id, fake_apps, merged_cat_tools)
 
-                # Mask tool calls in assistant turns
+                # Structurally mask every tool JSON spec line in the system prompt
+                new_sys_lines: list[str] = []
+                for line in sys_lines:
+                    stripped_line = line.strip()
+                    if stripped_line.startswith("{") and stripped_line.endswith("}"):
+                        try:
+                            spec_obj = json.loads(stripped_line)
+                            if spec_obj.get("name") in t_map:
+                                masked_spec = mask_catalog_tool_spec(spec_obj, t_map, p_map)
+                                new_sys_lines.append(
+                                    json.dumps(masked_spec, ensure_ascii=False, separators=(",", ":"))
+                                )
+                                continue
+                        except json.JSONDecodeError:
+                            pass
+                    new_sys_lines.append(line)
+                msgs[0]["content"] = "\n".join(new_sys_lines)
+
+                # Mask tool calls & references in assistant turns
                 for m in msgs:
                     if m.get("role") == "assistant":
+                        content = m["content"]
                         for orig_t, masked_t in t_map.items():
-                            m["content"] = m["content"].replace(f'"{orig_t}"', f'"{masked_t}"')
-                            m["content"] = m["content"].replace(f"'{orig_t}'", f"'{masked_t}'")
+                            content = content.replace(f'"{orig_t}"', f'"{masked_t}"')
+                            content = content.replace(f"'{orig_t}'", f"'{masked_t}'")
+                            content = content.replace(f"`{orig_t}`", f"`{masked_t}`")
                             for orig_p, masked_p in p_map.get(orig_t, {}).items():
-                                m["content"] = m["content"].replace(f'"{orig_p}":', f'"{masked_p}":')
-
-                # Mask system prompt
-                sys_msg = msgs[0]["content"]
-                for orig_t, masked_t in t_map.items():
-                    sys_msg = sys_msg.replace(f'"{orig_t}"', f'"{masked_t}"')
-                    sys_msg = sys_msg.replace(f"'{orig_t}'", f"'{masked_t}'")
-                    for orig_p, masked_p in p_map.get(orig_t, {}).items():
-                        sys_msg = sys_msg.replace(f'"{orig_p}":', f'"{masked_p}":')
-                msgs[0]["content"] = sys_msg
+                                content = re.sub(
+                                    rf'"{re.escape(orig_p)}"\s*:',
+                                    f'"{masked_p}":',
+                                    content,
+                                )
+                        m["content"] = content
 
                 row_masked = copy.deepcopy(row)
                 row_masked["messages"] = msgs

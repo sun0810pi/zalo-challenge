@@ -27,7 +27,6 @@ _FULL_CANCEL_PATTERNS = [
         r"khỏi\s+tạo|khỏi\s+đặt|đừng\s+tạo|đừng\s+đặt|thôi\s+đừng)\s*[.?!]*$",
         re.IGNORECASE,
     ),
-    re.compile(r"cô\s+có\s+tập\s+(?:tầng\s+)?gym\s+mô\s*[.?!]*$", re.IGNORECASE),
     re.compile(r"thôi\s+đừng\s+làm\s*[.?!]*$", re.IGNORECASE),
     re.compile(r"thôi\s+đừng\s+gọi\s+nữa\s*[.?!]*$", re.IGNORECASE),
 ]
@@ -113,9 +112,8 @@ class HybridProgramAidedEngine:
                 "không mưa giữ nguyên",
                 "không mưa cứ để nguyên",
                 "không mưa thì không cần",
-                "khổ ra em thì cứ đẻ vậy",
-                "khổ ráo thì cứ để",
                 "khô ráo thì cứ để vậy",
+                "khô ráo thì cứ để",
             )
         )
 
@@ -147,7 +145,9 @@ class HybridProgramAidedEngine:
         bill_id = str(tool_args.get("bill_id") or "")
         bill_obj = observed_entities.get(bill_id)
         bill_amt = bill_obj.get("amount") if isinstance(bill_obj, dict) else None
-        wallet_bal = balances.get("ewallet.balance", 0)
+        if "ewallet.balance" not in balances:
+            return tool_args, False
+        wallet_bal = balances["ewallet.balance"]
 
         # If we know the exact bill amount and wallet balance
         if isinstance(bill_amt, (int, float)):
@@ -249,14 +249,19 @@ class HybridProgramAidedEngine:
                 dev_room = item.get("room")
                 if dev_id and dev_id != first_dev:
                     if dev_room not in ac_running_rooms:
+                        fan_args = {
+                            "device_id": dev_id,
+                            "power": target_power,
+                            "speed": target_speed,
+                        }
+                        if env is not None and hasattr(env, "validate"):
+                            v = env.validate("smart_home.fan_set", fan_args)
+                            if not v.get("ok"):
+                                continue
                         extra_calls.append(
                             {
                                 "name": "smart_home.fan_set",
-                                "arguments": {
-                                    "device_id": dev_id,
-                                    "power": target_power,
-                                    "speed": target_speed,
-                                },
+                                "arguments": fan_args,
                             }
                         )
         return extra_calls

@@ -170,11 +170,17 @@ if __name__ == "__main__":
 # 1. Sinh tập dữ liệu huấn luyện SFT CoT v3
 python scripts/data/generate_reasoning_sft.py
 
-# 2. Huấn luyện LoRA v3
-python train_sft.py --model Qwen/Qwen3-4B --data-dir data/sft --output-dir checkpoints/qwen3-4b-zac-lora-v3 --epochs 3
+# 2. Huấn luyện LoRA trên baseline P1 concise (F1 hiện tại ~47.7)
+python train_sft.py --model Qwen/Qwen3-4B --epochs 3 --optimized
 
-# 3. Chạy suy luận trên public_test với Preprocessor A (Dynamic Context Aligner)
-python run_infer.py --split public_test --model Qwen/Qwen3-4B --lora-path checkpoints/qwen3-4b-zac-lora-v3 --preprocessor a --output submissions/submission_v3.jsonl
+# Chỉ dùng dataset simulator-grounded khác sau khi đã audit thủ công
+python train_sft.py --model Qwen/Qwen3-4B --data-dir data/sft/candidates/simulator_grounded_merged_v1.1 --output-dir checkpoints/qwen3-4b-zac-lora-v1.1 --epochs 3 --optimized
+
+# Chỉ dùng dataset legacy/v5 sau khi đã audit thủ công
+python train_sft.py --model Qwen/Qwen3-4B --data-dir data/sft/candidates/v5_expanded --allow-unverified-data
+
+# 3. Chạy suy luận trên public_test với baseline P1
+python run_infer.py --split public_test --model Qwen/Qwen3-4B --lora-path checkpoints/qwen3-4b-zac-lora-p1-concise --preprocessor safe --output submissions/submission_p1_concise.jsonl
 
 # 4. Đánh giá chất lượng dự đoán (trên tập train)
 python evaluate.py --predictions submissions/train_pred.jsonl --ground-truth train/train.jsonl

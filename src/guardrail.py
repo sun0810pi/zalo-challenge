@@ -1,6 +1,6 @@
-"""Pure schema-driven argument normalizer and zero-cost pre-execution state guardrail.
-Completely free of hardcoded dataset prefixes or specific application names,
-ensuring 100% generalization to unseen applications and custom ID formats in private_test.
+"""Schema-driven argument normalizer and pre-execution state guardrail.
+Normalizes argument types/formats/codes against the catalog schema and enforces
+x-ref read-before-write and collection isolation before hitting `ToolEnv`.
 """
 from __future__ import annotations
 
@@ -140,11 +140,20 @@ def normalize_arguments(
         p_type = p_spec.get("type")
         p_fmt = p_spec.get("format")
 
-        # Type coercion
+        # Type coercion (distinguish thousand separators like "250.000" from decimals like "1.5")
         if p_type == "integer" and isinstance(v, str):
-            v_str = v.strip().replace(",", "").replace(".", "")
-            if v_str.lstrip("-").isdigit():
-                v = int(v_str)
+            v_clean = v.strip()
+            if re.match(r"^-?\d{1,3}(?:[.,]\d{3})+$", v_clean):
+                v = int(v_clean.replace(",", "").replace(".", ""))
+            elif re.match(r"^-?\d+$", v_clean):
+                v = int(v_clean)
+            else:
+                try:
+                    f_val = float(v_clean.replace(",", "."))
+                    if f_val.is_integer():
+                        v = int(f_val)
+                except ValueError:
+                    pass
         elif p_type == "integer" and isinstance(v, float) and v.is_integer():
             v = int(v)
         elif p_type == "number" and isinstance(v, str):
@@ -236,8 +245,10 @@ class PureSchemaStateTracker:
 
         # 2. Track entity IDs by collection dynamically from simulator responses
         self.collection_entity_ids: dict[str, set[str]] = {}
+        self.id_to_collections: dict[str, set[str]] = {}
         self.all_known_ids: set[str] = set()
         self.all_known_tokens: set[str] = set()
+        self.user_explicit_id_tokens: set[str] = set()
 
         # 3. Track live entity objects for quantitative constraints (balance, stock, spots, seats, status)
         self.observed_entities: dict[str, dict[str, Any]] = {}
@@ -245,15 +256,21 @@ class PureSchemaStateTracker:
         self.balances: dict[str, int | float] = {}
         self.cart_has_items: dict[str, bool] = {}
 
-        # Seed with tokens explicitly present in user prompt
-        self.all_known_tokens.update(re.findall(r"[A-Za-z0-9_]+", final_user_text))
+        # Seed only explicit ID-like tokens from user prompt (requires digit or underscore)
+        self._harvest_user_id_tokens(final_user_text)
 
         # Seed with history turns
         for turn in sample.get("history") or []:
             if turn.get("audio_text"):
-                self.all_known_tokens.update(re.findall(r"[A-Za-z0-9_]+", turn["audio_text"]))
+                self._harvest_user_id_tokens(turn["audio_text"])
             for tc, tr in zip(turn.get("tool_calls") or [], turn.get("tool_results") or []):
                 self.record_observation(tc.get("name", ""), tc.get("arguments") or {}, tr)
+
+    def _harvest_user_id_tokens(self, text: str) -> None:
+        for tok in re.findall(r"[A-Za-z0-9_]+", text):
+            self.all_known_tokens.add(tok)
+            if "_" in tok or any(ch.isdigit() for ch in tok):
+                self.user_explicit_id_tokens.add(tok)
 
     def _resolve_read_tool(self, tool_name: str, xref: str | None, param_name: str) -> str:
         """Find the appropriate read tool for an x-ref reference dynamically."""
@@ -280,9 +297,6 @@ class PureSchemaStateTracker:
         if not isinstance(result, dict):
             return
 
-        raw_json = json.dumps(result, ensure_ascii=False)
-        self.all_known_tokens.update(re.findall(r"[A-Za-z0-9_]+", raw_json))
-
         app_name = tool_name.split(".", 1)[0]
 
         # Dynamically harvest entity IDs and object properties from list / dict fields
@@ -297,7 +311,9 @@ class PureSchemaStateTracker:
                         item_id = str(item.get("id") or item.get("merchant_id") or item.get("symbol") or "")
                         if item_id:
                             self.all_known_ids.add(item_id)
+                            self.all_known_tokens.add(item_id)
                             self.collection_entity_ids.setdefault(coll_name, set()).add(item_id)
+                            self.id_to_collections.setdefault(item_id, set()).add(coll_name)
                             self.observed_entities[item_id] = item
 
                         # Track device types from device objects
@@ -307,7 +323,9 @@ class PureSchemaStateTracker:
                 item_id = str(val.get("id") or val.get("symbol") or "")
                 if item_id:
                     self.all_known_ids.add(item_id)
+                    self.all_known_tokens.add(item_id)
                     self.collection_entity_ids.setdefault(coll_name, set()).add(item_id)
+                    self.id_to_collections.setdefault(item_id, set()).add(coll_name)
                     self.observed_entities[item_id] = val
             elif isinstance(val, (int, float)) and "balance" in key:
                 self.balances[f"{app_name}.{key}"] = val
@@ -331,22 +349,36 @@ class PureSchemaStateTracker:
                 continue
 
             p_spec = props.get(k) or {}
-            xref = p_spec.get("x-ref")
+            raw_xref = p_spec.get("x-ref")
+            xref = raw_xref.split(" ", 1)[0].strip() if isinstance(raw_xref, str) and raw_xref else None
             is_write_id = bool(xref) or (kind == "write" and k.endswith("_id")) or k in ("merchant_id", "reward_id", "tracking_id")
 
             if is_write_id:
-                # If specific x-ref collection is declared, check if ID was returned in that collection
+                read_tool = self._resolve_read_tool(tool_name, xref, k)
+                # Reject obvious natural-language phrases (spaces or non-ASCII) passed as system IDs
+                if xref and (any(ch.isspace() for ch in v) or not v.isascii()):
+                    return (
+                        f"Giá trị '{k}={v}' là tên mô tả chứ không phải ID hệ thống trong '{xref}'. "
+                        f"Hãy gọi '{read_tool}' trước để lấy đúng ID thực tế."
+                    )
+
+                # Block cross-collection ID leakage (e.g. pantry 'pan_06' passed to grocery 'product_id')
+                if xref and v in self.id_to_collections and xref not in self.id_to_collections[v]:
+                    return (
+                        f"ID '{k}={v}' thuộc danh mục khác ({sorted(self.id_to_collections[v])}), "
+                        f"không thuộc '{xref}'. Hãy gọi '{read_tool}' để lấy đúng ID."
+                    )
+
+                # If specific x-ref collection has already been queried, require membership (no word bypass)
                 if xref and xref in self.collection_entity_ids:
-                    if v not in self.collection_entity_ids[xref] and v not in self.all_known_tokens:
-                        read_tool = self._resolve_read_tool(tool_name, xref, k)
+                    if v not in self.collection_entity_ids[xref]:
                         return (
-                            f"ID '{k}={v}' chưa được tra cứu trong danh mục '{xref}'. "
-                            f"Hãy gọi '{read_tool}' trước để lấy đúng ID thực tế từ hệ thống."
+                            f"ID '{k}={v}' chưa có trong kết quả tra cứu danh mục '{xref}'. "
+                            f"Hãy kiểm tra lại hoặc gọi '{read_tool}' trước để lấy đúng ID thực tế từ hệ thống."
                         )
 
-                # General check: has the ID ever been observed in the session or user prompt?
-                if v not in self.all_known_ids and v not in self.all_known_tokens:
-                    read_tool = self._resolve_read_tool(tool_name, xref, k)
+                # General check: must come from observed entity IDs or explicit numeric/underscore ID token in prompt
+                if v not in self.all_known_ids and v not in self.user_explicit_id_tokens:
                     return (
                         f"ID '{k}={v}' chưa được tra cứu trong phiên hiện tại hoặc lịch sử. "
                         f"Hãy gọi '{read_tool}' trước để lấy đúng ID thực tế từ hệ thống."
@@ -358,7 +390,7 @@ class PureSchemaStateTracker:
                 for item in val:
                     if isinstance(item, dict) and item.get("item_id"):
                         sub_id = str(item["item_id"])
-                        if sub_id not in self.all_known_ids and sub_id not in self.all_known_tokens:
+                        if sub_id not in self.all_known_ids and sub_id not in self.user_explicit_id_tokens:
                             return (
                                 f"Mã sản phẩm/món '{sub_id}' chưa được tra cứu từ thực đơn/danh mục. "
                                 f"Hãy gọi tool tra cứu thực đơn trước để lấy đúng item_id."

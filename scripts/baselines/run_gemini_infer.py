@@ -306,9 +306,10 @@ def main():
 
     transcriber = None
     if args.audio_mode == "asr" or args.split == "train":
+        model_slug = re.sub(r"[^a-zA-Z0-9._-]+", "_", str(args.whisper_model))
         transcriber = FastWhisperTranscriber(
             model_name=args.whisper_model,
-            cache_file=root / "cache" / f"asr_{args.split}.json",
+            cache_file=root / "cache" / f"asr_{args.split}_{model_slug}.json",
         )
 
     print(f"\n[Gemini Agent] Model={args.model} | Mode={args.audio_mode} | Split={args.split} | Mẫu={len(samples)}")

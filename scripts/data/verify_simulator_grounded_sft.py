@@ -32,8 +32,8 @@ from zaic_tools.executor import Session  # noqa: E402
 from zaic_tools.validate import catalog_tools  # noqa: E402
 
 from scripts.data.trajectory_validator import validate_sft_messages_record  # noqa: E402
-from src.agent import LifeMateAgent  # noqa: E402
-from src.guardrail import parse_tool_calls  # noqa: E402
+from src.entity_normalizer import EntityNormalizer  # noqa: E402
+from src.guardrail import PureSchemaStateTracker, parse_tool_calls  # noqa: E402
 from src.preprocessor_a import ContextLanguagePreprocessorA  # noqa: E402
 from src.prompt_builder import build_initial_messages  # noqa: E402
 from src.router import SemanticToolRouter  # noqa: E402
@@ -127,8 +127,8 @@ def verify_candidate_directory(cand_dir: Path) -> dict[str, Any]:
         msgs = row["messages"]
         if "[Ứng dụng:" not in msgs[0]["content"]:
             prompt_mismatch_errors.append(f"{sid}: System prompt missing [Ứng dụng: ...] blocks from catalog_apps_map")
-        if "NHÓM 1 — CÔNG CỤ TRỌNG TÂM" not in msgs[0]["content"] and len(trace["installed_apps"]) > 4:
-            prompt_mismatch_errors.append(f"{sid}: System prompt missing two-tier SemanticToolRouter headers")
+        if "### DANH SÁCH ỨNG DỤNG ĐÃ CÀI ĐẶT" not in msgs[0]["content"] and trace["installed_apps"]:
+            prompt_mismatch_errors.append(f"{sid}: System prompt missing unified ALLOWED TOOLS section header")
         if "user_profile" in trace and "location" in trace:
             final_u_text = trace.get("serialized_user_prompt", trace["user_request"])
             rebuilt_init = build_initial_messages(
@@ -173,13 +173,20 @@ def verify_candidate_directory(cand_dir: Path) -> dict[str, Any]:
             **copy.deepcopy(trace["initial_state"]),
         }
         sess = Session(sample_id=sid, entry=replay_entry, catalog=pub_cat)
+        state_tracker = PureSchemaStateTracker(pub_tools_map)
+        normalizer = EntityNormalizer(enabled=True)
         for step_i, (call_obj, recorded_resp) in enumerate(zip(parsed_calls, parsed_responses)):
             v_res = sess.validate(call_obj["name"], call_obj["arguments"])
             if not v_res.get("ok"):
                 replay_mismatch_errors.append(f"{sid} step {step_i}: Session.validate failed: {v_res}")
             sim_res = sess.call(call_obj["name"], call_obj["arguments"])
-            expected_prompt_res = LifeMateAgent._augment_empty_read_hint(
-                call_obj["name"], call_obj["arguments"], sim_res
+            state_tracker.record_observation(call_obj["name"], call_obj["arguments"], sim_res)
+            expected_prompt_res = normalizer.recover_empty_read(
+                call_obj["name"],
+                call_obj["arguments"],
+                sim_res,
+                sample,
+                state_tracker.observed_entities,
             )
             if expected_prompt_res != recorded_resp:
                 replay_mismatch_errors.append(

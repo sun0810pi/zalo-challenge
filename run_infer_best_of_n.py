@@ -40,7 +40,12 @@ def main():
     ap.add_argument("--temperatures", default="0.0,0.6,0.8", help="Danh sách nhiệt độ sinh cho từng ứng viên (cách nhau bởi dấu phẩy)")
     ap.add_argument("--asr-model", default="deepdml/faster-whisper-large-v3-turbo-ct2")
     ap.add_argument("--asr-lora-path", default=None)
-    ap.add_argument("--preprocessor", default="a", choices=["a", "b", "safe"])
+    ap.add_argument(
+        "--preprocessor",
+        default="safe",
+        choices=["a", "b", "safe"],
+        help="Tiền xử lý ASR an toàn; A chỉ dùng cho ablation vì có thể làm hỏng entity",
+    )
     ap.add_argument("--gpu-memory-utilization", type=float, default=0.72)
     ap.add_argument("--ids-file", default=None)
     ap.add_argument("--limit", type=int, default=0)

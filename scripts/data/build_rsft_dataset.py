@@ -143,6 +143,7 @@ def main():
     ap.add_argument("--output-dir", default=str(ROOT / "data" / "sft" / "candidates" / "rsft"))
     ap.add_argument("--val-size", type=int, default=145)
     ap.add_argument("--strict-only", action="store_true", default=True, help="Only keep trajectories with R=1.0")
+    ap.add_argument("--include-repaired", action="store_false", dest="strict_only", help="Also keep imperfect/repaired trajectories")
     args = ap.parse_args()
 
     root = Path(args.root)
@@ -164,11 +165,16 @@ def main():
         if line.strip()
     ]
 
+    val_ids_path = root / "data" / "sft" / "val_ids.json"
+    val_ids = set(json.loads(val_ids_path.read_text(encoding="utf-8"))) if val_ids_path.is_file() else set()
+
     print(f"[RSFT Builder] Bắt đầu kiểm tra và tạo dữ liệu RSFT trên {len(train_samples)} mẫu train...")
 
-    verified_trajectories = []
+    val_set = []
+    train_set = []
     perfect_count = 0
     repaired_count = 0
+    skipped_imperfect = 0
 
     for idx, s in enumerate(train_samples, 1):
         qid = s["id"]
@@ -195,13 +201,24 @@ def main():
             perfect_count += 1
         else:
             repaired_count += 1
+            if args.strict_only and qid not in val_ids:
+                skipped_imperfect += 1
+                continue
 
         # Build concise SFT trajectory with prompt parity
         traj_msgs = build_concise_rsft_trajectory(s, catalog_tools_map, catalog_apps_map, router)
-        verified_trajectories.append({"id": qid, "messages": traj_msgs, "r_score": 1.0 if is_perfect else 0.9})
+        rec = {"id": qid, "messages": traj_msgs, "r_score": 1.0 if is_perfect else 0.9}
+        if val_ids:
+            if qid in val_ids:
+                val_set.append(rec)
+            else:
+                train_set.append(rec)
+        else:
+            train_set.append(rec)
 
-    val_set = verified_trajectories[: args.val_size]
-    train_set = verified_trajectories[args.val_size :]
+    if not val_ids:
+        val_set = train_set[: args.val_size]
+        train_set = train_set[args.val_size :]
 
     (out_dir / "sft_train.jsonl").write_text(
         "\n".join(json.dumps(r, ensure_ascii=False) for r in train_set) + "\n",

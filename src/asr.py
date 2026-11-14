@@ -58,7 +58,6 @@ _PHONETIC_RULES: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"\bgiao\s+lời\s+khô\b", re.IGNORECASE), "Zalo cho"),
     (re.compile(r"\bgiao\s+lời\s+cho\b", re.IGNORECASE), "Zalo cho"),
     (re.compile(r"\bnhắn\s+giao\s+lời\b", re.IGNORECASE), "nhắn Zalo"),
-    (re.compile(r"\bgiao\s+lưu\s+tranh\s+tuần\b", re.IGNORECASE), "Zalo cho anh Tuấn"),
     (re.compile(r"\bgiao\s+lưu\s+cho\b", re.IGNORECASE), "Zalo cho"),
     (re.compile(r"\b(?:ra|gia)\s+lô\s+cho\b", re.IGNORECASE), "Zalo cho"),
     (re.compile(r"\bgọi\s+(?:giao\s+lời|ra\s+lô|gia\s+lô)\b", re.IGNORECASE), "gọi Zalo"),
@@ -68,15 +67,29 @@ _PHONETIC_RULES: list[tuple[re.Pattern[str], str]] = [
     # "báo thức" misheard as "mào tức", "báo tức", "bạo lực"
     (re.compile(r"\b(?:mào|báo)\s+tức\b", re.IGNORECASE), "báo thức"),
     (re.compile(r"\bđặt\s+bạo\s+lực\s+lúc\b", re.IGNORECASE), "đặt báo thức lúc"),
-    # "Cô giáo Mai" misheard as "bố dạo máy"
-    (re.compile(r"\bbố\s+dạo\s+máy\b", re.IGNORECASE), "cô giáo Mai"),
     # Food / grocery items
     (re.compile(r"\byếu\s+mạch\b", re.IGNORECASE), "yến mạch"),
     (re.compile(r"\bdư\s+dụt\b", re.IGNORECASE), "dưa chuột"),
     # Event tickets / places
-    (re.compile(r"\bhãy\s+sài\s+gòn\s+cười\b", re.IGNORECASE), "hài Sài Gòn Cười"),
-    (re.compile(r"\bhà\s+sài\s+gòn\s+cười\b", re.IGNORECASE), "hài Sài Gòn Cười"),
-    (re.compile(r"\bliên\s+hoan\s+tin\s+nhắn\b", re.IGNORECASE), "Liên hoan âm nhạc"),
+    (re.compile(r"\bnạp\s+chiếu\s+phim\b", re.IGNORECASE), "rạp chiếu phim"),
+    (re.compile(r"\bnạp\s+phim\b", re.IGNORECASE), "rạp phim"),
+    (re.compile(r"\bchuyện\s+làm\b", re.IGNORECASE), "triển lãm"),
+    # Stocks / Trading
+    (re.compile(r"\bchứng\s+quán\b", re.IGNORECASE), "chứng khoán"),
+    (re.compile(r"\bcổ\s+khiếu\b", re.IGNORECASE), "cổ phiếu"),
+    # Transit / Flights / Parking
+    (re.compile(r"\bvốn\s+chỗ\b", re.IGNORECASE), "bốn chỗ"),
+    (re.compile(r"\bvé\s+xe\s+cách\b", re.IGNORECASE), "vé xe khách"),
+    (re.compile(r"\bvé\s+tào\b", re.IGNORECASE), "vé tàu"),
+    (re.compile(r"\bbãi\s+đổi\s+xe\b", re.IGNORECASE), "bãi đỗ xe"),
+    (re.compile(r"\bxăng\s+chín\s+lắm\b", re.IGNORECASE), "xăng RON 95"),
+    # Calendar & Contacts
+    (re.compile(r"\bhuyết\s+(?:lịch\s+)?họp\b", re.IGNORECASE), "hủy cuộc họp"),
+    (re.compile(r"\bđói\s+tá\b", re.IGNORECASE), "đối tác"),
+    # Smart home & Pantry
+    (re.compile(r"\bđiều\s+hoàng\b", re.IGNORECASE), "điều hòa"),
+    (re.compile(r"\btủ\s+bế\b", re.IGNORECASE), "tủ bếp"),
+    (re.compile(r"\bgiỏ\s+hàn\b", re.IGNORECASE), "giỏ hàng"),
 ]
 
 # Collapse repeated words/phrases looped >= 3 times (e.g. "các bạn, các bạn, các bạn...")
@@ -198,6 +211,7 @@ class Transcriber:
         self.use_gt_audio_text = use_gt_audio_text
         self.cache_path = Path(cache_path) if cache_path else None
         self.cache: dict[str, str] = {}
+        self._cleaned_cache_keys: set[str] = set()
         if self.cache_path and self.cache_path.is_file():
             try:
                 self.cache = json.loads(self.cache_path.read_text(encoding="utf-8"))
@@ -336,7 +350,10 @@ class Transcriber:
     ) -> str:
         key = cache_key or str(wav_path)
         if key in self.cache and self.cache[key].strip():
-            return clean_asr_transcript(self.cache[key], installed_apps=installed_apps)
+            if key not in self._cleaned_cache_keys:
+                self.cache[key] = clean_asr_transcript(self.cache[key], installed_apps=installed_apps)
+                self._cleaned_cache_keys.add(key)
+            return self.cache[key]
 
         self._load_model()
         if self._backend == "faster_whisper":
@@ -431,6 +448,7 @@ class Transcriber:
 
         cleaned = clean_asr_transcript(raw_text, installed_apps=installed_apps)
         self.cache[key] = cleaned
+        self._cleaned_cache_keys.add(key)
         return cleaned
 
     def transcribe_sample(

@@ -114,6 +114,7 @@ def build_allowed_tools_block(
     user_query: str = "",
     router: SemanticToolRouter | None = None,
     catalog_apps_map: dict[str, dict[str, Any]] | None = None,
+    max_apps: int | None = 4,
 ) -> str:
     """Build unified installed tools block grouped by application with rich Vietnamese anchors
     and explicit x-ref call dependency hints.
@@ -127,7 +128,17 @@ def build_allowed_tools_block(
     # Rank apps by relevance if router is provided, but keep ALL installed apps
     ranked_apps = list(installed.keys())
     if router and user_query:
-        rec_apps, sec_apps = router.route_sample_apps(user_query, sample, catalog_tools_map)
+        installed_app_descriptions = {
+            app_id: f"{meta.get('name_vi', '')} {meta.get('group', '')} {meta.get('description', '')}".strip()
+            for app_id, meta in (catalog_apps_map or {}).items()
+            if app_id in installed
+        }
+        rec_apps, sec_apps = router.route_sample_apps(
+            user_query,
+            sample,
+            catalog_tools_map,
+            installed_app_descriptions=installed_app_descriptions or None,
+        )
         seen = set()
         ranked = []
         for a in rec_apps + sec_apps:
@@ -138,7 +149,13 @@ def build_allowed_tools_block(
             if a not in seen:
                 ranked.append(a)
                 seen.add(a)
-        ranked_apps = ranked
+        if max_apps and len(ranked) > max_apps:
+            top_apps = list(ranked[:max_apps])
+            if "sys" in installed and "sys" not in top_apps:
+                top_apps.append("sys")
+            ranked_apps = top_apps
+        else:
+            ranked_apps = ranked
 
     blocks: list[str] = ["### DANH SÁCH ỨNG DỤNG ĐÃ CÀI ĐẶT & CÔNG CỤ ĐƯỢC PHÉP GỌI (ALLOWED TOOLS):"]
 

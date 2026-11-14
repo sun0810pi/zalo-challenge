@@ -1,11 +1,9 @@
-"""Two-Tier Semantic Tool Router for ZAC 2026 LifeMate.
-Ranks installed apps for a given user request using fast character-and-word n-gram TF-IDF similarity.
-Enables two-tier prompt construction (Recommended Candidate Tools vs Secondary Tools)
-to eliminate tool confusion without risking false-negative tool pruning.
+"""Semantic Tool Router for ZAC 2026 LifeMate.
+Ranks installed apps for a given user request using fast word (1,2)-gram TF-IDF similarity
+over app names, Vietnamese descriptions, and tool/parameter schemas.
 """
 from __future__ import annotations
 
-import json
 from typing import Any
 
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -38,7 +36,7 @@ class SemanticToolRouter:
         installed = sample.get("context", {}).get("installed_apps", {})
         app_names = [a for a in installed.keys() if a != "sys"]
 
-        # If 3 or fewer apps installed, all are recommended
+        # If top_k_recommended or fewer apps installed, all are recommended
         if len(app_names) <= self.top_k_recommended:
             return app_names, []
 

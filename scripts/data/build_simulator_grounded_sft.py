@@ -46,7 +46,8 @@ from scripts.data.trajectory_validator import (  # noqa: E402
     validate_executed_trajectory,
     validate_sft_messages_record,
 )
-from src.agent import LifeMateAgent  # noqa: E402
+from src.entity_normalizer import EntityNormalizer  # noqa: E402
+from src.guardrail import PureSchemaStateTracker  # noqa: E402
 from src.preprocessor_a import ContextLanguagePreprocessorA  # noqa: E402
 from src.prompt_builder import build_initial_messages  # noqa: E402
 from src.router import SemanticToolRouter  # noqa: E402
@@ -195,10 +196,14 @@ def serialize_trace_to_sft_record(
 
     tool_calls = trace["tool_calls"]
     tool_results = trace["tool_results"]
+    state_tracker = PureSchemaStateTracker(catalog_tools_map)
+    normalizer = EntityNormalizer(enabled=True)
 
     for step_idx, (tc, tr) in enumerate(zip(tool_calls, tool_results)):
         thought = build_concise_step_thought(step_idx, tool_calls, tool_results, spec)
-        call_payload = {"name": tc["name"], "arguments": tc.get("arguments") or {}}
+        t_name = tc["name"]
+        t_args = tc.get("arguments") or {}
+        call_payload = {"name": t_name, "arguments": t_args}
         messages.append(
             {
                 "role": "assistant",
@@ -208,8 +213,9 @@ def serialize_trace_to_sft_record(
                 ),
             }
         )
-        prompt_res = LifeMateAgent._augment_empty_read_hint(
-            tc["name"], tc.get("arguments") or {}, tr
+        state_tracker.record_observation(t_name, t_args, tr)
+        prompt_res = normalizer.recover_empty_read(
+            t_name, t_args, tr, sample, state_tracker.observed_entities
         )
         messages.append(
             {

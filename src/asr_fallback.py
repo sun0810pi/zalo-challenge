@@ -43,14 +43,14 @@ _PROTECTED_VIETNAMESE_STOPWORDS: set[str] = {
     "tu", "di", "den", "o", "tai", "vao", "ra", "ve", "cho", "voi", "cua", "bang",
     "dang", "da", "se", "khong", "chua", "dung", "thoi", "hay", "nhe", "nha", "giup",
     "dum", "ho", "toi", "minh", "em", "anh", "chi", "bac", "co", "chu", "sep",
-    "hom", "nay", "mai", "sang", "trua", "chieu", "toi", "dem", "gio", "phut", "ruoi",
-    "mot", "hai", "ba", "bon", "tu", "nam", "lam", "sau", "bay", "tam", "chin", "muoi",
+    "hom", "nay", "mai", "sang", "trua", "chieu", "dem", "gio", "phut", "ruoi",
+    "mot", "hai", "ba", "bon", "nam", "lam", "sau", "bay", "tam", "chin", "muoi",
     "tram", "nghin", "ngan", "trieu", "ty", "dong", "k", "nua", "het", "tat", "ca",
-    "neu", "thi", "ma", "nhung", "hoac", "va", "la", "co", "duoc", "can", "muon",
+    "neu", "thi", "ma", "nhung", "hoac", "va", "la", "duoc", "can", "muon",
     "xem", "kiem", "tra", "coi", "dat", "huy", "xoa", "bat", "tat", "mo", "dong",
     "chuyen", "nap", "tra", "thanh", "toan", "mua", "ban", "giu", "lai", "doi",
     "nhac", "hen", "goi", "nhan", "gui", "tin", "lich", "bao", "thuc", "xe", "ve",
-    "phong", "nha", "cong", "ty", "van", "quan", "tp", "thanh", "pho", "duong",
+    "phong", "nha", "cong", "ty", "van", "quan", "tp", "pho", "duong",
     "bun", "cha", "pho", "com", "ca", "phe", "tra", "sua", "nuoc", "dien", "mang",
 }
 

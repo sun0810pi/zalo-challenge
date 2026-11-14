@@ -88,6 +88,7 @@ def analyze_dataset_tokens(
     trunc_6144 = 0
     trunc_8192 = 0
 
+    unclosed_assistant_turns = 0
     silent_assistant_trunc_4096 = 0
     silent_assistant_trunc_6144 = 0
     silent_assistant_trunc_8192 = 0
@@ -134,7 +135,7 @@ def analyze_dataset_tokens(
                         break
                     j += 1
                 if not found_end:
-                    silent_assistant_trunc_8192 += 1
+                    unclosed_assistant_turns += 1
                 i = j
             else:
                 i += 1
@@ -240,6 +241,7 @@ def analyze_dataset_tokens(
             "at_8192": trunc_8192,
         },
         "integrity_verification": {
+            "unclosed_assistant_turns": unclosed_assistant_turns,
             "silent_assistant_truncation_at_4096": silent_assistant_trunc_4096,
             "silent_assistant_truncation_at_6144": silent_assistant_trunc_6144,
             "silent_assistant_truncation_at_8192": silent_assistant_trunc_8192,
