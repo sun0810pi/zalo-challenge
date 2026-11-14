@@ -8,10 +8,8 @@ import time
 from pathlib import Path
 
 from evaluate import evaluate_predictions
-from src.agent import LifeMateAgent, LLMBackend, fix_all_seeds
+from src.agent import LifeMateAgent, LLMBackend, build_preprocessor, fix_all_seeds
 from src.asr import Transcriber
-from src.preprocessor_a import ContextLanguagePreprocessorA
-from src.preprocessor_b import ContextLanguagePreprocessorB
 from src.router import SemanticToolRouter
 
 
@@ -26,7 +24,7 @@ def main():
     ap.add_argument(
         "--load-in-4bit",
         action="store_true",
-        help="Nạp LLM ở chế độ 4-bit (BitsAndBytes NF4) để chạy trên GPU VRAM thấp (< 4GB)",
+        help="Nạp LLM ở chế độ 4-bit (BitsAndBytes NF4) để tiết kiệm VRAM khi chạy local",
     )
     ap.add_argument("--asr-model", default="deepdml/faster-whisper-large-v3-turbo-ct2")
     ap.add_argument("--asr-lora-path", default=None, help="Đường dẫn tới Whisper LoRA adapter")
@@ -48,6 +46,12 @@ def main():
     ap.add_argument("--ids-file", default=None, help="File JSON chứa danh sách ID cần chạy (VD: data/sft/val_ids.json)")
     ap.add_argument("--limit", type=int, default=0, help="Giới hạn số mẫu chạy thử (0 = chạy toàn bộ)")
     ap.add_argument("--max-steps", type=int, default=8, help="Số bước ReAct tối đa mỗi mẫu")
+    ap.add_argument(
+        "--max-apps",
+        type=int,
+        default=None,
+        help="Giới hạn số app tối đa trong ALLOWED TOOLS (mặc định None = giữ toàn bộ app khớp lúc train; đặt 4 hoặc 6 nếu GPU VRAM thấp)",
+    )
 
     # Switches for Solutions 2, 3, 4
     ap.add_argument("--no-fuzzy-normalizer", action="store_true", help="[Solution 2] Tắt EntityNormalizer & Fuzzy Read Recovery")
@@ -128,21 +132,15 @@ def main():
         load_in_4bit=args.load_in_4bit,
     )
 
-    if args.preprocessor == "b":
-        preprocessor = ContextLanguagePreprocessorB(model_name="Qwen/Qwen2.5-0.5B-Instruct")
-    elif args.preprocessor == "safe" or args.use_asr_fallback:
-        from src.asr_fallback import SafeContextPreprocessor
+    preprocessor = build_preprocessor(mode=args.preprocessor, sim_threshold=0.80)
+    fallback_engine = None
+    if args.use_asr_fallback:
+        try:
+            from src.asr_fallback import UncertaintyAwareASRFallback
 
-        _safe_prep = SafeContextPreprocessor(sim_threshold=0.80)
-
-        class _SafePreprocessorAdapter:
-            def preprocess(self, raw_asr_text: str, sample: dict) -> str:
-                cleaned, _ = _safe_prep.preprocess_with_evidence(raw_asr_text, sample)
-                return cleaned
-
-        preprocessor = _SafePreprocessorAdapter()
-    else:
-        preprocessor = ContextLanguagePreprocessorA()
+            fallback_engine = UncertaintyAwareASRFallback(sim_threshold=0.80, enable_qwen3_fallback=True)
+        except Exception as exc:
+            print(f"[CẢNH BÁO] Không khởi tạo được UncertaintyAwareASRFallback ({exc}); tiếp tục với {args.preprocessor}.")
     router = SemanticToolRouter(top_k_recommended=4)
 
     agent = LifeMateAgent(
@@ -155,29 +153,23 @@ def main():
         enable_fuzzy_normalizer=not args.no_fuzzy_normalizer,
         enable_hybrid_engine=not args.no_hybrid_engine,
         enable_action_triage=not args.no_action_triage,
+        max_apps=args.max_apps,
     )
 
     t0 = time.perf_counter()
-    completed_ids = set()
-    out_path = Path(args.output)
-    if out_path.exists():
-        for line in out_path.read_text(encoding="utf-8").splitlines():
-            if line.strip():
-                try:
-                    completed_ids.add(json.loads(line)["id"])
-                except Exception:
-                    pass
-        if completed_ids:
-            print(f"[Resume] Đã phát hiện {len(completed_ids)} mẫu đã hoàn thành trong {args.output}. Bỏ qua và chạy tiếp...")
-
-    with open(args.output, "a", encoding="utf-8") as fout:
+    with open(args.output, "w", encoding="utf-8") as fout:
         for idx, item in enumerate(samples, 1):
-            if item["id"] in completed_ids:
-                continue
-
             s_t0 = time.perf_counter()
             env = ToolEnv(args.split, item["id"], root=root)
             final_text, hist_transcripts = transcriber.transcribe_sample(item, split_dir)
+            if fallback_engine is not None:
+                audio_rel = item.get("audio")
+                audio_abs = (split_dir / audio_rel) if audio_rel else None
+                final_text, _ = fallback_engine.process_utterance(
+                    final_text,
+                    item,
+                    audio_path=audio_abs if (audio_abs and audio_abs.is_file()) else None,
+                )
             if item.get("history") and hist_transcripts:
                 for turn in item["history"]:
                     if not turn.get("audio_text"):
@@ -198,21 +190,12 @@ def main():
             fout.write(json.dumps(row_out, ensure_ascii=False) + "\n")
             fout.flush()
             elapsed = time.perf_counter() - s_t0
-
-            cl_text = agent.preprocessor.preprocess(final_text, item)
-            txt_info = f"{cl_text[:40]!r}"
-            print(
-                f"[{idx}/{len(samples)}] {item['id']} ({elapsed:.2f}s) | Req: {txt_info} -> {len(tool_calls)} calls | Hash: {st_hash[:16]}...",
-                flush=True,
-            )
-
-            # Cleanup VRAM every 5 samples to prevent memory creeping
-            if idx % 5 == 0:
-                import gc
-                import torch
-                gc.collect()
-                if torch.cuda.is_available():
-                    torch.cuda.empty_cache()
+            if idx % 10 == 0 or idx == len(samples) or idx <= 3:
+                cl_text = agent.preprocessor.preprocess(final_text, item)
+                txt_info = f"ASR: {final_text[:45]!r}" if cl_text == final_text else f"ASR: {final_text[:30]!r} -> Prep: {cl_text[:35]!r}"
+                print(
+                    f"[{idx}/{len(samples)}] {item['id']} ({elapsed:.2f}s) | {txt_info} -> {len(tool_calls)} calls"
+                )
 
     transcriber.save_cache()
     total_time = time.perf_counter() - t0

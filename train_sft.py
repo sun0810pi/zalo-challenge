@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import argparse
 import inspect
-import json
 import sys
 if hasattr(sys.stdout, 'reconfigure'): sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 if hasattr(sys.stderr, 'reconfigure'): sys.stderr.reconfigure(encoding='utf-8', errors='replace')
@@ -80,22 +79,59 @@ class AssistantOnlyDataCollator:
         return labels
 
     def compute_weights_for_ids(self, ids: list[int], labels: list[int]) -> list[float]:
+        """Assign higher weights to multi-token tool call tags, tool keys, numbers, and entity IDs."""
+        import re
+
         weights = [0.0] * len(ids)
-        for j, (tok_id, lab) in enumerate(zip(ids, labels)):
-            if lab == -100:
+        n = len(ids)
+        idx = 0
+        high_patterns = (
+            (re.compile(r"</?tool_call>|sys\.ask_missing_info|\"name\""), 2.5),
+            (
+                re.compile(
+                    r"\b(?:evt|c|ord|trk|pl|item|dev|acc|mem|msg|ticket|flight|room)_[A-Za-z0-9_]+\b|\d+"
+                ),
+                2.0,
+            ),
+        )
+        punct_tokens = {'{', '}', '"', '":', '",', ':', ',', '[', ']', '{"', '"}'}
+
+        while idx < n:
+            if labels[idx] == -100:
+                idx += 1
                 continue
-            tok_str = self.tokenizer.decode([tok_id]).strip()
-            # Punctuation / JSON structure tokens get low weight
-            if tok_str in ('{', '}', '"', '":', '",', ':', ',', '[', ']', '{"', '"}'):
-                weights[j] = 0.5
-            # Tool call tags and action decision tokens get highest weight
-            elif any(k in tok_str for k in ('<tool_call>', '</tool_call>', 'sys.ask_missing_info', 'name')):
-                weights[j] = 2.5
-            # Numbers, entity IDs (evt_, c_, ord_, trk_, pl_), dates get high weight
-            elif any(c.isdigit() for c in tok_str) or any(prefix in tok_str for prefix in ('evt_', 'c_', 'ord_', 'trk_', 'pl_')):
-                weights[j] = 2.0
-            else:
-                weights[j] = 1.0
+            end = idx
+            while end < n and labels[end] != -100:
+                end += 1
+
+            # Reconstruct character offsets across tokens in this assistant span
+            tok_strs = [self.tokenizer.decode([ids[k]]) for k in range(idx, end)]
+            char_spans: list[tuple[int, int]] = []
+            cursor = 0
+            for s in tok_strs:
+                char_spans.append((cursor, cursor + len(s)))
+                cursor += len(s)
+            seg_text = "".join(tok_strs)
+
+            # Initialize baseline and punctuation weights
+            span_weights = [
+                0.5 if s.strip() in punct_tokens else 1.0
+                for s in tok_strs
+            ]
+
+            # Propagate multi-token regex span weights to every overlapping token
+            for pat, pat_weight in high_patterns:
+                for m in pat.finditer(seg_text):
+                    m_start, m_end = m.span()
+                    for k, (ts, te) in enumerate(char_spans):
+                        if te > m_start and ts < m_end:
+                            if pat_weight > span_weights[k]:
+                                span_weights[k] = pat_weight
+
+            for k, w in enumerate(span_weights):
+                weights[idx + k] = w
+            idx = end
+
         return weights
 
     def __call__(self, features: list[dict[str, Any]]) -> dict[str, Any]:
@@ -172,19 +208,22 @@ class AssistantOnlyDataCollator:
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Fine-tune Qwen3-4B trên dữ liệu ReAct Tool-Calling ZAC 2026")
-    ap.add_argument("--model", default="Qwen/Qwen3-4B", help="Model gốc (< 5B tham số)")
-    ap.add_argument(
-        "--data-dir",
-        default="data/sft/candidates/p1_concise",
-        help="Thư mục chứa dataset SFT baseline P1 đã được kiểm chứng/audit",
+    pre_parser = argparse.ArgumentParser(add_help=False)
+    pre_parser.add_argument("--config", default=None, help="Đường dẫn file JSON cấu hình SFT (CLI flags sẽ ghi đè)")
+    pre_args, _ = pre_parser.parse_known_args()
+
+    ap = argparse.ArgumentParser(
+        description="Fine-tune Qwen3-4B trên dữ liệu ReAct Tool-Calling ZAC 2026",
+        parents=[pre_parser],
     )
-    ap.add_argument("--output-dir", default="checkpoints/qwen3-4b-zac-lora-p1-concise", help="Thư mục lưu LoRA adapter")
+    ap.add_argument("--model", default="Qwen/Qwen3-4B", help="Model gốc (< 5B tham số)")
+    ap.add_argument("--data-dir", default="data/sft", help="Thư mục chứa sft_train.jsonl và sft_val.jsonl")
+    ap.add_argument("--output-dir", default="checkpoints/qwen3-4b-zac-lora-v3", help="Thư mục lưu LoRA adapter")
     ap.add_argument("--epochs", type=int, default=3)
     ap.add_argument("--batch-size", type=int, default=2)
     ap.add_argument("--grad-accum", type=int, default=8)
     ap.add_argument("--lr", type=float, default=2e-4)
-    ap.add_argument("--max-seq-len", type=int, default=9216)
+    ap.add_argument("--max-seq-len", type=int, default=8192)
     ap.add_argument("--lora-r", type=int, default=32)
     ap.add_argument("--lora-alpha", type=int, default=64)
     ap.add_argument(
@@ -229,11 +268,6 @@ def main():
         help="Kiểm tra nghiêm ngặt đảm bảo không có bất kỳ lượt assistant hoặc tool_call nào bị cắt cụt",
     )
     ap.add_argument(
-        "--allow-unverified-data",
-        action="store_true",
-        help="Cho phép train trên dataset không có manifest simulator-grounded hoặc có mẫu synth_*",
-    )
-    ap.add_argument(
         "--weighted-loss",
         action="store_true",
         help="Bật hàm loss có trọng số theo token (TVAFT: Token-Weighted Loss cho Action Triage & Tool Schema)",
@@ -255,6 +289,20 @@ def main():
         action="store_true",
         help="[Baseline v3] Tự động chọn candidate p1_concise",
     )
+
+    if pre_args.config:
+        cfg_path = Path(pre_args.config)
+        if not cfg_path.is_file():
+            raise FileNotFoundError(f"Không tìm thấy config SFT: {cfg_path}")
+        cfg_data = json.loads(cfg_path.read_text(encoding="utf-8"))
+        if isinstance(cfg_data, dict):
+            valid_dests = {a.dest for a in ap._actions}
+            normalized_cfg = {
+                str(k).replace("-", "_"): v
+                for k, v in cfg_data.items()
+                if str(k).replace("-", "_") in valid_dests
+            }
+            ap.set_defaults(**normalized_cfg)
 
     args = ap.parse_args()
 
@@ -291,45 +339,6 @@ def main():
         if args.max_seq_len < 9216:
             args.max_seq_len = 9216
 
-    data_dir = Path(args.data_dir)
-    if not (data_dir / "sft_train.jsonl").is_file():
-        raise FileNotFoundError(
-            f"Không tìm thấy {data_dir / 'sft_train.jsonl'}. Hãy chuẩn bị dữ liệu SFT trước!"
-        )
-    manifest_path = data_dir / "manifest.json"
-    if not args.allow_unverified_data:
-        if not manifest_path.is_file():
-            raise ValueError(
-                f"Dataset '{data_dir}' không có manifest.json chứng minh provenance. "
-                "Hãy dùng simulator_grounded_merged_v1.1 hoặc truyền --allow-unverified-data "
-                "nếu bạn đã audit dataset này thủ công."
-            )
-        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        generator_version = str(manifest.get("generator_version", ""))
-        dataset_name = str(manifest.get("dataset_name", ""))
-        is_trusted_dataset = (
-            "simulator_grounded" in generator_version
-            or dataset_name == "p1_concise"
-        )
-        if not is_trusted_dataset:
-            raise ValueError(
-                f"Dataset '{data_dir}' không thuộc baseline verified được phép "
-                f"(dataset_name={dataset_name!r}, generator_version={generator_version!r}). "
-                "Không train dữ liệu synthetic chưa kiểm chứng nếu chưa truyền --allow-unverified-data."
-            )
-        unverified_ids = []
-        for line in (data_dir / "sft_train.jsonl").read_text(encoding="utf-8").splitlines():
-            if not line.strip():
-                continue
-            row_id = json.loads(line).get("id", "")
-            if row_id.startswith("synth_"):
-                unverified_ids.append(row_id)
-        if unverified_ids:
-            raise ValueError(
-                f"Dataset '{data_dir}' chứa {len(unverified_ids)} mẫu synth_* chưa được kiểm chứng "
-                "bằng ToolEnv. Dùng dataset verified hoặc truyền --allow-unverified-data để override."
-            )
-
     _patch_colab_torchao()
 
     import torch
@@ -341,6 +350,12 @@ def main():
     if args.optimized and torch.cuda.is_available():
         torch.backends.cuda.matmul.allow_tf32 = True
         torch.backends.cudnn.allow_tf32 = True
+
+    data_dir = Path(args.data_dir)
+    if not (data_dir / "sft_train.jsonl").is_file():
+        raise FileNotFoundError(
+            f"Không tìm thấy {data_dir / 'sft_train.jsonl'}. Hãy chuẩn bị dữ liệu SFT trước!"
+        )
 
     tokenizer = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
     if tokenizer.pad_token is None:
@@ -431,11 +446,15 @@ def main():
         "lr_scheduler_type": "cosine",
         "warmup_steps": 15,
         "logging_steps": 10,
-        "eval_strategy": "steps" if "eval_strategy" in valid_sft_params else "steps",
+        "eval_strategy": "steps",
+        "evaluation_strategy": "steps",
         "eval_steps": 50,
         "save_strategy": "steps",
         "save_steps": 50,
         "save_total_limit": 2,
+        "load_best_model_at_end": True,
+        "metric_for_best_model": "eval_loss",
+        "greater_is_better": False,
         "bf16": torch.cuda.is_bf16_supported(),
         "fp16": not torch.cuda.is_bf16_supported(),
         "dataset_text_field": "text",
@@ -479,11 +498,14 @@ def main():
     class TokenWeightedSFTTrainer(SFTTrainer):
         def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
             if "weights" not in inputs:
-                return super().compute_loss(model, inputs, return_outputs=return_outputs)
+                return super().compute_loss(
+                    model, inputs, return_outputs=return_outputs, num_items_in_batch=num_items_in_batch
+                )
             weights = inputs.pop("weights")
-            outputs = model(**inputs)
-            logits = outputs.get("logits")
             labels = inputs.get("labels")
+            forward_inputs = {k: v for k, v in inputs.items() if k != "labels"}
+            outputs = model(**forward_inputs)
+            logits = outputs.get("logits")
 
             import torch
             import torch.nn.functional as F

@@ -292,46 +292,66 @@ class Transcriber:
             self._backend = "transformers"
             return
 
-        # Case 2: No LoRA adapter -> prefer faster-whisper CT2 for max speed
-        try:
-            from faster_whisper import WhisperModel
-
-            self._model = WhisperModel(
-                self.model_name,
-                device=self.device,
-                compute_type=self.compute_type,
-            )
-            self._backend = "faster_whisper"
-        except (ImportError, Exception) as fw_err:
-            import torch
-            from transformers import pipeline
-
-            torch.backends.cudnn.enabled = False
-            torch.backends.cudnn.benchmark = False
-
-            hf_model = (
-                "openai/whisper-large-v3-turbo"
-                if "turbo" in self.model_name
-                else self.model_name
-            )
-            print(f"[ASR] faster-whisper không khả dụng ({fw_err}), chuyển sang Transformers HF '{hf_model}'...")
+        # Case 2: No LoRA adapter -> prefer faster-whisper CT2 for max speed when CT2 model
+        local_dir = Path(self.model_name)
+        is_hf_local_dir = local_dir.is_dir() and (local_dir / "config.json").is_file() and not (local_dir / "model.bin").is_file()
+        if not is_hf_local_dir:
             try:
-                device_id = 0 if self.device == "cuda" and torch.cuda.is_available() else -1
-                self._model = pipeline(
-                    "automatic-speech-recognition",
-                    model=hf_model,
-                    device=device_id,
-                    torch_dtype=torch.float16 if device_id >= 0 else torch.float32,
+                from faster_whisper import WhisperModel
+
+                self._model = WhisperModel(
+                    self.model_name,
+                    device=self.device,
+                    compute_type=self.compute_type,
                 )
-            except Exception as e:
-                print(f"[ASR CẢNH BÁO] Không thể nạp pipeline trên GPU ({e}). Tự động fallback sang CPU...")
-                self._model = pipeline(
-                    "automatic-speech-recognition",
-                    model=hf_model,
-                    device=-1,
-                    torch_dtype=torch.float32,
-                )
-            self._backend = "transformers"
+                self._backend = "faster_whisper"
+                return
+            except (ImportError, Exception) as fw_err:
+                fw_reason = str(fw_err)
+        else:
+            fw_reason = "local HuggingFace Transformers Whisper directory"
+
+        import torch
+        from transformers import AutoProcessor, pipeline
+
+        torch.backends.cudnn.enabled = False
+        torch.backends.cudnn.benchmark = False
+
+        hf_model = (
+            "openai/whisper-large-v3-turbo"
+            if (not local_dir.is_dir() and "turbo" in self.model_name)
+            else self.model_name
+        )
+        print(f"[ASR] Dùng Transformers HF '{hf_model}' ({fw_reason})...")
+        try:
+            self._processor = AutoProcessor.from_pretrained(hf_model)
+        except Exception:
+            self._processor = None
+
+        pipe_extra = {}
+        if self._processor is not None:
+            pipe_extra["tokenizer"] = self._processor.tokenizer
+            pipe_extra["feature_extractor"] = self._processor.feature_extractor
+
+        try:
+            device_id = 0 if self.device == "cuda" and torch.cuda.is_available() else -1
+            self._model = pipeline(
+                "automatic-speech-recognition",
+                model=hf_model,
+                device=device_id,
+                torch_dtype=torch.float16 if device_id >= 0 else torch.float32,
+                **pipe_extra,
+            )
+        except Exception as e:
+            print(f"[ASR CẢNH BÁO] Không thể nạp pipeline trên GPU ({e}). Tự động fallback sang CPU...")
+            self._model = pipeline(
+                "automatic-speech-recognition",
+                model=hf_model,
+                device=-1,
+                torch_dtype=torch.float32,
+                **pipe_extra,
+            )
+        self._backend = "transformers"
 
     def save_cache(self):
         if self.cache_path:

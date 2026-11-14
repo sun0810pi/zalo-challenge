@@ -152,36 +152,48 @@ if __name__ == "__main__":
 ```
 
 
-## 5. Cấu trúc Source Code & Cách chạy Pipeline
+## 5. Cấu trúc Source Code & Đóng gói Docker (Chuẩn BTC ZAC 2026)
 
-### 5.1. Phân cấp Thư mục
-- `run_infer.py`: Chạy pipeline suy luận chính (ASR -> Preprocessor -> Router -> Qwen -> Guardrail -> ToolEnv).
-- `train_sft.py`: Huấn luyện LoRA v3 cho mô hình Qwen với dữ liệu suy luận có cấu trúc.
-- `evaluate.py`: Chấm điểm State Hash Accuracy và Tool Call F1 trên tập ground truth.
-- `src/`: Thư viện lõi chứa toàn bộ logic agent, router, guardrail schema-driven, và các preprocessor.
-- `scripts/`:
-  - `data/generate_reasoning_sft.py`: Tạo bộ dữ liệu huấn luyện SFT (1,624 train + 145 val trajectories).
-  - `benchmarks/compare_preprocessors.py`: So sánh và benchmark chất lượng giữa các phương án tiền xử lý ngôn ngữ.
-  - `baselines/`: Các mô hình đối chứng (Gemini API, heuristic solver).
-- `submissions/`: Thư mục lưu trữ các file kết quả nộp bài (`submission_v1_public27.1.jsonl`, v.v.).
+### 5.1. Phân cấp Thư mục (`/code/` trong Docker)
+- `predict.py`: Entrypoint inference offline chuẩn BTC — tự nhận diện split dưới `/data/<split>/`, nạp `zaic_tools` trực tiếp từ `/data/<split>/`, cố định seed (`42`), đo thời gian từng mẫu và xuất `/result/submission.jsonl` (gồm `id`, `tool_calls`, `state_hash`, `time`).
+- `predict.sh`: Script chạy inference (`/code/predict.sh`) với cờ offline (`HF_HUB_OFFLINE=1`, `TRANSFORMERS_OFFLINE=1`).
+- `start_jupyter.sh`: Khởi động JupyterLab tại port `9777` (token/password `zac2026`).
+- `predict_notebook.ipynb`: Notebook 4 bước chuẩn Phụ lục Mục 7 để BTC đo thời gian inference và xuất `/result/jupyter_submission.jsonl` (khớp 100% logic với `predict.py`).
+- `saved_models/`: Thư mục chứa trọng số đã fine-tune/đóng gói sẵn cho inference offline:
+  - `saved_models/llm/` (hoặc `models/qwen3-4b-merged/`): Model LLM đã gộp trọng số (`< 5B` params).
+  - `saved_models/asr/` (hoặc `models/whisper-large-v3-turbo/`): Model ASR (`whisper-large-v3-turbo`).
+- `training_code/`: Toàn bộ mã nguồn huấn luyện (`train_sft.py`, `train_grpo_rlvr.py`, `merge_whisper_lora.py`, `configs/`, `scripts/`, `README.md`).
+- `src/`: Thư viện lõi chứa logic ReAct agent, semantic tool router, pure-schema state guardrail, entity normalizer, hybrid engine, action triage và ASR cleaner.
+- `run_infer.py`, `run_infer_batched.py`, `evaluate.py`: Công cụ phát triển và chấm điểm local trên `train/` và `public_test/`.
 
-### 5.2. Các lệnh thực thi chính
+### 5.2. Mô tả giải pháp (Theo mục 6.1 Docker Guide)
+- **ASR Model**: `deepdml/faster-whisper-large-v3-turbo-ct2` / `openai/whisper-large-v3-turbo` (~0.81B tham số), decode deterministic (`temperature=0.0`, `beam_size=5`) kết hợp hotwords theo ngữ cảnh `user_profile` + `installed_apps` và bộ lọc chuẩn hóa lỗi ngữ âm tiếng Việt (`src/asr.py`, `SafeContextPreprocessor`).
+- **LLM Model**: `Qwen/Qwen3-4B` (~4.0B tham số, `< 5B`), `max_model_len=16384` tokens (`<= 16K`), tổng tham số toàn hệ thống ~4.81B (`< 6B`), inference deterministic (`temperature=0.0`, greedy decoding) qua vLLM / Transformers.
+- **Vòng lặp Agent & Tool Calling**:
+  - Multi-turn ReAct (tối đa 8 bước/mẫu) chỉ tương tác qua `zaic_tools.ToolEnv` (`validate`, `call`, `get_tool_calls`, `get_state_hash`), không đọc trực tiếp `state.json`.
+  - Tiền xử lý an toàn (`SafeContextPreprocessor`), định tuyến công cụ hai tầng (`SemanticToolRouter`), bảo vệ schema & trạng thái (`PureSchemaStateTracker`), chuẩn hóa thực thể mờ (`EntityNormalizer`), kiểm tra logic điều kiện/tính toán (`HybridProgramAidedEngine`), và chắn ảo giác/ngoài phạm vi (`ActionTriageBarrier`).
+- **Dữ liệu & Huấn luyện**: SFT LoRA (có weighted assistant-only loss trên `<think>` + `<tool_call>`) và tùy chọn RLVR (GRPO trực tiếp trên `ToolEnv`) từ tập `train/` của BTC và dữ liệu tổng hợp (`scripts/data/`). Chi tiết tái lập xem tại `training_code/README.md`.
+
+### 5.3. Lệnh Build, Kiểm tra & Xuất nộp Docker
 ```bash
-# 1. Sinh tập dữ liệu huấn luyện SFT CoT v3
-python scripts/data/generate_reasoning_sft.py
+# 1. Đặt weights đã merge (chỉ weights inference, không chứa base model train thừa) vào saved_models/llm/ và saved_models/asr/
+# 2. Build Docker image (CUDA 13.2)
+docker build -t zac2026-teamname:v1 .
 
-# 2. Huấn luyện LoRA trên baseline P1 concise (F1 hiện tại ~47.7)
-python train_sft.py --model Qwen/Qwen3-4B --epochs 3 --optimized
+# 3. Kiểm tra chạy offline giống server BTC (thay đường dẫn data/result tương ứng)
+docker run --rm --gpus '"device=0"' --network none \
+  -v /path/to/data:/data:ro \
+  -v /path/to/result:/result \
+  zac2026-teamname:v1 /bin/bash /code/predict.sh
 
-# Chỉ dùng dataset simulator-grounded khác sau khi đã audit thủ công
-python train_sft.py --model Qwen/Qwen3-4B --data-dir data/sft/candidates/simulator_grounded_merged_v1.1 --output-dir checkpoints/qwen3-4b-zac-lora-v1.1 --epochs 3 --optimized
+# 4. Kiểm tra JupyterLab (http://localhost:9777, nhập token/mật khẩu: zac2026, Run All Cells predict_notebook.ipynb)
+docker run --rm -it --gpus '"device=0"' --network none -p 9777:9777 \
+  -v /path/to/data:/data:ro \
+  -v /path/to/result:/result \
+  zac2026-teamname:v1 /bin/bash /code/start_jupyter.sh
 
-# Chỉ dùng dataset legacy/v5 sau khi đã audit thủ công
-python train_sft.py --model Qwen/Qwen3-4B --data-dir data/sft/candidates/v5_expanded --allow-unverified-data
-
-# 3. Chạy suy luận trên public_test với baseline P1
-python run_infer.py --split public_test --model Qwen/Qwen3-4B --lora-path checkpoints/qwen3-4b-zac-lora-p1-concise --preprocessor safe --output submissions/submission_p1_concise.jsonl
-
-# 4. Đánh giá chất lượng dự đoán (trên tập train)
-python evaluate.py --predictions submissions/train_pred.jsonl --ground-truth train/train.jsonl
+# 5. Xuất file .tar.gz và lấy MD5 checksum để nộp Google Drive + Portal
+docker save zac2026-teamname:v1 | gzip > zac2026_TeamName.tar.gz
+md5sum zac2026_TeamName.tar.gz
 ```
+

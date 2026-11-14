@@ -314,7 +314,7 @@ def evaluate_predictions(
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description="Chấm điểm file submission.jsonl trên tập train hoặc kiểm tra schema trên public_test")
     ap.add_argument("submission", help="Đường dẫn tới file submission.jsonl")
-    ap.add_argument("--split", default="train", choices=["train", "public_test"])
+    ap.add_argument("--split", default="train", choices=["train", "public_test", "private_test"])
     ap.add_argument("--root", default=".")
     ap.add_argument("--verbose-errors", type=int, default=5)
     ap.add_argument("--breakdown", action="store_true", help="Hiển thị phân tích ma trận nhầm lẫn triage và độ chính xác theo app")

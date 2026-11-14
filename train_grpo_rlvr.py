@@ -38,7 +38,9 @@ from evaluate import _load_zaic_tools, compute_call_f1
 from zaic_tools import ToolEnv
 from zaic_tools.validate import catalog_tools
 
-from src.guardrail import normalize_arguments, parse_tool_calls
+from src.agent import render_chatml_preserving_think
+from src.entity_normalizer import EntityNormalizer
+from src.guardrail import PureSchemaStateTracker, normalize_arguments, parse_tool_calls
 from src.prompt_builder import build_initial_messages
 from src.router import SemanticToolRouter
 
@@ -74,9 +76,9 @@ class GRPODataset(Dataset):
             router=self.router,
             catalog_apps_map=self.catalog_apps_map,
         )
-        prompt_text = self.tokenizer.apply_chat_template(
+        prompt_text = render_chatml_preserving_think(
+            self.tokenizer,
             messages,
-            tokenize=False,
             add_generation_prompt=True,
         )
         return {
@@ -84,6 +86,54 @@ class GRPODataset(Dataset):
             "prompt_text": prompt_text,
             "sample_id": s["id"],
         }
+
+
+def compute_kl_k3(
+    curr_log_probs: torch.Tensor,
+    ref_log_probs: torch.Tensor,
+    resp_mask: torch.Tensor,
+) -> torch.Tensor:
+    """Compute non-negative Schulman K3 KL divergence over masked assistant tokens."""
+    log_ratio = torch.clamp(ref_log_probs - curr_log_probs, min=-20.0, max=20.0)
+    k3_kl = torch.exp(log_ratio) - log_ratio - 1.0
+    return (k3_kl * resp_mask).sum() / resp_mask.sum().clamp(min=1.0)
+
+
+def evaluate_executed_trajectory(
+    sample: dict[str, Any],
+    executed_calls: list[dict[str, Any]],
+    pred_env: Any,
+    has_exec_error: bool,
+    free_text_keys: set[str],
+    _canon_scalar: Any,
+    _tokens: Any,
+    root: Path,
+) -> tuple[float, float, float]:
+    """Compute verifiable ToolEnv state-hash + F1 reward from an already executed rollout."""
+    qid = sample["id"]
+    gt_label = sample.get("label") or {}
+    gt_calls = gt_label.get("tool_calls") or []
+
+    gt_env = ToolEnv("train", qid, root=root)
+    for c in gt_calls:
+        gt_env.call(c.get("name", ""), c.get("arguments") or {})
+    gt_hash = gt_env.get_state_hash()
+
+    pred_hash = pred_env.get_state_hash()
+    hash_match = 1.0 if (pred_hash == gt_hash) else 0.0
+    _, full_f1 = compute_call_f1(executed_calls, gt_calls, free_text_keys, _canon_scalar, _tokens)
+
+    if hash_match < 1.0:
+        reward = 0.0
+    elif not gt_calls:
+        reward = 1.0 if not executed_calls else 0.0
+    else:
+        reward = full_f1
+
+    if has_exec_error and reward > 0.1:
+        reward -= 0.1
+
+    return reward, hash_match, full_f1
 
 
 def compute_verifiable_reward(
@@ -95,20 +145,10 @@ def compute_verifiable_reward(
     _tokens: Any,
     root: Path,
 ) -> tuple[float, float, float]:
-    """Evaluates one model trajectory directly on in-memory ToolEnv.
+    """Evaluates one model text trajectory directly on in-memory ToolEnv.
     Returns: (total_reward, hash_match, f1)
     """
     qid = sample["id"]
-    gt_label = sample.get("label") or {}
-    gt_calls = gt_label.get("tool_calls") or []
-
-    # Get Ground Truth State Hash
-    gt_env = ToolEnv("train", qid, root=root)
-    for c in gt_calls:
-        gt_env.call(c.get("name", ""), c.get("arguments") or {})
-    gt_hash = gt_env.get_state_hash()
-
-    # Parse and execute predicted calls on fresh ToolEnv
     pred_calls_raw = parse_tool_calls(pred_text)
     cur_time = sample.get("context", {}).get("current_time", "")
     tz_offset = cur_time[19:] if len(cur_time) > 19 else "+07:00"
@@ -120,34 +160,114 @@ def compute_verifiable_reward(
     for c in pred_calls_raw:
         t_name = c.get("name", "")
         t_args = normalize_arguments(t_name, c.get("arguments") or {}, catalog_tools_map, tz_offset=tz_offset)
-        # Execute in environment
         res = pred_env.call(t_name, t_args)
         if not res.get("ok"):
             has_exec_error = True
         executed_calls.append({"name": t_name, "arguments": t_args})
 
-    pred_hash = pred_env.get_state_hash()
+    return evaluate_executed_trajectory(
+        sample=sample,
+        executed_calls=executed_calls,
+        pred_env=pred_env,
+        has_exec_error=has_exec_error,
+        free_text_keys=free_text_keys,
+        _canon_scalar=_canon_scalar,
+        _tokens=_tokens,
+        root=root,
+    )
 
-    # 1. State Hash binary reward
-    hash_match = 1.0 if (pred_hash == gt_hash) else 0.0
 
-    # 2. Full Tool Call F1
-    _, full_f1 = compute_call_f1(executed_calls, gt_calls, free_text_keys, _canon_scalar, _tokens)
+def rollout_multiturn_trajectory(
+    model: Any,
+    tokenizer: Any,
+    sample: dict[str, Any],
+    prompt_text: str,
+    catalog_tools_map: dict[str, dict[str, Any]],
+    device: torch.device,
+    max_steps: int = 6,
+    max_new_tokens: int = 512,
+    temperature: float = 0.7,
+    root: Path = ROOT,
+) -> tuple[list[int], list[int], list[dict[str, Any]], Any, bool]:
+    """Run an interactive multi-turn ReAct rollout against ToolEnv with exact token action masks."""
+    qid = sample["id"]
+    cur_time = sample.get("context", {}).get("current_time", "")
+    tz_offset = cur_time[19:] if len(cur_time) > 19 else "+07:00"
 
-    # 3. Overall Verifiable Reward (Strict ZAIC 2026 Hard-Gate)
-    if hash_match < 1.0:
-        reward = 0.0
-    else:
-        if not gt_calls:
-            reward = 1.0 if not executed_calls else 0.0
-        else:
-            reward = full_f1
+    pred_env = ToolEnv("train", qid, root=root)
+    state_tracker = PureSchemaStateTracker(catalog_tools_map)
+    normalizer = EntityNormalizer(enabled=True)
 
-    # Penalty for schema or execution errors
-    if has_exec_error and reward > 0.1:
-        reward -= 0.1
+    seq_ids: list[int] = list(tokenizer.encode(prompt_text, add_special_tokens=False))
+    action_mask: list[int] = [0] * len(seq_ids)
+    executed_calls: list[dict[str, Any]] = []
+    has_exec_error = False
 
-    return reward, hash_match, full_f1
+    stop_token_ids = [tok for tok in (tokenizer.eos_token_id,) if tok is not None]
+    im_end_id = tokenizer.convert_tokens_to_ids("<|im_end|>")
+    if isinstance(im_end_id, int) and im_end_id >= 0 and im_end_id not in stop_token_ids:
+        stop_token_ids.append(im_end_id)
+
+    for _ in range(max_steps):
+        inp = torch.tensor([seq_ids], dtype=torch.long, device=device)
+        attn = torch.ones_like(inp)
+        with torch.no_grad():
+            out_ids = model.generate(
+                input_ids=inp,
+                attention_mask=attn,
+                max_new_tokens=max_new_tokens,
+                do_sample=True,
+                temperature=temperature,
+                top_p=0.9,
+                eos_token_id=stop_token_ids or tokenizer.eos_token_id,
+                pad_token_id=tokenizer.pad_token_id,
+            )
+        gen_ids = out_ids[0, len(seq_ids):].tolist()
+        if not gen_ids:
+            break
+
+        seq_ids.extend(gen_ids)
+        action_mask.extend([1] * len(gen_ids))
+
+        gen_text = tokenizer.decode(gen_ids, skip_special_tokens=False)
+        calls = parse_tool_calls(gen_text)
+        if not calls:
+            break
+
+        tc = calls[0]
+        t_name = tc.get("name", "")
+        t_args = normalize_arguments(
+            t_name,
+            tc.get("arguments") or {},
+            catalog_tools_map,
+            tz_offset=tz_offset,
+        )
+        res = pred_env.call(t_name, t_args)
+        if not res.get("ok"):
+            has_exec_error = True
+        executed_calls.append({"name": t_name, "arguments": t_args})
+        state_tracker.record_observation(t_name, t_args, res)
+
+        if t_name == "sys.ask_missing_info":
+            break
+
+        prompt_res = normalizer.recover_empty_read(
+            t_name,
+            t_args,
+            res,
+            sample,
+            state_tracker.observed_entities,
+        )
+        obs_text = (
+            f"\n<|im_start|>user\n"
+            f"<tool_response>\n{json.dumps(prompt_res, ensure_ascii=False)}\n</tool_response>"
+            f"<|im_end|>\n<|im_start|>assistant\n"
+        )
+        obs_ids = list(tokenizer.encode(obs_text, add_special_tokens=False))
+        seq_ids.extend(obs_ids)
+        action_mask.extend([0] * len(obs_ids))
+
+    return seq_ids, action_mask, executed_calls, pred_env, has_exec_error
 
 
 def main():
@@ -182,9 +302,13 @@ def main():
     catalog_apps_map = {app["id"]: app for app in catalog.get("apps", [])}
     router = SemanticToolRouter(top_k_recommended=4)
 
-    # Load dataset
+    # Load dataset and exclude SFT validation split to prevent train/val leakage
+    val_ids_path = ROOT / "data" / "sft" / "val_ids.json"
+    val_ids = set(json.loads(val_ids_path.read_text(encoding="utf-8"))) if val_ids_path.is_file() else set()
     raw_lines = (ROOT / "train" / "train.jsonl").read_text(encoding="utf-8").splitlines()
     samples = [json.loads(line) for line in raw_lines if line.strip()]
+    if val_ids:
+        samples = [s for s in samples if s["id"] not in val_ids]
     if args.limit > 0:
         samples = samples[: args.limit]
     print(f"[GRPO-RLVR] Nạp {len(samples)} mẫu train cho vòng lặp tương tác RLVR.")
@@ -241,38 +365,29 @@ def main():
             sample = item["sample"]
             prompt_str = item["prompt_text"]
 
-            # 1. GENERATION PHASE: Sinh G trajectories với temperature sampling
-            prompt_inputs = tokenizer(prompt_str, return_tensors="pt").to(device)
-            prompt_len = prompt_inputs["input_ids"].shape[1]
-
-            # Generate G sequences
-            with torch.no_grad():
-                gen_outputs = model.generate(
-                    **prompt_inputs,
-                    max_new_tokens=args.max_new_tokens,
-                    do_sample=True,
-                    temperature=args.temperature,
-                    top_p=0.9,
-                    num_return_sequences=args.group_size,
-                    pad_token_id=tokenizer.pad_token_id,
-                )
-
-            # 2. VERIFIABLE REWARD EVALUATION PHASE: Đo thưởng trên Simulator ToolEnv
+            # 1 & 2. MULTI-TURN REACT ROLLOUT + VERIFIABLE REWARD EVALUATION
             group_rewards = []
-            group_texts = []
-            group_tokens = []
+            group_rollouts: list[tuple[list[int], list[int]]] = []
 
-            for g_idx in range(args.group_size):
-                full_ids = gen_outputs[g_idx]
-                resp_ids = full_ids[prompt_len:]
-                resp_text = tokenizer.decode(resp_ids, skip_special_tokens=True)
-                group_texts.append(resp_text)
-                group_tokens.append(full_ids)
-
-                r, h_match, f1 = compute_verifiable_reward(
+            for _g_idx in range(args.group_size):
+                seq_ids, action_mask, executed_calls, pred_env, has_exec_error = rollout_multiturn_trajectory(
+                    model=model,
+                    tokenizer=tokenizer,
                     sample=sample,
-                    pred_text=resp_text,
+                    prompt_text=prompt_str,
                     catalog_tools_map=catalog_tools_map,
+                    device=device,
+                    max_new_tokens=args.max_new_tokens,
+                    temperature=args.temperature,
+                    root=ROOT,
+                )
+                group_rollouts.append((seq_ids, action_mask))
+
+                r, h_match, _f1 = evaluate_executed_trajectory(
+                    sample=sample,
+                    executed_calls=executed_calls,
+                    pred_env=pred_env,
+                    has_exec_error=has_exec_error,
                     free_text_keys=FREE_TEXT_KEYS,
                     _canon_scalar=_canon_scalar,
                     _tokens=_tokens,
@@ -290,7 +405,7 @@ def main():
             r_std = r_tensor.std() + 1e-8
             advantages = (r_tensor - r_mean) / r_std
 
-            # 4. POLICY GRADIENT & KL LOSS COMPUTATION
+            # 4. POLICY GRADIENT & K3 KL LOSS COMPUTATION (ASSISTANT ACTION TOKENS ONLY)
             optimizer.zero_grad()
             step_loss = torch.tensor(0.0, device=device)
 
@@ -299,9 +414,14 @@ def main():
                 if abs(adv.item()) < 1e-6:
                     continue
 
-                full_seq = group_tokens[g_idx].unsqueeze(0)
+                seq_ids, action_mask = group_rollouts[g_idx]
+                if len(seq_ids) < 2 or not any(action_mask[1:]):
+                    continue
+
+                full_seq = torch.tensor([seq_ids], dtype=torch.long, device=device)
                 labels = full_seq.clone()
-                labels[:, :prompt_len] = -100
+                action_t = torch.tensor([action_mask], dtype=torch.bool, device=device)
+                labels[~action_t] = -100
 
                 # Current policy logits
                 curr_logits = model(full_seq).logits
@@ -312,13 +432,14 @@ def main():
                     curr_shift.view(-1, curr_shift.size(-1)),
                     shift_labels.view(-1),
                     reduction="none",
+                    ignore_index=-100,
                 ).view(shift_labels.shape)
 
-                # Mask out prompt tokens
+                # Mask out initial prompt and <tool_response> tokens
                 resp_mask = (shift_labels != -100).float()
                 seq_log_prob = (log_probs * resp_mask).sum() / resp_mask.sum().clamp(min=1.0)
 
-                # Reference policy KL penalty (disable LoRA to compute ref log_prob)
+                # Reference policy K3 KL penalty (non-negative)
                 with torch.no_grad():
                     with model.disable_adapter():
                         ref_logits = model(full_seq).logits
@@ -327,13 +448,12 @@ def main():
                             ref_shift.view(-1, ref_shift.size(-1)),
                             shift_labels.view(-1),
                             reduction="none",
+                            ignore_index=-100,
                         ).view(shift_labels.shape)
-                        ref_seq_log_prob = (ref_log_probs * resp_mask).sum() / resp_mask.sum().clamp(min=1.0)
 
-                # Approximate KL divergence
-                kl_div = seq_log_prob - ref_seq_log_prob
+                kl_div = compute_kl_k3(log_probs, ref_log_probs, resp_mask)
 
-                # GRPO surrogate loss: - Advantage * log_prob + beta * KL
+                # GRPO surrogate loss: - Advantage * log_prob + beta * K3_KL
                 loss_g = -adv * seq_log_prob + args.kl_beta * kl_div
                 step_loss += loss_g / args.group_size
 

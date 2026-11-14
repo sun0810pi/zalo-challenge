@@ -21,16 +21,15 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from evaluate import evaluate_predictions
-from src.agent import LLMBackend, LifeMateAgent, fix_all_seeds
+from src.agent import LLMBackend, LifeMateAgent, build_preprocessor, fix_all_seeds
 from src.asr import Transcriber
-from src.preprocessor_a import ContextLanguagePreprocessorA
 from src.router import SemanticToolRouter
 from src.speculative_rollout import evaluate_trajectory_quality
 
 
 def main():
     ap = argparse.ArgumentParser(description="Test-Time Compute: In-Memory Best-of-N Simulator Rollout for ZAC 2026")
-    ap.add_argument("--split", default="public_test", choices=["public_test", "train"])
+    ap.add_argument("--split", default="public_test", choices=["public_test", "train", "private_test"])
     ap.add_argument("--root", default=".")
     ap.add_argument("--output", default="submissions/submission_best_of_3.jsonl")
     ap.add_argument("--model", default="Qwen/Qwen3-4B")
@@ -40,16 +39,17 @@ def main():
     ap.add_argument("--temperatures", default="0.0,0.6,0.8", help="Danh sách nhiệt độ sinh cho từng ứng viên (cách nhau bởi dấu phẩy)")
     ap.add_argument("--asr-model", default="deepdml/faster-whisper-large-v3-turbo-ct2")
     ap.add_argument("--asr-lora-path", default=None)
-    ap.add_argument(
-        "--preprocessor",
-        default="safe",
-        choices=["a", "b", "safe"],
-        help="Tiền xử lý ASR an toàn; A chỉ dùng cho ablation vì có thể làm hỏng entity",
-    )
+    ap.add_argument("--preprocessor", default="safe", choices=["a", "b", "safe"])
     ap.add_argument("--gpu-memory-utilization", type=float, default=0.72)
     ap.add_argument("--ids-file", default=None)
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--max-steps", type=int, default=8)
+    ap.add_argument(
+        "--max-apps",
+        type=int,
+        default=None,
+        help="Giới hạn số app tối đa trong ALLOWED TOOLS (mặc định None = giữ toàn bộ app khớp lúc train)",
+    )
     ap.add_argument("--ignore-asr-cache", action="store_true")
     ap.add_argument("--use-gt-asr", action="store_true")
     args = ap.parse_args()
@@ -117,7 +117,7 @@ def main():
         gpu_memory_utilization=args.gpu_memory_utilization,
     )
 
-    preprocessor = ContextLanguagePreprocessorA()
+    preprocessor = build_preprocessor(mode=args.preprocessor, sim_threshold=0.80)
     router = SemanticToolRouter(top_k_recommended=4)
 
     # Create agent instance
@@ -131,6 +131,7 @@ def main():
         enable_fuzzy_normalizer=True,
         enable_hybrid_engine=True,
         enable_action_triage=True,
+        max_apps=args.max_apps,
     )
 
     out_path = Path(args.output)
