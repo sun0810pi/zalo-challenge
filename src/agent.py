@@ -97,6 +97,21 @@ def fix_all_seeds(seed: int = 42) -> None:
 _VLLM_LORA_RANK_BUCKETS = (64, 128, 256, 512)
 
 
+def _supports_native_bf16(torch_mod: Any) -> bool:
+    """Return True only when CUDA hardware supports native bfloat16 (SM >= 8.0, excluding T4 emulation)."""
+    if not torch_mod.cuda.is_available():
+        return False
+    try:
+        if torch_mod.cuda.get_device_capability()[0] < 8:
+            return False
+    except Exception:
+        pass
+    try:
+        return bool(torch_mod.cuda.is_bf16_supported(including_emulation=False))
+    except TypeError:
+        return bool(torch_mod.cuda.is_bf16_supported())
+
+
 def _resolve_max_lora_rank(lora_path: str | None, override: int | None = None) -> int:
     """Resolve vLLM max_lora_rank from explicit override or adapter_config.json."""
     if override is not None:
@@ -188,7 +203,16 @@ class LLMBackend:
         from vllm import LLM as VLLMEngine
         from vllm import SamplingParams
 
-        dtype = "bfloat16" if torch.cuda.is_bf16_supported() else "float16"
+        dtype = "bfloat16" if _supports_native_bf16(torch) else "float16"
+        if torch.cuda.is_available():
+            total_vram_gb = torch.cuda.get_device_properties(0).total_memory / (1024**3)
+            if total_vram_gb < 18.0:
+                self.max_model_len = min(self.max_model_len, 10240)
+                self.gpu_memory_utilization = max(self.gpu_memory_utilization, 0.88)
+                print(
+                    f"[LLMBackend] Detected {total_vram_gb:.1f} GiB GPU ({dtype}); "
+                    f"setting max_model_len={self.max_model_len}, gpu_memory_utilization={self.gpu_memory_utilization:.2f}"
+                )
         vllm_kwargs = {
             "model": self.model_name_or_path,
             "max_model_len": self.max_model_len,
@@ -225,7 +249,7 @@ class LLMBackend:
         import torch
         from transformers import AutoModelForCausalLM
 
-        torch_dtype = torch.bfloat16 if (torch.cuda.is_available() and torch.cuda.is_bf16_supported()) else torch.float16
+        torch_dtype = torch.bfloat16 if _supports_native_bf16(torch) else torch.float16
         if not torch.cuda.is_available():
             torch_dtype = torch.float32
 
@@ -488,6 +512,12 @@ class ReActSessionState:
             final_user_text=cleaned_user_text,
             catalog_tools_map=catalog_tools_map,
         )
+
+        if cleaned_hist_transcripts and sample.get("history"):
+            for turn in sample["history"]:
+                aud = turn.get("audio", "")
+                if aud in cleaned_hist_transcripts and cleaned_hist_transcripts[aud]:
+                    turn["audio_text"] = cleaned_hist_transcripts[aud]
 
         self.messages = build_initial_messages(
             sample=sample,
@@ -797,10 +827,9 @@ class LifeMateAgent:
 
         if cleaned_hist_transcripts and sample.get("history"):
             for turn in sample["history"]:
-                if not turn.get("audio_text"):
-                    aud = turn.get("audio", "")
-                    if aud in cleaned_hist_transcripts:
-                        turn["audio_text"] = cleaned_hist_transcripts[aud]
+                aud = turn.get("audio", "")
+                if aud in cleaned_hist_transcripts and cleaned_hist_transcripts[aud]:
+                    turn["audio_text"] = cleaned_hist_transcripts[aud]
 
         state = ReActSessionState(
             sample=sample,

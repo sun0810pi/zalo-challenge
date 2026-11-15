@@ -26,7 +26,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from src.guardrail import parse_tool_calls
+from src.guardrail import PureSchemaStateTracker, parse_tool_calls
 
 
 def _extract_tokens_and_ids_from_result(result: dict[str, Any]) -> tuple[set[str], dict[str, set[str]]]:
@@ -42,13 +42,13 @@ def _extract_tokens_and_ids_from_result(result: dict[str, Any]) -> tuple[set[str
         if isinstance(v, list):
             for item in v:
                 if isinstance(item, dict):
-                    for id_field in ("id", "merchant_id", "symbol", "route_id", "channel", "contact_id", "account_id", "beneficiary_id", "place_id", "recipe_id"):
+                    for id_field in PureSchemaStateTracker.ENTITY_ID_KEYS:
                         val = item.get(id_field)
                         if isinstance(val, str) and val:
                             known_ids.add(val)
                             by_key.setdefault(k, set()).add(val)
         elif isinstance(v, dict):
-            for id_field in ("id", "merchant_id", "symbol", "route_id", "channel", "contact_id", "account_id", "beneficiary_id", "place_id", "recipe_id"):
+            for id_field in PureSchemaStateTracker.ENTITY_ID_KEYS:
                 val = v.get(id_field)
                 if isinstance(val, str) and val:
                     known_ids.add(val)

@@ -96,14 +96,17 @@ class HybridProgramAidedEngine:
         user_text: str,
         forecast_result: dict[str, Any],
     ) -> bool:
-        """Returns False if user had a conditional 'nếu mưa thì... không mưa thì thôi'
-        and tomorrow DOES NOT rain, indicating agent should immediately STOP.
+        """Returns False if the user expressed an explicit weather condition that is NOT met
+        (e.g., 'nếu mưa thì ..., không mưa thì thôi' when forecast is dry, OR
+        'nếu không mưa thì ...' when all target forecast entries indicate rain),
+        signaling the ReAct loop to stop immediately.
         """
-        user_l = user_text.lower()
-        if "mưa" not in user_l or "nếu" not in user_l:
-            return True  # Not a conditional rain clause
+        if not isinstance(forecast_result, dict):
+            return True
 
-        # Check if the user specified an empty / noop branch for no rain
+        user_l = user_text.lower()
+
+        # Check explicit noop fallback for no-rain ('nếu mưa thì ..., không mưa thì thôi')
         has_noop_fallback = any(
             kw in user_l
             for kw in (
@@ -117,16 +120,41 @@ class HybridProgramAidedEngine:
             )
         )
 
-        if not has_noop_fallback:
+        # Check explicit condition requiring NO rain ('nếu (trời/mai/...) không mưa thì ...')
+        cond_rain_clause = bool(re.search(r"nếu\s+(?:trời\s+|mai\s+|ngày\s+mai\s+|hôm\s+nay\s+|thời\s+tiết\s+)?(?:có\s+)?mưa\b", user_l))
+        cond_no_rain_clause = bool(
+            re.search(
+                r"(?:nếu\s+(?:trời\s+|mai\s+|ngày\s+mai\s+|hôm\s+nay\s+|thời\s+tiết\s+)?(?:không|ko|chẳng|hết)\s+mưa|"
+                r"(?:không\s+mưa|trời\s+nắng|thời\s+tiết\s+đẹp)\s+thì)",
+                user_l,
+            )
+        ) and not has_noop_fallback and not cond_rain_clause
+
+        if not has_noop_fallback and not cond_no_rain_clause:
             return True
 
-        # Check rain forecast
-        forecasts = forecast_result.get("forecast") or []
+        forecasts = forecast_result.get("forecast")
+        if forecasts is None:
+            forecasts = forecast_result.get("forecasts")
+
+        rain_flags: list[bool] = []
         if isinstance(forecasts, list) and forecasts:
-            first_day = forecasts[0]
-            is_rain = first_day.get("rain", False)
-            if not is_rain:
-                # Target day does NOT rain -> should STOP!
+            rain_flags = [bool(d.get("rain", False)) for d in forecasts if isinstance(d, dict)]
+        elif isinstance(forecast_result.get("current"), dict) and "rain" in forecast_result["current"]:
+            rain_flags = [bool(forecast_result["current"].get("rain", False))]
+        elif "rain" in forecast_result:
+            rain_flags = [bool(forecast_result.get("rain", False))]
+
+        if not rain_flags:
+            return True
+
+        if has_noop_fallback:
+            # Stop only when none of the returned forecast entries show rain
+            if not any(rain_flags):
+                return False
+        elif cond_no_rain_clause:
+            # Conservative multi-day check: stop only when all returned forecast entries show rain
+            if all(rain_flags):
                 return False
 
         return True

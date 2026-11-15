@@ -369,10 +369,11 @@ class Transcriber:
         installed_apps: dict[str, Any] | None = None,
     ) -> str:
         key = cache_key or str(wav_path)
+        if key in self._cleaned_cache_keys:
+            return self.cache.get(key, "")
         if key in self.cache and self.cache[key].strip():
-            if key not in self._cleaned_cache_keys:
-                self.cache[key] = clean_asr_transcript(self.cache[key], installed_apps=installed_apps)
-                self._cleaned_cache_keys.add(key)
+            self.cache[key] = clean_asr_transcript(self.cache[key], installed_apps=installed_apps)
+            self._cleaned_cache_keys.add(key)
             return self.cache[key]
 
         self._load_model()

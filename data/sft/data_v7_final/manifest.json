@@ -1,0 +1,18 @@
+{
+  "name": "data_v7_final",
+  "based_on": "data_v6_adapted (1,906 train / 201 val)",
+  "added_weak_app_spoken_variants": 140,
+  "total_train": 2046,
+  "total_val": 201,
+  "train_triage_distribution": {
+    "DOABLE": 1619,
+    "REJECT": 139,
+    "ASK_INFO": 288
+  },
+  "val_triage_distribution": {
+    "ASK_INFO": 25,
+    "DOABLE": 168,
+    "REJECT": 8
+  },
+  "summary": "data_v6_adapted + 140 simulator-grounded spoken/ASR variants targeting the 14 lowest-coverage apps in locked 79.1%/14.1%/6.7% triage balance"
+}

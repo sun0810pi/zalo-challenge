@@ -222,8 +222,35 @@ def normalize_arguments(
 class PureSchemaStateTracker:
     """Generic, 100% schema-driven state tracker and pre-execution guardrail.
     Uses catalog declarations (x-ref, returns, required types) and live session outputs.
-    Contains ZERO hardcoded prefixes or dataset-specific ID assumptions.
     """
+
+    ENTITY_ID_KEYS = (
+        "id",
+        "merchant_id",
+        "symbol",
+        "route_id",
+        "product_id",
+        "trip_id",
+        "lot_id",
+        "flight_id",
+        "tracking_id",
+        "device_id",
+        "restaurant_id",
+        "show_id",
+        "contact_id",
+        "account_id",
+        "beneficiary_id",
+        "channel",
+        "recipe_id",
+        "habit_id",
+        "program_id",
+        "reward_id",
+        "place_id",
+        "booking_id",
+        "session_id",
+        "order_id",
+        "bill_id",
+    )
 
     def __init__(
         self,
@@ -292,6 +319,31 @@ class PureSchemaStateTracker:
 
         return f"tool read của ứng dụng '{app_name}'"
 
+    def _record_entity_dict(self, item: dict[str, Any], coll_name: str) -> None:
+        """Register primary and secondary entity identifiers from an observed object."""
+        found_ids: list[str] = []
+        for id_key in self.ENTITY_ID_KEYS:
+            raw_val = item.get(id_key)
+            if raw_val is not None:
+                id_str = str(raw_val).strip()
+                if id_str and id_str not in found_ids:
+                    found_ids.append(id_str)
+
+        if not found_ids:
+            return
+
+        primary_id = found_ids[0]
+        for id_str in found_ids:
+            self.all_known_ids.add(id_str)
+            self.all_known_tokens.add(id_str)
+            self.collection_entity_ids.setdefault(coll_name, set()).add(id_str)
+            self.id_to_collections.setdefault(id_str, set()).add(coll_name)
+            self.observed_entities[id_str] = item
+
+        # Track device types from device objects
+        if item.get("type"):
+            self.device_types[primary_id] = str(item["type"])
+
     def record_observation(self, tool_name: str, tool_args: dict[str, Any], result: dict[str, Any]) -> None:
         """Update tracked state from a completed tool execution without assuming any app names."""
         if not isinstance(result, dict):
@@ -308,25 +360,9 @@ class PureSchemaStateTracker:
             if isinstance(val, list):
                 for item in val:
                     if isinstance(item, dict):
-                        item_id = str(item.get("id") or item.get("merchant_id") or item.get("symbol") or "")
-                        if item_id:
-                            self.all_known_ids.add(item_id)
-                            self.all_known_tokens.add(item_id)
-                            self.collection_entity_ids.setdefault(coll_name, set()).add(item_id)
-                            self.id_to_collections.setdefault(item_id, set()).add(coll_name)
-                            self.observed_entities[item_id] = item
-
-                        # Track device types from device objects
-                        if item.get("type") and item_id:
-                            self.device_types[item_id] = str(item["type"])
+                        self._record_entity_dict(item, coll_name)
             elif isinstance(val, dict):
-                item_id = str(val.get("id") or val.get("symbol") or "")
-                if item_id:
-                    self.all_known_ids.add(item_id)
-                    self.all_known_tokens.add(item_id)
-                    self.collection_entity_ids.setdefault(coll_name, set()).add(item_id)
-                    self.id_to_collections.setdefault(item_id, set()).add(coll_name)
-                    self.observed_entities[item_id] = val
+                self._record_entity_dict(val, coll_name)
             elif isinstance(val, (int, float)) and "balance" in key:
                 self.balances[f"{app_name}.{key}"] = val
 

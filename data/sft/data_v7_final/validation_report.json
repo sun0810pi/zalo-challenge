@@ -1,0 +1,44 @@
+{
+  "dataset": "data_v7_final",
+  "counts": {
+    "v6_adapted_train": 1906,
+    "v7_weak_spoken_added": 140,
+    "total_train": 2046,
+    "total_val": 201
+  },
+  "integrity_checks": {
+    "duplicate_ids": 0,
+    "train_val_id_overlap": 0,
+    "train_val_prompt_overlap": 0,
+    "schema_and_grounding_errors": 0,
+    "sample_errors": [],
+    "max_train_chars": 27639,
+    "max_val_chars": 27961
+  },
+  "weak_apps_call_counts_train": {
+    "translator": 25,
+    "calculator": 27,
+    "lottery": 33,
+    "exchange_rate": 35,
+    "event_tickets": 43,
+    "public_transit": 43,
+    "habit_tracker": 43,
+    "package_tracking": 38,
+    "home_energy": 36,
+    "pantry": 46,
+    "fuel_price": 38,
+    "recipes": 49,
+    "gold_price": 40,
+    "parking": 48
+  },
+  "train_triage_distribution": {
+    "DOABLE": 1619,
+    "REJECT": 139,
+    "ASK_INFO": 288
+  },
+  "val_triage_distribution": {
+    "ASK_INFO": 25,
+    "DOABLE": 168,
+    "REJECT": 8
+  }
+}
