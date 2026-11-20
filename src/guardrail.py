@@ -29,7 +29,7 @@ _AIRPORT_CODE_FIXES: dict[str, str] = {
 
 # Conversational prefixes/suffixes to strip from plain-substring search queries
 _SEARCH_PREFIX_RE = re.compile(
-    r"^(?:vở\s+kịch|vở\s+hài|hài\s+kịch|hà\s+|hãy\s+|đêm\s+nhạc|chương\s+trình|sự\s+kiện|"
+    r"^(?:bộ\s+phim|phim\s+bộ|phim\s+lẻ|phim|vở\s+kịch|vở\s+hài|hài\s+kịch|hà\s+|hãy\s+|đêm\s+nhạc|chương\s+trình|sự\s+kiện|"
     r"bãi\s+đỗ\s+xe\s+trung\s+tâm|bãi\s+xe\s+trung\s+tâm|bãi\s+đỗ\s+xe|bãi\s+xe|"
     r"nhà\s+hàng|quán\s+ăn|bài\s+hát|ca\s+khúc|cuốn\s+sách|khóa\s+học)\s+",
     re.IGNORECASE,
@@ -252,6 +252,8 @@ class PureSchemaStateTracker:
         "bill_id",
     )
 
+    _ALWAYS_ALIAS_ID_KEYS = frozenset({"tracking_id", "symbol", "channel"})
+
     def __init__(
         self,
         sample: dict[str, Any],
@@ -261,14 +263,24 @@ class PureSchemaStateTracker:
         self.catalog_tools_map = catalog_tools_map
         self.user_text = final_user_text
 
-        # 1. Dynamically map collection names to providing read tools from the catalog
+        # 1. Dynamically map collection names to providing read tools and track valid x-ref collections
         self.collection_to_read_tool: dict[str, str] = {}
+        self.app_xref_collections: dict[str, set[str]] = {}
+        self.tool_xref_collections: dict[str, set[str]] = {}
         for tname, tspec in self.catalog_tools_map.items():
+            app_name = tname.split(".", 1)[0]
             if tspec.get("kind") == "read":
-                app_name = tname.split(".", 1)[0]
                 ret_str = tspec.get("returns", "").replace("[]", "").strip()
                 if ret_str:
                     self.collection_to_read_tool[f"{app_name}.{ret_str}"] = tname
+            props = (tspec.get("parameters") or {}).get("properties") or {}
+            for p_spec in props.values():
+                raw_xref = p_spec.get("x-ref")
+                if isinstance(raw_xref, str) and raw_xref.strip():
+                    xref = raw_xref.split(" ", 1)[0].strip()
+                    xref_app = xref.split(".", 1)[0] if "." in xref else app_name
+                    self.app_xref_collections.setdefault(xref_app, set()).add(xref)
+                    self.tool_xref_collections.setdefault(tname, set()).add(xref)
 
         # 2. Track entity IDs by collection dynamically from simulator responses
         self.collection_entity_ids: dict[str, set[str]] = {}
@@ -319,30 +331,113 @@ class PureSchemaStateTracker:
 
         return f"tool read của ứng dụng '{app_name}'"
 
-    def _record_entity_dict(self, item: dict[str, Any], coll_name: str) -> None:
-        """Register primary and secondary entity identifiers from an observed object."""
-        found_ids: list[str] = []
+    def _resolve_target_collections(
+        self,
+        app_name: str,
+        key: str,
+        tool_name: str | None = None,
+    ) -> list[str]:
+        """Resolve a tool result field name (including singular write objects, suffix matches,
+        or generic 'item' wrappers) to the catalog's canonical x-ref collection name(s).
+        """
+        raw_coll = f"{app_name}.{key}"
+        known = self.app_xref_collections.get(app_name, set())
+        if raw_coll in known:
+            return [raw_coll]
+
+        if known:
+            plurals = {f"{key}s", f"{key}es"}
+            if key.endswith("y"):
+                plurals.add(f"{key[:-1]}ies")
+            matched = sorted(
+                xr
+                for xr in known
+                if "." in xr
+                and (
+                    xr.split(".", 1)[1] in plurals
+                    or key.endswith("_" + xr.split(".", 1)[1])
+                )
+            )
+            if matched:
+                return matched
+
+        if key == "item":
+            if tool_name and self.tool_xref_collections.get(tool_name):
+                same_app = sorted(
+                    xr for xr in self.tool_xref_collections[tool_name] if xr.startswith(f"{app_name}.")
+                )
+                if same_app:
+                    return same_app
+            if len(known) == 1:
+                return list(known)
+
+        return [raw_coll]
+
+    def _record_entity_dict(
+        self,
+        item: dict[str, Any],
+        target_colls: list[str] | str,
+        app_name: str | None = None,
+        allow_nested: bool = True,
+    ) -> None:
+        """Register primary and same-entity IDs into resolved target collections while
+        keeping foreign-key IDs isolated in all_known_ids, and harvesting nested list entities.
+        """
+        colls = [target_colls] if isinstance(target_colls, str) else list(target_colls)
+        resolved_app = app_name or (colls[0].split(".", 1)[0] if colls and "." in colls[0] else "")
+
+        allowed_same_keys = set(self._ALWAYS_ALIAS_ID_KEYS) | {"id"}
+        for coll in colls:
+            suf = coll.split(".", 1)[-1]
+            if suf.endswith("ies"):
+                allowed_same_keys.add(f"{suf[:-3]}y_id")
+            elif suf.endswith("ses"):
+                allowed_same_keys.add(f"{suf[:-2]}_id")
+            elif suf.endswith("s"):
+                allowed_same_keys.add(f"{suf[:-1]}_id")
+            else:
+                allowed_same_keys.add(f"{suf}_id")
+
+        same_entity_ids: list[str] = []
+        foreign_ids: list[str] = []
         for id_key in self.ENTITY_ID_KEYS:
             raw_val = item.get(id_key)
             if raw_val is not None:
                 id_str = str(raw_val).strip()
-                if id_str and id_str not in found_ids:
-                    found_ids.append(id_str)
+                if not id_str:
+                    continue
+                if id_key in allowed_same_keys:
+                    if id_str not in same_entity_ids:
+                        same_entity_ids.append(id_str)
+                else:
+                    if id_str not in foreign_ids:
+                        foreign_ids.append(id_str)
 
-        if not found_ids:
-            return
-
-        primary_id = found_ids[0]
-        for id_str in found_ids:
+        primary_id = same_entity_ids[0] if same_entity_ids else None
+        for id_str in same_entity_ids:
             self.all_known_ids.add(id_str)
             self.all_known_tokens.add(id_str)
-            self.collection_entity_ids.setdefault(coll_name, set()).add(id_str)
-            self.id_to_collections.setdefault(id_str, set()).add(coll_name)
+            for coll in colls:
+                self.collection_entity_ids.setdefault(coll, set()).add(id_str)
+                self.id_to_collections.setdefault(id_str, set()).add(coll)
             self.observed_entities[id_str] = item
 
+        for id_str in foreign_ids:
+            self.all_known_ids.add(id_str)
+            self.all_known_tokens.add(id_str)
+
         # Track device types from device objects
-        if item.get("type"):
+        if primary_id and item.get("type"):
             self.device_types[primary_id] = str(item["type"])
+
+        # Harvest nested list-of-dict sub-entities (e.g. public_services.list_services -> submitted_applications)
+        if allow_nested and resolved_app:
+            for nk, nv in item.items():
+                if isinstance(nv, list) and any(isinstance(sub, dict) for sub in nv):
+                    nested_colls = self._resolve_target_collections(resolved_app, nk, tool_name=None)
+                    for sub in nv:
+                        if isinstance(sub, dict):
+                            self._record_entity_dict(sub, nested_colls, app_name=resolved_app, allow_nested=False)
 
     def record_observation(self, tool_name: str, tool_args: dict[str, Any], result: dict[str, Any]) -> None:
         """Update tracked state from a completed tool execution without assuming any app names."""
@@ -356,13 +451,14 @@ class PureSchemaStateTracker:
             if key in ("ok", "done", "message", "_hint"):
                 continue
 
-            coll_name = f"{app_name}.{key}"
             if isinstance(val, list):
+                target_colls = self._resolve_target_collections(app_name, key, tool_name=tool_name)
                 for item in val:
                     if isinstance(item, dict):
-                        self._record_entity_dict(item, coll_name)
+                        self._record_entity_dict(item, target_colls, app_name=app_name, allow_nested=True)
             elif isinstance(val, dict):
-                self._record_entity_dict(val, coll_name)
+                target_colls = self._resolve_target_collections(app_name, key, tool_name=tool_name)
+                self._record_entity_dict(val, target_colls, app_name=app_name, allow_nested=True)
             elif isinstance(val, (int, float)) and "balance" in key:
                 self.balances[f"{app_name}.{key}"] = val
 
@@ -446,8 +542,6 @@ class PureSchemaStateTracker:
                     expected_type = "light"
                 elif "climate" in tool_sub:
                     expected_type = "climate"
-                elif "switch" in tool_sub:
-                    expected_type = "switch"
 
                 if expected_type and actual_type != expected_type:
                     return (

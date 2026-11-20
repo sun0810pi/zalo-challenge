@@ -19,6 +19,8 @@ saved_models/asr/*
 *.pt
 *.pth
 *.tar.gz
+*.zip
+__MACOSX/
 train/
 public_test/
 private_test/

@@ -17,17 +17,28 @@ def _resolve_xref_read_tools(
     coll_suffix = xref_collection.split(".", 1)[1] if "." in xref_collection else ""
 
     exact_matches: list[str] = []
+    secondary_matches: list[str] = []
     app_reads: list[str] = []
     for tname, tspec in catalog_tools_map.items():
-        if not tname.startswith(f"{app_prefix}.") or tspec.get("kind") != "read":
+        if tname == target_tool or not tname.startswith(f"{app_prefix}.") or tspec.get("kind") != "read":
             continue
         app_reads.append(tname)
-        ret_str = str(tspec.get("returns") or "").replace("[]", "").strip()
+        ret_raw = str(tspec.get("returns") or "")
+        ret_str = ret_raw.replace("[]", "").strip()
         ret_suffix = ret_str.split(".", 1)[-1] if ret_str else ""
         if ret_str == xref_collection or (coll_suffix and ret_suffix == coll_suffix):
             exact_matches.append(tname)
+        elif coll_suffix:
+            ret_tokens = [tok.strip().split(".", 1)[-1] for tok in ret_str.split(",") if tok.strip()]
+            desc_l = str(tspec.get("description") or "").lower()
+            if coll_suffix in ret_tokens or coll_suffix in tname or coll_suffix in desc_l:
+                secondary_matches.append(tname)
 
-    return exact_matches or app_reads
+    if exact_matches:
+        return exact_matches
+    if secondary_matches:
+        return secondary_matches
+    return [t for t in app_reads if not str((catalog_tools_map.get(t) or {}).get("returns") or "").strip()]
 
 
 class ActionTriageBarrier:

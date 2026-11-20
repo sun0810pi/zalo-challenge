@@ -195,7 +195,8 @@ def rollout_multiturn_trajectory(
     tz_offset = cur_time[19:] if len(cur_time) > 19 else "+07:00"
 
     pred_env = ToolEnv("train", qid, root=root)
-    state_tracker = PureSchemaStateTracker(catalog_tools_map)
+    user_text = sample.get("audio_text") or ""
+    state_tracker = PureSchemaStateTracker(sample, user_text, catalog_tools_map)
     normalizer = EntityNormalizer(enabled=True)
 
     seq_ids: list[int] = list(tokenizer.encode(prompt_text, add_special_tokens=False))

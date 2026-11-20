@@ -60,6 +60,48 @@ class TestHybridAndNumberParser(unittest.TestCase):
         if extras:
             self.assertTrue(all("name" in c and "arguments" in c for c in extras))
 
+    def test_check_weather_condition_branches_and_multiday(self) -> None:
+        # 1. "Nếu mưa thì ..., không mưa thì thôi" -> stop on dry forecast, continue on rain
+        self.assertFalse(
+            HybridProgramAidedEngine.check_weather_condition(
+                "Nếu mai mưa thì dời chạy bộ, không mưa thì thôi.",
+                {"ok": True, "forecast": [{"date": "2026-11-16", "rain": False}]},
+            )
+        )
+        self.assertTrue(
+            HybridProgramAidedEngine.check_weather_condition(
+                "Nếu mai mưa thì dời chạy bộ, không mưa thì thôi.",
+                {"ok": True, "forecast": [{"date": "2026-11-16", "rain": True}]},
+            )
+        )
+        # 2. "Nếu trời không mưa thì ..." -> stop when all target forecast days rain
+        self.assertFalse(
+            HybridProgramAidedEngine.check_weather_condition(
+                "Nếu trời không mưa thì đặt vé công viên nhé.",
+                {"ok": True, "forecast": [{"date": "2026-11-16", "rain": True}]},
+            )
+        )
+        # 3. Multi-day forecast with mixed rain/dry must NOT falsely stop
+        self.assertTrue(
+            HybridProgramAidedEngine.check_weather_condition(
+                "Nếu mai trời không mưa thì đặt xe đi chơi nhé.",
+                {
+                    "ok": True,
+                    "forecasts": [
+                        {"date": "2026-11-15", "rain": True},
+                        {"date": "2026-11-16", "rain": False},
+                    ],
+                },
+            )
+        )
+        # 4. Non-weather "nếu" conditional must NOT trigger false stop
+        self.assertTrue(
+            HybridProgramAidedEngine.check_weather_condition(
+                "Xem thời tiết mai dùm anh, nếu rảnh thì nhắc anh gọi bạn Minh.",
+                {"ok": True, "forecast": [{"date": "2026-11-16", "rain": True}]},
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

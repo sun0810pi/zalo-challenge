@@ -196,6 +196,72 @@ class TestAgentAndBatchedLoop(unittest.TestCase):
             self.assertEqual(_resolve_max_lora_rank(str(root), override=256), 256)
             self.assertEqual(_resolve_max_lora_rank(None), 64)
 
+    def test_supports_native_bf16_excludes_turing_t4(self):
+        from types import SimpleNamespace
+        from src.agent import _supports_native_bf16
+
+        t4_torch = SimpleNamespace(
+            cuda=SimpleNamespace(
+                is_available=lambda: True,
+                get_device_capability=lambda: (7, 5),
+                is_bf16_supported=lambda including_emulation=True: including_emulation,
+            )
+        )
+        self.assertFalse(_supports_native_bf16(t4_torch))
+
+        l4_torch = SimpleNamespace(
+            cuda=SimpleNamespace(
+                is_available=lambda: True,
+                get_device_capability=lambda: (8, 9),
+                is_bf16_supported=lambda including_emulation=True: True,
+            )
+        )
+        self.assertTrue(_supports_native_bf16(l4_torch))
+
+    def test_run_sample_overwrites_raw_history_with_cleaned_transcript(self) -> None:
+        from src.agent import LifeMateAgent
+
+        seen_prompts: list[list[dict[str, str]]] = []
+
+        class _SpyLLM:
+            def generate(self, messages: list[dict[str, str]], temperature: float = 0.0) -> str:
+                seen_prompts.append(messages)
+                return "<think>ok</think>\n<tool_call>\n</tool_call>"
+
+        class _FakePrep:
+            def preprocess(self, raw_asr_text: str, sample: dict[str, Any]) -> str:
+                return raw_asr_text.replace("cổ phếu ép pi ti", "cổ phiếu FPT")
+
+        agent = LifeMateAgent(
+            llm=_SpyLLM(),  # type: ignore[arg-type]
+            catalog_tools_map=self.catalog,
+            preprocessor=_FakePrep(),
+        )
+        sample_with_raw_hist = {
+            "id": "unit_hist_001",
+            "audio": "audio/u1/final.wav",
+            "context": dict(self.sample["context"]),
+            "history": [
+                {
+                    "role": "user",
+                    "audio": "audio/u1/turn1.wav",
+                    "audio_text": "Kiểm tra cổ phếu ép pi ti",
+                }
+            ],
+        }
+        agent.run_sample(
+            env=_FakeEnv(),
+            sample=sample_with_raw_hist,
+            final_user_text="Xem tiếp đi",
+            history_transcripts={"audio/u1/turn1.wav": "Kiểm tra cổ phếu ép pi ti"},
+        )
+        self.assertEqual(
+            sample_with_raw_hist["history"][0]["audio_text"],
+            "Kiểm tra cổ phiếu FPT",
+        )
+        self.assertTrue(seen_prompts)
+        self.assertIn("Kiểm tra cổ phiếu FPT", seen_prompts[0][1]["content"])
+
 
 if __name__ == "__main__":
     unittest.main()

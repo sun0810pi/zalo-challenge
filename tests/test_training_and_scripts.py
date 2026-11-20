@@ -134,6 +134,11 @@ class TestTrainingAndScripts(unittest.TestCase):
         self.assertIn(2.5, weights)
         # ord_991 should hit at least 2.0
         self.assertTrue(any(w >= 2.0 for w in weights))
+        # Extended prefixes (trip_, rt_, prod_) and stock ticker (FPT) should hit >= 2.0
+        ext_seg = '<tool_call>\n{"name": "train_bus_tickets.book", "arguments": {"trip_id": "trip_01", "symbol": "FPT"}}\n</tool_call>'
+        ext_ids = tok.encode(ext_seg)
+        ext_weights = collator.compute_weights_for_ids(ext_ids, list(ext_ids))
+        self.assertTrue(any(w >= 2.0 and w < 2.5 for w in ext_weights))
         # Outside labels (-100) must get 0.0
         prefixed_weights = collator.compute_weights_for_ids(ids, [-100] + labels[1:])
         self.assertEqual(prefixed_weights[0], 0.0)

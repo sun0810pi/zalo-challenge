@@ -6,14 +6,17 @@ __pycache__/
 venv/
 .DS_Store
 *.tar.gz
+*.zip
 *.docx
+__MACOSX/
 
-# Exclude competition datasets and zaic_tools (must be mounted at /data at runtime)
+# Exclude competition datasets, caches, and unmerged model hubs (must be mounted at /data at runtime)
 train/
 public_test/
 private_test/
 data/
 cache/
+models/
 submissions/
 checkpoints/
 reports/

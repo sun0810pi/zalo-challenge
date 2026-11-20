@@ -7,6 +7,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from typing import Any
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -213,6 +214,106 @@ class TestDockerSubmission(unittest.TestCase):
         gitignore_text = (ROOT / ".gitignore").read_text(encoding="utf-8")
         for pattern in ("saved_models/llm/*", "!saved_models/llm/.gitkeep", "saved_models/asr/*", "!saved_models/asr/.gitkeep", "*.safetensors", "*.tar.gz"):
             self.assertIn(pattern, gitignore_text)
+
+    def test_run_predict_two_phase_asr_unload_and_batched_vllm(self) -> None:
+        events: list[str] = []
+
+        class _PhaseTranscriber:
+            def __init__(self, **kwargs: Any) -> None:
+                events.append("init_asr")
+
+            def pretranscribe_samples(self, samples: list[dict], split_dir: Path) -> None:
+                events.append("pretranscribe")
+
+            def unload_model(self) -> None:
+                events.append("unload_asr")
+
+            def transcribe_sample(self, sample: dict, split_dir: Path) -> tuple[str, dict[str, str]]:
+                return "kiểm tra trạng thái nhà thông minh", {}
+
+        class _PhaseBatchedLLM:
+            backend = "vllm"
+
+            def __init__(self, **kwargs: Any) -> None:
+                events.append("init_llm")
+
+            def generate_batch(self, list_of_messages: list[list[dict[str, str]]]) -> list[str]:
+                events.append(f"generate_batch:{len(list_of_messages)}")
+                out: list[str] = []
+                for msgs in list_of_messages:
+                    if any(m.get("role") == "user" and m.get("content", "").startswith("<tool_response>") for m in msgs):
+                        out.append("<think>done</think>\n<tool_call>\n</tool_call>")
+                    else:
+                        out.append('<think>check</think>\n<tool_call>\n{"name": "smart_home.get_status", "arguments": {}}\n</tool_call>')
+                return out
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            data_root = tmp_path / "data"
+            split_dir = data_root / "private_test"
+            zaic_dir = split_dir / "zaic_tools"
+            zaic_dir.mkdir(parents=True)
+
+            (zaic_dir / "__init__.py").write_text(
+                "class ToolEnv:\n"
+                "    def __init__(self, split, item_id, root='.'):\n"
+                "        self.calls = []\n"
+                "    def validate(self, name, args):\n"
+                "        return {'ok': True}\n"
+                "    def call(self, name, args):\n"
+                "        self.calls.append({'name': name, 'arguments': args})\n"
+                "        return {'ok': True, 'devices': []}\n"
+                "    def get_tool_calls(self):\n"
+                "        return list(self.calls)\n"
+                "    def get_state_hash(self):\n"
+                "        return 'hash_batched'\n",
+                encoding="utf-8",
+            )
+            (zaic_dir / "validate.py").write_text(
+                "def catalog_tools(catalog):\n"
+                "    out = {}\n"
+                "    for app in catalog.get('apps', []):\n"
+                "        for t in app.get('tools', []):\n"
+                "            out[t['name']] = t\n"
+                "    return out\n",
+                encoding="utf-8",
+            )
+            catalog = {
+                "apps": [
+                    {
+                        "id": "smart_home",
+                        "name_vi": "Nhà thông minh",
+                        "tools": [
+                            {"name": "smart_home.get_status", "kind": "read", "parameters": {"type": "object", "properties": {}}}
+                        ],
+                    }
+                ]
+            }
+            (split_dir / "private_test_tools_catalog.json").write_text(json.dumps(catalog), encoding="utf-8")
+            samples = [
+                {
+                    "id": f"priv_{i:04d}",
+                    "audio": f"audio/priv_{i:04d}.wav",
+                    "context": {"current_time": "2026-11-20T10:00:00+07:00", "installed_apps": {"smart_home": {"tools": ["smart_home.get_status"]}}},
+                    "history": [],
+                }
+                for i in range(2)
+            ]
+            (split_dir / "private_test.jsonl").write_text(
+                "".join(json.dumps(s) + "\n" for s in samples), encoding="utf-8"
+            )
+            for mod_name in list(sys.modules):
+                if mod_name == "zaic_tools" or mod_name.startswith("zaic_tools."):
+                    sys.modules.pop(mod_name, None)
+
+            out_file = tmp_path / "result" / "submission.jsonl"
+            with patch.object(predict, "Transcriber", _PhaseTranscriber), patch.object(predict, "LLMBackend", _PhaseBatchedLLM):
+                rows = predict.run_predict(root=data_root, output=out_file, enable_action_triage=False, batch_size=4)
+
+            self.assertEqual(len(rows), 2)
+            self.assertEqual([r["id"] for r in rows], ["priv_0000", "priv_0001"])
+            self.assertEqual(events[:4], ["init_asr", "pretranscribe", "unload_asr", "init_llm"])
+            self.assertIn("generate_batch:2", events)
 
 
 if __name__ == "__main__":

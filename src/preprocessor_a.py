@@ -191,7 +191,8 @@ TARGET_ENTITY_KEYS = {
     "name", "title", "label", "counterparty", "channel", "symbol", "stop", "route",
     "provider", "artist", "from_name", "venue", "lot_name", "merchant", "category",
     "station", "bank", "destination", "origin", "route_name", "sender", "passenger_name",
-    "location", "room", "topic", "carrier", "operator"
+    "location", "room", "topic", "carrier", "operator",
+    "plate", "clinic", "specialty", "doctor", "cuisine", "area", "genre", "agency"
 }
 
 

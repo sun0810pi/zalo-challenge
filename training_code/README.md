@@ -10,8 +10,8 @@ Thư mục này chứa toàn bộ mã nguồn huấn luyện, cấu hình siêu 
 - `train_grpo_rlvr.py`: Tinh chỉnh tăng cường RLVR bằng thuật toán GRPO trực tiếp trên `zaic_tools.ToolEnv` (`R = 0.5 * StateMatch + 0.5 * FullToolCallF1`).
 - `merge_whisper_lora.py`: Gộp adapter Whisper LoRA vào base Whisper thành standalone model.
 - `scripts/merge_qwen_lora.py`: Gộp adapter Qwen3-4B LoRA vào base `Qwen/Qwen3-4B` để phục vụ inference offline trong Docker.
-- `scripts/data/`: Các script xây dựng dữ liệu SFT từ tập `train/` của BTC (`generate_reasoning_sft.py`, `build_v5_sft_dataset.py`, `build_rsft_dataset.py`, v.v.).
-- `configs/`: Các file JSON cấu hình siêu tham số cho SFT và GRPO (`train_sft_v5_expanded.json`, `train_grpo_rlvr.json`, v.v.).
+- `scripts/data/`: Các script xây dựng dữ liệu SFT từ tập `train/` của BTC (`generate_reasoning_sft.py`, `build_p1_dataset.py`, `build_simulator_grounded_v1_1.py`, `build_v7_final_dataset.py`, `build_rsft_dataset.py`, v.v.).
+- `configs/`: Các file JSON cấu hình siêu tham số cho SFT và GRPO (`train_sft_v6_adapted.json`, `train_sft_v7_final.json`, `train_sft_p1_concise.json`, `train_grpo_rlvr.json`, v.v.).
 - `src/`: Thư viện lõi (prompt builder, schema guardrail, semantic router, entity normalizer, hybrid engine, ASR cleaner).
 
 ## 2. Nguồn tải Base Models & Dữ liệu
@@ -34,27 +34,25 @@ Thư mục này chứa toàn bộ mã nguồn huấn luyện, cấu hình siêu 
 Cố định seed `42` trong toàn bộ quá trình chuẩn bị dữ liệu, training và inference.
 
 ```bash
-# Bước 1: Tạo dữ liệu SFT từ tập train/ của BTC
+# Bước 1: Tạo dữ liệu SFT sạch từ tập train/ của BTC (`data_v6_adapted` -> `data_v7_final`)
 python3 scripts/data/generate_reasoning_sft.py
-python3 scripts/data/build_v5_sft_dataset.py
+python3 scripts/data/build_p1_dataset.py
+python3 scripts/data/build_v7_final_dataset.py
 
-# Bước 2: Huấn luyện SFT LoRA trên Qwen/Qwen3-4B (seed=42)
+# Bước 2: Huấn luyện SFT LoRA trên Qwen/Qwen3-4B (seed=42, NVIDIA L4)
 python3 train_sft.py \
-    --model Qwen/Qwen3-4B \
-    --data-dir data/sft/candidates/v5_expanded \
-    --output-dir checkpoints/qwen3-4b-zac-lora-v5-expanded \
-    --epochs 3 --batch-size 2 --grad-accum 8 --lr 2e-4 \
-    --max-seq-len 8192 --lora-r 32 --lora-alpha 64 --weighted-loss --optimized
+    --config configs/train_sft_v7_final.json \
+    --weighted-loss --optimized
 
 # Bước 3 (Tùy chọn): Tinh chỉnh GRPO-RLVR trên ToolEnv
 python3 train_grpo_rlvr.py \
     --model Qwen/Qwen3-4B \
-    --lora-path checkpoints/qwen3-4b-zac-lora-v5-expanded \
+    --lora-path checkpoints/qwen3-4b-zac-lora-v7-final \
     --output-dir checkpoints/qwen3-4b-zac-lora-grpo-rlvr
 
 # Bước 4: Gộp LoRA thành standalone model để đưa vào /code/saved_models/llm/
 python3 scripts/merge_qwen_lora.py \
     --base-model Qwen/Qwen3-4B \
-    --lora-path checkpoints/qwen3-4b-zac-lora-v5-expanded \
+    --lora-path checkpoints/qwen3-4b-zac-lora-v7-final \
     --output-dir saved_models/llm
 ```

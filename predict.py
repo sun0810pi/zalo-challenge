@@ -24,7 +24,14 @@ CODE_DIR = Path(__file__).resolve().parent
 if str(CODE_DIR) not in sys.path:
     sys.path.insert(0, str(CODE_DIR))
 
-from src.agent import LifeMateAgent, LLMBackend, build_preprocessor, fix_all_seeds  # noqa: E402
+from src.agent import (  # noqa: E402
+    LifeMateAgent,
+    LLMBackend,
+    ReActSessionState,
+    build_preprocessor,
+    fix_all_seeds,
+    step_react_state,
+)
 from src.asr import Transcriber  # noqa: E402
 from src.router import SemanticToolRouter  # noqa: E402
 
@@ -118,18 +125,14 @@ def resolve_optional_lora(explicit: str | None, env_var: str, candidate_rel_path
     return None
 
 
-def load_pipeline_resources(
+def _resolve_runtime_paths(
     model_path: str | None = None,
     lora_path: str | None = None,
     asr_model_path: str | None = None,
     asr_lora_path: str | None = None,
-    backend: str = "auto",
-    preprocessor_mode: str = "safe",
     gpu_memory_utilization: float | None = None,
+    default_gpu_util: str = "0.65",
 ) -> dict[str, Any]:
-    """Load ASR, LLM, preprocessor, and router once; return resources + load time in ms."""
-    t_load = time.perf_counter()
-
     resolved_llm = resolve_model_path(
         model_path,
         "MODEL_PATH",
@@ -164,16 +167,43 @@ def load_pipeline_resources(
         "ASR_LORA_PATH",
         ["saved_models/asr_lora", "models/asr_lora"],
     )
-
     gpu_util = (
         gpu_memory_utilization
         if gpu_memory_utilization is not None
-        else float(os.environ.get("GPU_MEMORY_UTILIZATION", "0.65"))
+        else float(os.environ.get("GPU_MEMORY_UTILIZATION", default_gpu_util))
+    )
+    return {
+        "resolved_llm": resolved_llm,
+        "resolved_llm_lora": resolved_llm_lora,
+        "resolved_asr": resolved_asr,
+        "resolved_asr_lora": resolved_asr_lora,
+        "gpu_util": gpu_util,
+    }
+
+
+def load_pipeline_resources(
+    model_path: str | None = None,
+    lora_path: str | None = None,
+    asr_model_path: str | None = None,
+    asr_lora_path: str | None = None,
+    backend: str = "auto",
+    preprocessor_mode: str = "safe",
+    gpu_memory_utilization: float | None = None,
+) -> dict[str, Any]:
+    """Load ASR, LLM, preprocessor, and router once; return resources + load time in ms."""
+    t_load = time.perf_counter()
+    paths = _resolve_runtime_paths(
+        model_path=model_path,
+        lora_path=lora_path,
+        asr_model_path=asr_model_path,
+        asr_lora_path=asr_lora_path,
+        gpu_memory_utilization=gpu_memory_utilization,
+        default_gpu_util="0.65",
     )
 
     transcriber = Transcriber(
-        model_name=resolved_asr,
-        lora_path=resolved_asr_lora,
+        model_name=paths["resolved_asr"],
+        lora_path=paths["resolved_asr_lora"],
         cache_path=None,  # Never write cache into read-only /data mount
         use_gt_audio_text=False,
     )
@@ -181,11 +211,11 @@ def load_pipeline_resources(
     transcriber._load_model()
 
     llm = LLMBackend(
-        model_name_or_path=resolved_llm,
-        lora_path=resolved_llm_lora,
+        model_name_or_path=paths["resolved_llm"],
+        lora_path=paths["resolved_llm_lora"],
         backend=backend,
         max_model_len=16384,
-        gpu_memory_utilization=gpu_util,
+        gpu_memory_utilization=paths["gpu_util"],
     )
 
     preprocessor = build_preprocessor(mode=preprocessor_mode, sim_threshold=0.80)
@@ -200,8 +230,8 @@ def load_pipeline_resources(
         "preprocessor": preprocessor,
         "router": router,
         "load_ms": load_ms,
-        "resolved_llm": resolved_llm,
-        "resolved_asr": resolved_asr,
+        "resolved_llm": paths["resolved_llm"],
+        "resolved_asr": paths["resolved_asr"],
     }
 
 
@@ -240,12 +270,6 @@ def infer_one(
     """Run ASR + deterministic ReAct agent on a single sample and ToolEnv."""
     sample_copy = copy.deepcopy(item)
     final_text, hist_transcripts = transcriber.transcribe_sample(sample_copy, split_dir)
-    if sample_copy.get("history") and hist_transcripts:
-        for turn in sample_copy["history"]:
-            if not turn.get("audio_text"):
-                aud = turn.get("audio", "")
-                if aud in hist_transcripts:
-                    turn["audio_text"] = hist_transcripts[aud]
 
     agent.run_sample(
         env=env,
@@ -255,6 +279,90 @@ def infer_one(
         temperature=0.0,
     )
     return env.get_tool_calls(), env.get_state_hash()
+
+
+def _run_batched_vllm_predict(
+    test_cases: list[dict[str, Any]],
+    resolved_split: str,
+    root_path: Path,
+    split_dir: Path,
+    ToolEnvCls: Any,
+    transcriber: Any,
+    llm: Any,
+    preprocessor: Any,
+    router: SemanticToolRouter,
+    catalog_tools_map: dict[str, dict[str, Any]],
+    catalog_apps_map: dict[str, dict[str, Any]],
+    max_steps: int,
+    max_apps: int | None,
+    enable_fuzzy_normalizer: bool,
+    enable_hybrid_engine: bool,
+    enable_action_triage: bool,
+    batch_size: int,
+) -> list[dict[str, Any]]:
+    """Run concurrent multi-turn ReAct inference using `ReActSessionState` + `llm.generate_batch`."""
+    completed_results: dict[int, dict[str, Any]] = {}
+    active_states: list[ReActSessionState] = []
+    next_idx = 0
+
+    def _record_done(st: ReActSessionState) -> None:
+        completed_results[st.index] = {
+            "id": st.sample_id,
+            "tool_calls": st.tool_calls,
+            "state_hash": st.state_hash,
+            "time": max(0, int(st.elapsed * 1000)),
+        }
+
+    def _refill() -> None:
+        nonlocal next_idx
+        while len(active_states) < batch_size and next_idx < len(test_cases):
+            idx = next_idx
+            item = test_cases[next_idx]
+            next_idx += 1
+
+            sample_copy = copy.deepcopy(item)
+            env = ToolEnvCls(resolved_split, sample_copy["id"], root=root_path)
+            raw_text, raw_hist = transcriber.transcribe_sample(sample_copy, split_dir)
+            cl_text = preprocessor.preprocess(raw_text, sample_copy)
+            cl_hist = {
+                k: preprocessor.preprocess(v, sample_copy)
+                for k, v in (raw_hist or {}).items()
+            }
+
+            state = ReActSessionState(
+                index=idx,
+                sample=sample_copy,
+                env=env,
+                cleaned_user_text=cl_text,
+                cleaned_hist_transcripts=cl_hist,
+                catalog_tools_map=catalog_tools_map,
+                catalog_apps_map=catalog_apps_map,
+                router=router,
+                max_steps=max_steps,
+                enable_fuzzy_normalizer=enable_fuzzy_normalizer,
+                enable_hybrid_engine=enable_hybrid_engine,
+                enable_action_triage=enable_action_triage,
+                max_apps=max_apps,
+            )
+            if state.finished:
+                _record_done(state)
+            else:
+                active_states.append(state)
+
+    _refill()
+    while active_states:
+        pending = [s for s in active_states if not s.finished]
+        if not pending:
+            break
+        replies = llm.generate_batch([s.messages for s in pending])
+        for st, reply in zip(pending, replies):
+            step_react_state(st, reply)
+            if st.finished:
+                _record_done(st)
+        active_states = [s for s in active_states if not s.finished]
+        _refill()
+
+    return [completed_results[i] for i in range(len(test_cases))]
 
 
 def run_predict(
@@ -276,6 +384,7 @@ def run_predict(
     enable_action_triage: bool = True,
     seed: int = 42,
     resources: dict[str, Any] | None = None,
+    batch_size: int = 16,
 ) -> list[dict[str, Any]]:
     """Run full deterministic inference and write JSONL output with per-sample `time` (ms)."""
     seed_everything(seed)
@@ -302,50 +411,111 @@ def run_predict(
     if limit > 0:
         test_cases = test_cases[:limit]
 
+    t_phase_start = time.perf_counter()
     if resources is None:
-        resources = load_pipeline_resources(
+        # Two-phase GPU lifecycle: pre-transcribe all audio -> unload Whisper & re-enable cuDNN -> start LLM
+        paths = _resolve_runtime_paths(
             model_path=model_path,
             lora_path=lora_path,
             asr_model_path=asr_model_path,
             asr_lora_path=asr_lora_path,
-            backend=backend,
-            preprocessor_mode=preprocessor_mode,
             gpu_memory_utilization=gpu_memory_utilization,
+            default_gpu_util="0.72",
         )
+        transcriber = Transcriber(
+            model_name=paths["resolved_asr"],
+            lora_path=paths["resolved_asr_lora"],
+            cache_path=None,  # Never write cache into read-only /data mount
+            use_gt_audio_text=False,
+        )
+        transcriber.pretranscribe_samples(test_cases, split_dir)
+        transcriber.unload_model()
 
-    agent = build_sample_agent(
-        resources=resources,
-        catalog_tools_map=catalog_tools_map,
-        catalog_apps_map=catalog_apps_map,
-        max_steps=max_steps,
-        max_apps=max_apps,
-        enable_fuzzy_normalizer=enable_fuzzy_normalizer,
-        enable_hybrid_engine=enable_hybrid_engine,
-        enable_action_triage=enable_action_triage,
-    )
-    transcriber: Transcriber = resources["transcriber"]
+        llm = LLMBackend(
+            model_name_or_path=paths["resolved_llm"],
+            lora_path=paths["resolved_llm_lora"],
+            backend=backend,
+            max_model_len=16384,
+            gpu_memory_utilization=paths["gpu_util"],
+        )
+        preprocessor = build_preprocessor(mode=preprocessor_mode, sim_threshold=0.80)
+        router = SemanticToolRouter(top_k_recommended=4)
+        load_ms = int((time.perf_counter() - t_phase_start) * 1000)
+        print(f"load model: {load_ms} ms")
+        resources = {
+            "transcriber": transcriber,
+            "llm": llm,
+            "preprocessor": preprocessor,
+            "router": router,
+            "load_ms": load_ms,
+        }
+    else:
+        transcriber = resources["transcriber"]
+        llm = resources["llm"]
+        preprocessor = resources["preprocessor"]
+        router = resources["router"]
 
     out_path = Path(output)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     print(f"output will be saved in {out_path}")
 
-    results: list[dict[str, Any]] = []
     total_start = time.perf_counter()
+    use_batched = (
+        batch_size > 1
+        and len(test_cases) > 1
+        and getattr(llm, "backend", None) == "vllm"
+        and hasattr(llm, "generate_batch")
+    )
 
-    with open(out_path, "w", encoding="utf-8") as fout:
-        for item in test_cases:
-            t1 = time.perf_counter()
-            env = ToolEnv(resolved_split, item["id"], root=root_path)
-            tool_calls, state_hash = infer_one(item, env, transcriber, agent, split_dir)
-            ms = int((time.perf_counter() - t1) * 1000)
-            row = {
-                "id": item["id"],
-                "tool_calls": tool_calls,
-                "state_hash": state_hash,
-                "time": ms,
-            }
-            results.append(row)
-            fout.write(json.dumps(row, ensure_ascii=False) + "\n")
+    if use_batched:
+        results = _run_batched_vllm_predict(
+            test_cases=test_cases,
+            resolved_split=resolved_split,
+            root_path=root_path,
+            split_dir=split_dir,
+            ToolEnvCls=ToolEnv,
+            transcriber=transcriber,
+            llm=llm,
+            preprocessor=preprocessor,
+            router=router,
+            catalog_tools_map=catalog_tools_map,
+            catalog_apps_map=catalog_apps_map,
+            max_steps=max_steps,
+            max_apps=max_apps,
+            enable_fuzzy_normalizer=enable_fuzzy_normalizer,
+            enable_hybrid_engine=enable_hybrid_engine,
+            enable_action_triage=enable_action_triage,
+            batch_size=batch_size,
+        )
+        with open(out_path, "w", encoding="utf-8") as fout:
+            for row in results:
+                fout.write(json.dumps(row, ensure_ascii=False) + "\n")
+    else:
+        agent = build_sample_agent(
+            resources=resources,
+            catalog_tools_map=catalog_tools_map,
+            catalog_apps_map=catalog_apps_map,
+            max_steps=max_steps,
+            max_apps=max_apps,
+            enable_fuzzy_normalizer=enable_fuzzy_normalizer,
+            enable_hybrid_engine=enable_hybrid_engine,
+            enable_action_triage=enable_action_triage,
+        )
+        results = []
+        with open(out_path, "w", encoding="utf-8") as fout:
+            for item in test_cases:
+                t1 = time.perf_counter()
+                env = ToolEnv(resolved_split, item["id"], root=root_path)
+                tool_calls, state_hash = infer_one(item, env, transcriber, agent, split_dir)
+                ms = int((time.perf_counter() - t1) * 1000)
+                row = {
+                    "id": item["id"],
+                    "tool_calls": tool_calls,
+                    "state_hash": state_hash,
+                    "time": ms,
+                }
+                results.append(row)
+                fout.write(json.dumps(row, ensure_ascii=False) + "\n")
 
     total_ms = int((time.perf_counter() - total_start) * 1000)
     avg_ms = total_ms / max(1, len(results))
@@ -368,11 +538,14 @@ def main() -> None:
     ap.add_argument("--max-steps", type=int, default=8)
     ap.add_argument("--max-apps", type=int, default=None)
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--batch-size", type=int, default=int(os.environ.get("BATCH_SIZE", "16")))
+    ap.add_argument("--no-batched", action="store_true")
     ap.add_argument("--no-fuzzy-normalizer", action="store_true")
     ap.add_argument("--no-hybrid-engine", action="store_true")
     ap.add_argument("--no-action-triage", action="store_true")
     args = ap.parse_args()
 
+    eff_batch_size = 1 if (args.no_batched or os.environ.get("ZAC_SERIAL_LLM") == "1") else args.batch_size
     run_predict(
         root=args.root,
         split=args.split,
@@ -390,6 +563,7 @@ def main() -> None:
         enable_fuzzy_normalizer=not args.no_fuzzy_normalizer,
         enable_hybrid_engine=not args.no_hybrid_engine,
         enable_action_triage=not args.no_action_triage,
+        batch_size=eff_batch_size,
     )
 
 

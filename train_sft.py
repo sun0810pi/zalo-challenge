@@ -89,7 +89,10 @@ class AssistantOnlyDataCollator:
             (re.compile(r"</?tool_call>|sys\.ask_missing_info|\"name\""), 2.5),
             (
                 re.compile(
-                    r"\b(?:evt|c|ord|trk|pl|item|dev|acc|mem|msg|ticket|flight|room)_[A-Za-z0-9_]+\b|\d+"
+                    r"\b(?:evt|c|ord|trk|pl|item|dev|acc|mem|msg|ticket|flight|room"
+                    r"|lot|res|sess|trip|bk|prod|ret|gro|rcp|pan|hb|rt|alt|bill|chat|scn|show|prog|rew)_[A-Za-z0-9_]+\b"
+                    r"|\b(?:VNM|FPT|VCB|HPG|VIC|VHM|MWG|TCB|VPB|MBB|ACB|SSI|GAS|MSN|SAB|CTG|BID|GVR|POW|PLX|ZKN)\b"
+                    r"|\d+"
                 ),
                 2.0,
             ),
@@ -327,16 +330,23 @@ def main():
             args.output_dir = "checkpoints/qwen3-4b-zac-lora-p1-concise"
         print(f"[Baseline v3: Concise] Đã chọn data={args.data_dir} | output={args.output_dir}")
 
+    explicit_max_seq_len = (
+        "--max-seq-len" in sys.argv
+        or any(a.startswith("--max-seq-len=") for a in sys.argv)
+        or (pre_args.config is not None and "max_seq_len" in ap._defaults)
+    )
+
     if args.optimized:
         args.pretokenize = True
         args.group_by_length = True
         args.non_reentrant_checkpointing = True
-        args.verify_no_truncation = True
+        if not explicit_max_seq_len and not args.verify_no_truncation:
+            args.verify_no_truncation = True
         if args.attn_implementation is None:
             args.attn_implementation = "sdpa"
         if args.optim is None:
             args.optim = "adamw_torch_fused"
-        if args.max_seq_len < 9216:
+        if not explicit_max_seq_len and args.max_seq_len < 9216:
             args.max_seq_len = 9216
 
     _patch_colab_torchao()

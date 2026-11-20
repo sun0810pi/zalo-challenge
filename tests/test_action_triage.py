@@ -109,6 +109,73 @@ class TestActionTriage(unittest.TestCase):
         )
         self.assertTrue(ok)
 
+    def test_allows_ask_booking_id_when_only_restaurant_search_exists(self) -> None:
+        ext_catalog = dict(self.catalog)
+        ext_catalog.update(
+            {
+                "restaurant_booking.search": {
+                    "name": "restaurant_booking.search",
+                    "kind": "read",
+                    "returns": "restaurants[]",
+                    "parameters": {"type": "object", "properties": {"query": {"type": "string"}}},
+                },
+                "restaurant_booking.cancel": {
+                    "name": "restaurant_booking.cancel",
+                    "kind": "write",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {"booking_id": {"type": "string", "x-ref": "restaurant_booking.bookings"}},
+                        "required": ["booking_id"],
+                    },
+                },
+                "public_services.list_services": {
+                    "name": "public_services.list_services",
+                    "kind": "read",
+                    "returns": "services[]",
+                    "description": "Danh sách thủ tục, các khung giờ còn trống (slots) và hồ sơ đã nộp (submitted_applications)",
+                    "parameters": {"type": "object", "properties": {}},
+                },
+                "public_services.check_status": {
+                    "name": "public_services.check_status",
+                    "kind": "read",
+                    "returns": "status",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {"application_id": {"type": "string", "x-ref": "public_services.applications"}},
+                        "required": ["application_id"],
+                    },
+                },
+            }
+        )
+        self.assertEqual(
+            _resolve_xref_read_tools("restaurant_booking.bookings", "restaurant_booking.cancel", ext_catalog),
+            [],
+        )
+        self.assertEqual(
+            _resolve_xref_read_tools("public_services.applications", "public_services.check_status", ext_catalog),
+            ["public_services.list_services"],
+        )
+
+        barrier = ActionTriageBarrier()
+        ok_rb, _ = barrier.guard_ask_missing_info(
+            tool_call_args={"tool_name": "restaurant_booking.cancel", "params": ["booking_id"]},
+            sample=self.sample,
+            seen_calls=set(),
+            catalog_tools_map=ext_catalog,
+            observed_entities={},
+        )
+        self.assertTrue(ok_rb)
+
+        ok_ps, reason_ps = barrier.guard_ask_missing_info(
+            tool_call_args={"tool_name": "public_services.check_status", "params": ["application_id"]},
+            sample=self.sample,
+            seen_calls=set(),
+            catalog_tools_map=ext_catalog,
+            observed_entities={},
+        )
+        self.assertFalse(ok_ps)
+        self.assertIn("public_services.list_services", reason_ps)
+
 
 if __name__ == "__main__":
     unittest.main()
