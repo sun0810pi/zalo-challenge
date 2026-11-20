@@ -4,9 +4,59 @@ anti-hallucination decoding guards, and post-ASR phonetic normalization.
 from __future__ import annotations
 
 import json
+import os
 import re
+import wave
 from pathlib import Path
 from typing import Any
+
+
+def _load_wav_audio(wav_path: Path) -> tuple[Any, int] | None:
+    """Decode a WAV file into mono float32 16kHz audio via soundfile or stdlib wave (no torchaudio/ffmpeg)."""
+    try:
+        import numpy as np
+    except ImportError:
+        return None
+
+    audio: Any = None
+    sr = 16000
+    try:
+        import soundfile as sf
+
+        audio, sr = sf.read(str(wav_path), dtype="float32", always_2d=False)
+    except Exception:
+        try:
+            with wave.open(str(wav_path), "rb") as wf:
+                nchannels = wf.getnchannels()
+                sampwidth = wf.getsampwidth()
+                sr = wf.getframerate()
+                raw = wf.readframes(wf.getnframes())
+            if sampwidth == 2:
+                audio = np.frombuffer(raw, dtype=np.int16).astype(np.float32) / 32768.0
+            elif sampwidth == 1:
+                audio = (np.frombuffer(raw, dtype=np.uint8).astype(np.float32) - 128.0) / 128.0
+            elif sampwidth == 4:
+                audio = np.frombuffer(raw, dtype=np.int32).astype(np.float32) / 2147483648.0
+            else:
+                return None
+            if nchannels > 1 and audio.size > 0:
+                audio = audio.reshape(-1, nchannels).mean(axis=1)
+        except Exception:
+            return None
+
+    if audio is None:
+        return None
+    audio = np.asarray(audio, dtype=np.float32)
+    if audio.ndim > 1:
+        audio = audio.mean(axis=1)
+    audio = np.ascontiguousarray(audio, dtype=np.float32)
+    if sr and sr != 16000 and audio.size > 0:
+        target_len = max(1, int(round(audio.shape[0] * 16000 / float(sr))))
+        old_idx = np.linspace(0.0, 1.0, num=audio.shape[0], endpoint=False)
+        new_idx = np.linspace(0.0, 1.0, num=target_len, endpoint=False)
+        audio = np.interp(new_idx, old_idx, audio).astype(np.float32)
+        sr = 16000
+    return audio, int(sr or 16000)
 
 # Domain vocabulary per app to bias Whisper initial_prompt toward valid tool/entity terms
 APP_DOMAIN_HOTWORDS: dict[str, list[str]] = {
@@ -393,10 +443,13 @@ class Transcriber:
     def save_cache(self):
         if self.cache_path:
             self.cache_path.parent.mkdir(parents=True, exist_ok=True)
-            self.cache_path.write_text(
-                json.dumps(self.cache, ensure_ascii=False, indent=2),
-                encoding="utf-8",
-            )
+            payload = json.dumps(self.cache, ensure_ascii=False, indent=2)
+            tmp_path = self.cache_path.with_suffix(self.cache_path.suffix + ".tmp")
+            try:
+                tmp_path.write_text(payload, encoding="utf-8")
+                os.replace(tmp_path, self.cache_path)
+            except OSError:
+                self.cache_path.write_text(payload, encoding="utf-8")
 
     def transcribe_file(
         self,
@@ -415,34 +468,51 @@ class Transcriber:
 
         self._load_model()
         if self._backend == "faster_whisper":
+            def _run_fw(audio_src: Any) -> str:
+                try:
+                    segments, _ = self._model.transcribe(
+                        audio_src,
+                        language="vi",
+                        beam_size=5,
+                        temperature=0.0,
+                        condition_on_previous_text=False,
+                        repetition_penalty=1.2,
+                        no_repeat_ngram_size=3,
+                        compression_ratio_threshold=2.2,
+                        log_prob_threshold=-1.0,
+                        no_speech_threshold=0.6,
+                        vad_filter=True,
+                        initial_prompt=initial_prompt or None,
+                    )
+                except TypeError:
+                    segments, _ = self._model.transcribe(
+                        audio_src,
+                        language="vi",
+                        beam_size=5,
+                        temperature=0.0,
+                        condition_on_previous_text=False,
+                        vad_filter=True,
+                        initial_prompt=initial_prompt or None,
+                    )
+                return " ".join(seg.text.strip() for seg in segments).strip()
+
             try:
-                segments, _ = self._model.transcribe(
-                    str(wav_path),
-                    language="vi",
-                    beam_size=5,
-                    temperature=0.0,
-                    condition_on_previous_text=False,
-                    repetition_penalty=1.2,
-                    no_repeat_ngram_size=3,
-                    compression_ratio_threshold=2.2,
-                    log_prob_threshold=-1.0,
-                    no_speech_threshold=0.6,
-                    vad_filter=True,
-                    initial_prompt=initial_prompt or None,
-                )
-            except TypeError:
-                segments, _ = self._model.transcribe(
-                    str(wav_path),
-                    language="vi",
-                    beam_size=5,
-                    temperature=0.0,
-                    condition_on_previous_text=False,
-                    vad_filter=True,
-                    initial_prompt=initial_prompt or None,
-                )
-            raw_text = " ".join(seg.text.strip() for seg in segments).strip()
+                raw_text = _run_fw(str(wav_path))
+            except Exception:
+                loaded = _load_wav_audio(wav_path)
+                if loaded is not None:
+                    raw_text = _run_fw(loaded[0])
+                else:
+                    raise
         else:
             import torch
+
+            loaded = _load_wav_audio(wav_path)
+            audio_input: Any = (
+                {"array": loaded[0], "sampling_rate": loaded[1]}
+                if loaded is not None
+                else str(wav_path)
+            )
 
             gen_kwargs = {
                 "language": "vi",
@@ -466,7 +536,7 @@ class Transcriber:
             out = None
             try:
                 out = self._model(
-                    str(wav_path),
+                    audio_input,
                     generate_kwargs=gen_kwargs,
                 )
             except RuntimeError as e:
@@ -479,7 +549,7 @@ class Transcriber:
                             self._model.model = self._model.model.to("cpu", dtype=torch.float32)
                         self._model.device = torch.device("cpu")
                         out = self._model(
-                            str(wav_path),
+                            audio_input,
                             generate_kwargs={"language": "vi", "task": "transcribe"},
                         )
                     except Exception as inner_e:
@@ -488,18 +558,20 @@ class Transcriber:
                 else:
                     try:
                         out = self._model(
-                            str(wav_path),
+                            audio_input,
                             generate_kwargs={"language": "vi", "task": "transcribe"},
                         )
-                    except Exception:
+                    except Exception as inner_e:
+                        print(f"[ASR LỖI] Không thể transcribe ({inner_e}), bỏ qua audio: {wav_path}")
                         out = {"text": ""}
-            except Exception:
+            except Exception as e:
                 try:
                     out = self._model(
-                        str(wav_path),
+                        audio_input,
                         generate_kwargs={"language": "vi", "task": "transcribe"},
                     )
-                except Exception:
+                except Exception as inner_e:
+                    print(f"[ASR LỖI] Không thể transcribe ({e} / {inner_e}), bỏ qua audio: {wav_path}")
                     out = {"text": ""}
 
             raw_text = (out.get("text", "") if isinstance(out, dict) else str(out or "")).strip()

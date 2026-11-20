@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -24,6 +25,40 @@ from src.router import SemanticToolRouter
 
 # Backwards-compatible alias for external imports
 SampleReActState = ReActSessionState
+
+
+def _load_resume_checkpoint(
+    ckpt_path: Path,
+    out_path: Path,
+    valid_ids: set[str],
+) -> dict[str, dict[str, Any]]:
+    """Load already-completed sample predictions from existing output and/or incremental checkpoint JSONL."""
+    restored: dict[str, dict[str, Any]] = {}
+    for src_path in (out_path, ckpt_path):
+        if not src_path.is_file():
+            continue
+        try:
+            lines = src_path.read_text(encoding="utf-8").splitlines()
+        except OSError:
+            continue
+        for line in lines:
+            s = line.strip()
+            if not s:
+                continue
+            try:
+                obj = json.loads(s)
+            except json.JSONDecodeError:
+                continue
+            if not isinstance(obj, dict):
+                continue
+            sid = obj.get("id")
+            if sid in valid_ids and isinstance(obj.get("tool_calls"), list) and "state_hash" in obj:
+                restored[sid] = {
+                    "id": sid,
+                    "tool_calls": obj["tool_calls"],
+                    "state_hash": obj["state_hash"],
+                }
+    return restored
 
 
 def _build_runtime_preprocessor(mode: str, use_asr_fallback: bool) -> tuple[Any, Any | None]:
@@ -109,8 +144,11 @@ def main():
         action="store_true",
         help="Bật UncertaintyAwareASRFallback (Qwen3-ASR-0.6B) cho các slot nghi ngờ",
     )
+    ap.add_argument("--asr-cache-path", default=None, help="Đường dẫn trực tiếp tới file ASR cache JSON (ví dụ trên Google Drive)")
     ap.add_argument("--ignore-asr-cache", action="store_true", help="Bỏ qua cache ASR, ép nhận dạng lại")
     ap.add_argument("--use-gt-asr", action="store_true")
+    ap.add_argument("--resume", action="store_true", help="Tiếp tục từ checkpoint (<output>.ckpt.jsonl) và bỏ qua mẫu đã xong")
+    ap.add_argument("--checkpoint-path", default=None, help="Đường dẫn file checkpoint ghi dần từng mẫu (mặc định <output>.ckpt.jsonl)")
 
     # Switches for Solutions 2, 3, 4
     ap.add_argument("--no-fuzzy-normalizer", action="store_true", help="[Solution 2] Tắt EntityNormalizer & Fuzzy Read Recovery")
@@ -155,6 +193,8 @@ def main():
 
     if args.ignore_asr_cache:
         asr_cache_p = None
+    elif args.asr_cache_path:
+        asr_cache_p = Path(args.asr_cache_path)
     elif args.asr_lora_path:
         lora_tag = Path(args.asr_lora_path).name or "lora"
         asr_cache_p = root / "cache" / f"asr_{args.split}_{lora_tag}.json"
@@ -164,120 +204,145 @@ def main():
         model_tag = Path(args.asr_model).name or "custom"
         asr_cache_p = root / "cache" / f"asr_{args.split}_{model_tag}.json"
 
+    out_path = Path(args.output)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    ckpt_path = Path(args.checkpoint_path) if args.checkpoint_path else out_path.with_suffix(out_path.suffix + ".ckpt.jsonl")
+    ckpt_path.parent.mkdir(parents=True, exist_ok=True)
+
+    valid_ids = {s["id"] for s in samples}
+    if args.resume:
+        completed_by_id = _load_resume_checkpoint(ckpt_path, out_path, valid_ids)
+        pending_samples = [s for s in samples if s["id"] not in completed_by_id]
+        print(f"[Resume] Đã khôi phục {len(completed_by_id)}/{len(samples)} mẫu; còn {len(pending_samples)} mẫu cần chạy.")
+    else:
+        completed_by_id = {}
+        pending_samples = list(samples)
+
+    t0 = time.perf_counter()
     transcriber = Transcriber(
         model_name=args.asr_model,
         lora_path=args.asr_lora_path,
         cache_path=asr_cache_p,
         use_gt_audio_text=(args.use_gt_asr and args.split == "train"),
     )
-    print(f"\n[GIAI ĐOẠN 1/2] Kiểm tra ASR Cache cho {len(samples)} mẫu...")
-    transcriber.pretranscribe_samples(samples, split_dir)
-    transcriber.unload_model()
 
-    print(f"\n[GIAI ĐOẠN 2/2] Khởi động LLM Engine: {args.model}...")
-    llm = LLMBackend(
-        model_name_or_path=args.model,
-        lora_path=args.lora_path,
-        backend=args.backend,
-        gpu_memory_utilization=args.gpu_memory_utilization,
+    if pending_samples:
+        print(f"\n[GIAI ĐOẠN 1/2] Kiểm tra ASR Cache cho {len(pending_samples)} mẫu...")
+        transcriber.pretranscribe_samples(pending_samples, split_dir)
+        transcriber.unload_model()
+
+        print(f"\n[GIAI ĐOẠN 2/2] Khởi động LLM Engine: {args.model}...")
+        llm = LLMBackend(
+            model_name_or_path=args.model,
+            lora_path=args.lora_path,
+            backend=args.backend,
+            gpu_memory_utilization=args.gpu_memory_utilization,
+        )
+
+        preprocessor, fallback_engine = _build_runtime_preprocessor(args.preprocessor, args.use_asr_fallback)
+        router = SemanticToolRouter(top_k_recommended=4)
+
+        completed_count = 0
+        next_sample_idx = 0
+        active_states: list[ReActSessionState] = []
+
+        ckpt_mode = "a" if args.resume else "w"
+        with open(ckpt_path, ckpt_mode, encoding="utf-8") as ckpt_f:
+            def _record_completed(st: ReActSessionState) -> None:
+                nonlocal completed_count
+                row = {
+                    "id": st.sample_id,
+                    "tool_calls": st.tool_calls,
+                    "state_hash": st.state_hash,
+                }
+                completed_by_id[st.sample_id] = row
+                ckpt_f.write(json.dumps(row, ensure_ascii=False) + "\n")
+                ckpt_f.flush()
+                completed_count += 1
+                if completed_count % 10 == 0 or completed_count == len(pending_samples):
+                    print(
+                        f"[{len(completed_by_id)}/{len(samples)}] {st.sample_id} ({st.elapsed:.2f}s, {st.step} bước) -> {len(st.tool_calls)} calls"
+                    )
+
+            def _fill_active_pool() -> None:
+                nonlocal next_sample_idx
+                while len(active_states) < args.batch_size and next_sample_idx < len(pending_samples):
+                    idx = next_sample_idx + 1
+                    item = pending_samples[next_sample_idx]
+                    next_sample_idx += 1
+
+                    env = ToolEnv(args.split, item["id"], root=root)
+                    raw_text, raw_hist = transcriber.transcribe_sample(item, split_dir)
+                    cl_text, cl_hist = _preprocess_sample_audio_texts(
+                        raw_text, raw_hist, item, split_dir, preprocessor, fallback_engine
+                    )
+
+                    if item.get("history") and cl_hist:
+                        for turn in item["history"]:
+                            if not turn.get("audio_text"):
+                                aud = turn.get("audio", "")
+                                if aud in cl_hist:
+                                    turn["audio_text"] = cl_hist[aud]
+
+                    state = ReActSessionState(
+                        index=idx,
+                        sample=item,
+                        env=env,
+                        cleaned_user_text=cl_text,
+                        cleaned_hist_transcripts=cl_hist,
+                        catalog_tools_map=catalog_tools_map,
+                        catalog_apps_map=catalog_apps_map,
+                        router=router,
+                        max_steps=args.max_steps,
+                        enable_fuzzy_normalizer=not args.no_fuzzy_normalizer,
+                        enable_hybrid_engine=not args.no_hybrid_engine,
+                        enable_action_triage=not args.no_action_triage,
+                        max_apps=args.max_apps,
+                    )
+
+                    if state.finished:
+                        _record_completed(state)
+                    else:
+                        active_states.append(state)
+
+            _fill_active_pool()
+
+            while active_states:
+                pending_states = [s for s in active_states if not s.finished]
+                if not pending_states:
+                    break
+
+                prompts_to_generate = [s.messages for s in pending_states]
+                replies = llm.generate_batch(prompts_to_generate)
+
+                for state, reply in zip(pending_states, replies):
+                    step_react_state(state, reply)
+                    if state.finished:
+                        _record_completed(state)
+
+                active_states = [s for s in active_states if not s.finished]
+                _fill_active_pool()
+
+        transcriber.save_cache()
+    else:
+        print("[Resume] Toàn bộ mẫu đã hoàn tất trong checkpoint/output, bỏ qua bước ASR & LLM.")
+
+    ordered_payload = "".join(
+        json.dumps(completed_by_id[s["id"]], ensure_ascii=False) + "\n"
+        for s in samples
+        if s["id"] in completed_by_id
     )
-
-    preprocessor, fallback_engine = _build_runtime_preprocessor(args.preprocessor, args.use_asr_fallback)
-    router = SemanticToolRouter(top_k_recommended=4)
-
-    out_path = Path(args.output)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-
-    t0 = time.perf_counter()
-    completed_results: dict[int, dict[str, Any]] = {}
-    completed_count = 0
-
-    next_sample_idx = 0
-    active_states: list[ReActSessionState] = []
-
-    def _record_completed(st: ReActSessionState) -> None:
-        nonlocal completed_count
-        completed_results[st.index] = {
-            "id": st.sample_id,
-            "tool_calls": st.tool_calls,
-            "state_hash": st.state_hash,
-        }
-        completed_count += 1
-        if completed_count % 10 == 0 or completed_count == len(samples):
-            print(
-                f"[{completed_count}/{len(samples)}] {st.sample_id} ({st.elapsed:.2f}s, {st.step} bước) -> {len(st.tool_calls)} calls"
-            )
-
-    def _fill_active_pool():
-        nonlocal next_sample_idx
-        while len(active_states) < args.batch_size and next_sample_idx < len(samples):
-            idx = next_sample_idx + 1
-            item = samples[next_sample_idx]
-            next_sample_idx += 1
-
-            env = ToolEnv(args.split, item["id"], root=root)
-            raw_text, raw_hist = transcriber.transcribe_sample(item, split_dir)
-            cl_text, cl_hist = _preprocess_sample_audio_texts(
-                raw_text, raw_hist, item, split_dir, preprocessor, fallback_engine
-            )
-
-            if item.get("history") and cl_hist:
-                for turn in item["history"]:
-                    if not turn.get("audio_text"):
-                        aud = turn.get("audio", "")
-                        if aud in cl_hist:
-                            turn["audio_text"] = cl_hist[aud]
-
-            state = ReActSessionState(
-                index=idx,
-                sample=item,
-                env=env,
-                cleaned_user_text=cl_text,
-                cleaned_hist_transcripts=cl_hist,
-                catalog_tools_map=catalog_tools_map,
-                catalog_apps_map=catalog_apps_map,
-                router=router,
-                max_steps=args.max_steps,
-                enable_fuzzy_normalizer=not args.no_fuzzy_normalizer,
-                enable_hybrid_engine=not args.no_hybrid_engine,
-                enable_action_triage=not args.no_action_triage,
-                max_apps=args.max_apps,
-            )
-
-            if state.finished:
-                _record_completed(state)
-            else:
-                active_states.append(state)
-
-    _fill_active_pool()
-
-    while active_states:
-        pending_states = [s for s in active_states if not s.finished]
-        if not pending_states:
-            break
-
-        prompts_to_generate = [s.messages for s in pending_states]
-        replies = llm.generate_batch(prompts_to_generate)
-
-        for state, reply in zip(pending_states, replies):
-            step_react_state(state, reply)
-            if state.finished:
-                _record_completed(state)
-
-        active_states = [s for s in active_states if not s.finished]
-        _fill_active_pool()
-
-    transcriber.save_cache()
-
-    with open(out_path, "w", encoding="utf-8") as fout:
-        for idx in range(1, len(samples) + 1):
-            if idx in completed_results:
-                fout.write(json.dumps(completed_results[idx], ensure_ascii=False) + "\n")
+    tmp_out = out_path.with_suffix(out_path.suffix + ".tmp")
+    try:
+        tmp_out.write_text(ordered_payload, encoding="utf-8")
+        os.replace(tmp_out, out_path)
+    except OSError:
+        out_path.write_text(ordered_payload, encoding="utf-8")
 
     total_time = time.perf_counter() - t0
     print(
-        f"\n[Batched ReAct] Hoàn tất {len(samples)} mẫu trong {total_time:.1f}s "
-        f"(TB: {total_time / max(1, len(samples)):.2f}s/mẫu) -> {out_path}"
+        f"\n[Batched ReAct] Hoàn tất {len(completed_by_id)}/{len(samples)} mẫu trong {total_time:.1f}s "
+        f"(TB: {total_time / max(1, len(pending_samples or samples)):.2f}s/mẫu) -> {out_path}"
     )
 
     evaluate_predictions(str(out_path), root=root, split=args.split)
